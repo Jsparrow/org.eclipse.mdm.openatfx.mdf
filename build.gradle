@@ -1,0 +1,51 @@
+/*
+ * Copyright (c) 2016 Audi AG
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ */
+
+plugins {
+    id "de.undercouch.download" version "3.0.0"
+}
+
+import de.undercouch.gradle.tasks.download.Download
+
+description = 'OpenATFX MDF driver'
+group = 'org.eclipse.mdm'
+version = '1.0.1'
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'maven'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // openATFX
+    compile fileTree(dir: 'build/openatfx-0.6.3/lib', include: '*.jar')
+
+    // testing
+    testCompile 'junit:junit:4.12'
+}
+
+test {
+    jvmArgs '-Dorg.slf4j.simpleLogger.defaultLogLevel=debug'
+}
+
+task downloadOpenATFX(type: Download) {
+    src 'https://sourceforge.net/projects/openatfx/files/openatfx-0.6.3-jars.zip/download'
+    dest new File(buildDir, 'openatfx.zip')
+    outputs.file dest
+}
+
+task unzipOpenATFX(dependsOn: downloadOpenATFX, type: Copy) {
+    from zipTree(downloadOpenATFX.dest)
+    into buildDir
+    outputs.dir new File(buildDir, 'openatfx-0.6.3')
+}
+
+compileJava.dependsOn unzipOpenATFX

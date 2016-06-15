@@ -1,0 +1,18 @@
+# eclipse
+.classpath
+.project
+.settings/
+bin/
+src/gen/
+
+# gradle
+.gradle
+build/
+
+# intellij
+.idea/
+out/
+*.ipr
+*.iml
+*.iws
+/bin/
