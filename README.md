@@ -15,33 +15,35 @@ The file contents including Meta-Data are transformed to the ASAM ODS standard a
 
 ## Dependencies
 This project uses the following librarys:
- - openatfx (ATFX backed ODS backend, can be obtained from SourceForge)
- - JUnit (Testing Framework)
- - ASAM ODS (Interfaces for the ASAM OO-API)
- - Apache Commons Logging (Logging Framework)
- - Log4j (Logging Framework)
- - STAX API (Java XML Framework)
- - STAX2 API (Java XML Framework)
+
+* openatfx (ATFX backed ODS backend, can be obtained from SourceForge)
+* JUnit (Testing Framework)
+* ASAM ODS (Interfaces for the ASAM OO-API)
+* Apache Commons Logging (Logging Framework)
+* Log4j (Logging Framework)
+* STAX API (Java XML Framework)
+* STAX2 API (Java XML Framework)
 
 ## Java code example for opening a ASAM ODS session on an ATFX file
 
-  import java.nio.file.Path;
-  import java.nio.file.Paths;
-
-  import org.asam.ods.AoSession;
-  import org.omg.CORBA.ORB;
-
-  import de.rechner.openatfx_mdf.ConvertException;
-  import de.rechner.openatfx_mdf.MDFConverter;
-
-  public class Example{
-    public static void main(String[] args) throws ConvertException{
-      ORB orb = ORB.init(new String[0], System.getProperties());
-      Path path = Paths.get("C:\\myExample.mf4");
-      MDFConverter reader = new MDFConverter();
-      AoSession aoSession = reader.getAoSessionForMDF(orb, path);
+    import java.nio.file.Path;
+    import java.nio.file.Paths;
+    
+    import org.asam.ods.AoSession;
+    import org.omg.CORBA.ORB;
+    
+    import de.rechner.openatfx_mdf.ConvertException;
+    import de.rechner.openatfx_mdf.MDFConverter;
+    
+    public class Example{
+        public static void main(String[] args) throws ConvertException{
+            ORB orb = ORB.init(new String[0], System.getProperties());
+            Path path = Paths.get("C:\\myExample.mf4");
+            MDFConverter reader = new MDFConverter();
+            AoSession aoSession = reader.getAoSessionForMDF(orb, path);
+        }
     }
-  }
+
 
 ## Known bugs/missing features:
 ### BLOCKs
