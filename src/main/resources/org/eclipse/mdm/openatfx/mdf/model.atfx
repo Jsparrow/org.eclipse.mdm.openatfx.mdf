@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <atfx_file version="atfx_file: V1.1.0" xmlns="http://www.asam.net/ODS/5.1/Schema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<base_model_version>asam31</base_model_version>
 	<application_model>
@@ -223,6 +223,10 @@
 			<application_attribute>
 				<name>iname</name>
 				<base_attribute>name</base_attribute>
+			</application_attribute>
+			<application_attribute>
+				<name>attachments</name>
+				<base_attribute>external_references</base_attribute>
 			</application_attribute>
 			<application_attribute>
 				<name>mdf_file_id</name>
@@ -497,6 +501,13 @@
 				<base_relation>submatrices</base_relation>
 				<inverse_name>mea</inverse_name>
 			</relation_attribute>
+			<relation_attribute>
+				<name>paramset</name>
+				<ref_to>paramset</ref_to>
+				<min_occurs>0</min_occurs>
+				<max_occurs>Many</max_occurs>
+				<inverse_name>mea</inverse_name>
+			</relation_attribute>
 		</application_element>
 		<application_element>
 			<name>meq</name>
@@ -579,6 +590,82 @@
 				<base_relation>quantity</base_relation>
 				<inverse_name>meqs</inverse_name>
 			</relation_attribute>
+			<relation_attribute>
+				<name>paramset</name>
+				<ref_to>paramset</ref_to>
+				<min_occurs>0</min_occurs>
+				<max_occurs>Many</max_occurs>
+				<inverse_name>meq</inverse_name>
+			</relation_attribute>
+		</application_element>
+		<application_element>
+			<name>paramset</name>
+			<basetype>AoParameterSet</basetype>
+			<application_attribute>
+				<name>iid</name>
+				<base_attribute>id</base_attribute>
+			</application_attribute>
+			<application_attribute>
+				<name>iname</name>
+				<base_attribute>name</base_attribute>
+			</application_attribute>
+			<application_attribute>
+				<name>iversion</name>
+				<base_attribute>version</base_attribute>
+			</application_attribute>
+			<relation_attribute>
+				<name>params</name>
+				<ref_to>param</ref_to>
+				<base_relation>parameters</base_relation>
+				<inverse_name>paramset</inverse_name>
+			</relation_attribute>
+			<relation_attribute>
+				<name>mea</name>
+				<ref_to>mea</ref_to>
+				<min_occurs>0</min_occurs>
+				<max_occurs>1</max_occurs>
+				<inverse_name>paramset</inverse_name>
+			</relation_attribute>
+			<relation_attribute>
+				<name>meq</name>
+				<ref_to>meq</ref_to>
+				<min_occurs>0</min_occurs>
+				<max_occurs>1</max_occurs>
+				<inverse_name>paramset</inverse_name>
+			</relation_attribute>
+			<relation_attribute>
+				<name>sm</name>
+				<ref_to>sm</ref_to>
+				<min_occurs>0</min_occurs>
+				<max_occurs>1</max_occurs>
+				<inverse_name>paramset</inverse_name>
+			</relation_attribute>
+		</application_element>
+		<application_element>
+			<name>param</name>
+			<basetype>AoParameter</basetype>
+			<application_attribute>
+				<name>iid</name>
+				<base_attribute>id</base_attribute>
+			</application_attribute>
+			<application_attribute>
+				<name>iname</name>
+				<base_attribute>name</base_attribute>
+			</application_attribute>
+			<application_attribute>
+				<name>value</name>
+				<base_attribute>pvalue</base_attribute>
+			</application_attribute>
+			<application_attribute>
+				<name>datatype</name>
+				<base_attribute>parameter_datatype</base_attribute>
+			</application_attribute>
+			<relation_attribute>
+				<name>paramset</name>
+				<ref_to>paramset</ref_to>
+				<base_relation>parameter_set</base_relation>
+				<inverse_name>params</inverse_name>
+			</relation_attribute>
 		</application_element>
 		<application_element>
 			<name>sm</name>
@@ -633,6 +720,13 @@
 				<name>src_sim</name>
 				<datatype>DT_SHORT</datatype>
 			</application_attribute>
+			<relation_attribute>
+				<name>paramset</name>
+				<ref_to>paramset</ref_to>
+				<min_occurs>0</min_occurs>
+				<max_occurs>Many</max_occurs>
+				<inverse_name>sm</inverse_name>
+			</relation_attribute>
 			<relation_attribute>
 				<name>mea</name>
 				<ref_to>mea</ref_to>
