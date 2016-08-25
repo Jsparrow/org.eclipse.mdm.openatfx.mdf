@@ -80,6 +80,10 @@ public class AoSessionWriter {
 	boolean addMDF3FileAsResultAttachment; // default = false
 	// stop parsing after hd block.
 	boolean readOnlyHeader= false;
+	// skip empty channels
+	boolean skipEmptyChannels = false;
+	// skip channels with an unsupporter donversion formula
+	boolean skipUnsupportedFormula = false;
 
 	/**
 	 * Constructor.
@@ -135,8 +139,14 @@ public class AoSessionWriter {
 			if(props.containsKey("attach_source_files")){
 				addMDF3FileAsResultAttachment = Boolean.valueOf(props.getProperty("attach_source_files")); // default = false
 			}
-			if(props.containsKey("readOnlyHeader")){
-				readOnlyHeader = Boolean.valueOf(props.getProperty("readOnlyHeader"));
+			if(props.containsKey("read_only_header")){
+				readOnlyHeader = Boolean.valueOf(props.getProperty("read_only_header"));
+			}
+			if(props.containsKey("skip_empty_channels")) {
+				skipEmptyChannels = Boolean.valueOf(props.getProperty("skip_empty_channels"));
+			}
+			if(props.containsKey("skip_unsupported_formula")) {
+				skipUnsupportedFormula = Boolean.valueOf(props.getProperty("skip_unsupported_formula"));
 			}
 		}
 
@@ -272,7 +282,8 @@ public class AoSessionWriter {
 			CGBLOCK cgBlock = dgBlock.getNextCgBlock();
 
 			// skip channel groups having no channels (or optionally no values)
-			if (cgBlock != null) {
+			boolean skipNoValues = skipEmptyChannels && cgBlock.getNoOfRecords() < 1;
+			if (cgBlock != null && cgBlock.getNoOfChannels() > 0 && !skipNoValues) {
 
 				// create SubMatrix instance
 				ODSInsertStatement ins = new ODSInsertStatement(modelCache, "sm");
@@ -353,6 +364,13 @@ public class AoSessionWriter {
 
 			// sequence representation
 			CCBLOCK ccBlock = cnBlock.getCcBlock();
+			if(ccBlock != null && ccBlock.getFormulaIdent() == 10 && skipUnsupportedFormula) {
+				LOG.info("Channel '" + meqName + "' with unsupported formula (10 MCD2 Text Formular) skipped: " + ccBlock);
+				// jump to next channel
+				cnBlock = cnBlock.getNextCnBlock();
+				continue;
+			}
+
 			int seqRep = getSeqRep(ccBlock, meqName);
 			if (cnBlock.getNumberOfBits() == 1) { // bit will be stored as bytes
 				seqRep = 7;

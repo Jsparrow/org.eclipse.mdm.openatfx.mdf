@@ -132,8 +132,8 @@ public class AoSessionWriter {
 			if(props.containsKey("attach_source_files")){
 				addMDF3FileAsResultAttachment = Boolean.valueOf(props.getProperty("attach_source_files")); // default = false
 			}
-			if(props.containsKey("readOnlyHeader")){
-				readOnlyHeader = Boolean.valueOf(props.getProperty("readOnlyHeader"));
+			if(props.containsKey("read_only_header")){
+				readOnlyHeader = Boolean.valueOf(props.getProperty("read_only_header"));
 			}
 		}
 
