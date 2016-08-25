@@ -82,7 +82,7 @@ public class Test_NI_RealTypes {
 
 			InstanceElement ieMea = as.getElementByName("mea").getInstances("NI_RealTypes.mdf").nextOne();
 			assertEquals("NI_RealTypes.mdf", ODSHelper.getStringVal(ieMea.getValue("iname")));
-			assertEquals("Datensatz mit numerischen X/Y-, Waveform- und Textkan‰len in mehreren Kanalgruppen",
+			assertEquals("Datensatz mit numerischen X/Y-, Waveform- und Textkan√§len in mehreren Kanalgruppen",
 					ODSHelper.getStringVal(ieMea.getValue("desc")));
 			assertEquals("20150922182537", ODSHelper.getDateVal(ieMea.getValue("date_created")));
 			assertEquals("20150922182537", ODSHelper.getDateVal(ieMea.getValue("mea_begin")));
