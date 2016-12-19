@@ -14,7 +14,7 @@ import de.undercouch.gradle.tasks.download.Download
 
 description = 'OpenATFX MDF driver'
 group = 'org.eclipse.mdm'
-version = '1.1.0'
+version = '1.1.1'
 
 apply plugin: 'java'
 apply plugin: 'eclipse'
@@ -26,7 +26,7 @@ repositories {
 
 dependencies {
     // openATFX
-    compile fileTree(dir: 'build/openatfx-0.6.3/lib', include: '*.jar')
+    compile fileTree(dir: 'build/openatfx-0.6.4/lib', include: '*.jar')
 
     // testing
     testCompile 'junit:junit:4.12'
@@ -37,7 +37,7 @@ test {
 }
 
 task downloadOpenATFX(type: Download) {
-    src 'https://sourceforge.net/projects/openatfx/files/openatfx-0.6.3-jars.zip/download'
+    src 'https://sourceforge.net/projects/openatfx/files/openatfx-0.6.4-jars.zip/download'
     dest new File(buildDir, 'openatfx.zip')
     outputs.file dest
 }
@@ -45,7 +45,7 @@ task downloadOpenATFX(type: Download) {
 task unzipOpenATFX(dependsOn: downloadOpenATFX, type: Copy) {
     from zipTree(downloadOpenATFX.dest)
     into buildDir
-    outputs.dir new File(buildDir, 'openatfx-0.6.3')
+    outputs.dir new File(buildDir, 'openatfx-0.6.4')
 }
 
 compileJava.dependsOn unzipOpenATFX

@@ -1499,6 +1499,11 @@ public class AoSessionWriter {
 		int dt = cnBlock.getDataType();
 		int nb = (int) cnBlock.getBitCount();
 
+		// STRING
+		if (dt >= 6 && dt <= 9) {
+			return 1; // DT_STRING
+		}
+		
 		// 1 = parametric, linear
 		// 2 = rational
 		if (formula == 1 || formula == 2) {
