@@ -25,23 +25,23 @@ class ATBLOCK extends BLOCK {
 
 	public static String BLOCK_ID = "##AT";
 
-	long lnkAtNext;
+	private long lnkAtNext;
 
-	long lnkTxFilename;
+	private long lnkTxFilename;
 
-	long lnkTxMIMEtype;
+	private long lnkTxMIMEtype;
 
-	long lnkMdComment;
+	private long lnkMdComment;
 
-	int flags;
+	private int flags;
 
-	int creatorIndex;
+	private int creatorIndex;
 
-	byte[] md5CheckSum;
+	private byte[] md5CheckSum;
 
-	long origSize;
+	private long origSize;
 
-	long embeddedSize;
+	private long embeddedSize;
 
 
 	/**

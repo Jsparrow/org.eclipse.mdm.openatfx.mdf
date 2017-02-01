@@ -41,26 +41,6 @@ class CHBLOCK extends BLOCK {
 		super(sbc, pos);
 	}
 
-	/** Link section */
-
-	// // Link to next sibling CHBLOCK (can be NIL)
-	// // LINK
-	// private long lnkChNext;
-	//
-	// // Link to first child CHBLOCK (can be NIL, must be NIL for ch_type = 3 ("map list")).
-	// // LINK
-	// private long lnkChFirst;
-	//
-	// // Link to TXBLOCK with the name of the hierarchy level. Must be NIL for ch_type ≥ 4, must not be NIL for all
-	// other
-	// // types.
-	// // LINK
-	// private long lnkTxName;
-	//
-	// // Link to TXBLOCK or MDBLOCK with comment and other information for the hierarchy level (can be NIL)
-	// // LINK
-	// private long lnkMdComment;
-
 	/**
 	 * Reads a CHBLOCK from the channel starting at current channel position.
 	 *

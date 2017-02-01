@@ -32,6 +32,7 @@ import org.asam.ods.AoException;
 import org.asam.ods.ApplicationElement;
 import org.asam.ods.ApplicationRelation;
 import org.asam.ods.ApplicationStructure;
+import org.asam.ods.DataType;
 import org.asam.ods.ErrorCode;
 import org.asam.ods.InstanceElement;
 import org.asam.ods.InstanceElementIterator;
@@ -67,23 +68,23 @@ public class AoSessionWriter {
 
 	//Properties
 	// replace channel name characters '[' with '{' and ']' with '}'
-	boolean replaceSquareBrackets; // default = false
+	private boolean replaceSquareBrackets; // default = false
 	// whether to use the file name as AoMeasurement name, if false, property value of 'result_name' is used
-	boolean useFileNameAsResultName=true; // default = true
+	private boolean useFileNameAsResultName=true; // default = true
 	// the name of the created AoMeasurement (only used if use_file_name_as_result_name=false)
-	String resultName = "Messdaten"; // default = "Messdaten"
+	private String resultName = "Messdaten"; // default = "Messdaten"
 	// the name suffix of the created AoMeasurement, e.g. if suffix='_123' then 'test.mf4' will be converted to 'test_123.mf4'
-	String resultSuffix=""; // default = null
+	private String resultSuffix=""; // default = null
 	// the mimetype of the created AoMeasurement
-	String resultMimeType = "application/x-asam.aomeasurement.timeseries"; // default = "application/x-asam.aomeasurement.timeseries"
+	private String resultMimeType = "application/x-asam.aomeasurement.timeseries"; // default = "application/x-asam.aomeasurement.timeseries"
 	// whether to add a reference to the original file to the AoMeasurement instance
-	boolean addMDF3FileAsResultAttachment; // default = false
+	private boolean addMDF3FileAsResultAttachment; // default = false
 	// stop parsing after hd block.
-	boolean readOnlyHeader= false;
+	private boolean readOnlyHeader= false;
 	// skip empty channels
-	boolean skipEmptyChannels = false;
+	private boolean skipEmptyChannels = false;
 	// skip channels with an unsupporter donversion formula
-	boolean skipUnsupportedFormula = false;
+	private boolean skipUnsupportedFormula = false;
 
 	/**
 	 * Constructor.
@@ -384,9 +385,9 @@ public class AoSessionWriter {
 				ODSInsertStatement ins = new ODSInsertStatement(modelCache, "meq");
 				ins.setStringVal("iname", meqName);
 				ins.setStringVal("desc", cnBlock.getSignalDescription().trim());
-				boolean expandDataType = genParams != null && genParams.length > 0 && seqRep != 0
-						&& seqRep != 7;
-				ins.setEnumVal("dt", getDataType(expandDataType, cnBlock, ccBlock));
+				boolean expandDataType = genParams != null && genParams.length > 0 && seqRep != 0 && seqRep != 7;
+				DataType dt = DataType.from_int(getDataType(expandDataType, cnBlock, ccBlock));
+				ins.setEnumVal("dt", seqRep == 1 ? DataType.DT_DOUBLE.value() : dt.value());
 				if (ccBlock != null && ccBlock.isKnownPhysValue()) {
 					ins.setDoubleVal("min", ccBlock.getMinPhysValue());
 					ins.setDoubleVal("max", ccBlock.getMaxPhysValue());
@@ -432,12 +433,20 @@ public class AoSessionWriter {
 			ins.setShortVal("idp", idp);
 			// global flag
 			ins.setShortVal("glb", (short) 15);
-			// generation parameters
-			ins.setDoubleSeq("par", genParams);
-			// raw_datatype
-			int valueType = getValueType(cnBlock);
-			int rawDataType = getRawDataTypeForValueType(valueType, cnBlock);
-			ins.setEnumVal("rdt", rawDataType);
+			
+			// generation parameters or values (for implicit_constant ONLY)
+			if(seqRep == 1) {
+				// implicit constant
+				ins.setDoubleSeq("val", new double[] { genParams[0] });
+				ins.setEnumVal("rdt", DataType.DT_DOUBLE.value());
+			} else {
+				// any other sequence representation
+				ins.setDoubleSeq("par", genParams);
+				// raw_datatype
+				int valueType = getValueType(cnBlock);
+				int rawDataType = getRawDataTypeForValueType(valueType, cnBlock);
+				ins.setEnumVal("rdt", rawDataType);
+			}
 			// axistype
 			int axistype = cnBlock.getChannelType() == 0 ? 1 : 0;
 			ins.setEnumVal("axistype", axistype);
@@ -454,7 +463,7 @@ public class AoSessionWriter {
 			long iidLc = ins.execute();
 
 			// create 'AoExternalComponent' instance
-			if (cnBlock.getSignalDataType() != 7) {
+			if (cnBlock.getSignalDataType() != 7 && seqRep != 1 /* skip implicit_constant */) {
 				writeEc(modelCache, iidLc, idBlock, dgBlock, cgBlock, cnBlock);
 			}
 
@@ -825,6 +834,8 @@ public class AoSessionWriter {
 		// STRING
 		if (dt == 7) {
 			return 1; // DT_STRING
+		} else if(dt == 8) {
+			return 11; // DT_BYTESTR
 		}
 
 		// 0 = parametric, linear
@@ -832,12 +843,14 @@ public class AoSessionWriter {
 		// 7 = exponential function
 		// 8 = logarithmic function
 		else if (formula == 0 || formula == 1 || formula == 6 || formula == 7 || formula == 8) {
-			if (nb == 1) {
+			if(nb == 0 && dt == 0) {
+				return 8; // DT_LONGLONG
+			} else if (nb == 1) {
 				// 1 bit should be DT_BOOLEAN, but most of tools do not support this
 				return 5; // DT_BYTE
 			} else if (nb >= 2 && nb <= 32) {
 				return 3; // DT_FLOAT
-			} else if (nb >= 33 && nb == 64) {
+			} else if (nb >= 33 && nb <= 64) {
 				return 7; // DT_DOUBLE
 			}
 		}
@@ -908,7 +921,14 @@ public class AoSessionWriter {
 		int formula = ccBlock.getFormulaIdent();
 		// 'parametric, linear' => 'raw_linear_external'
 		if (formula == 0) {
-			return 8;
+			double[] genParams = ccBlock.getValuePairsForFormula();
+			if(genParams != null && genParams.length == 2 && Double.compare(genParams[1], 0) == 0) {
+				// this is a special case with a given offset and a scaling factor of '0'
+				// -> therefore sequence representation has to be implicit constant
+				return 1;
+			} else {
+				return 8;
+			}
 		}
 		// 'tabular with interpolation' => 'external_component'
 		else if (formula == 1) {
@@ -963,7 +983,13 @@ public class AoSessionWriter {
 
 		// 'parametric, linear'
 		if (formula == 0) {
-			return ccBlock.getValuePairsForFormula();
+			double[] genParams = ccBlock.getValuePairsForFormula();
+			if(Double.compare(genParams[1], 0D) == 0) {
+				// scaling factor is '0', reduce to offset (implicit_constant)
+				return new double[] { genParams[0] };
+			} else {
+				return genParams;
+			}
 		}
 
 		// 'polynomial function'

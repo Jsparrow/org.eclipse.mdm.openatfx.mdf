@@ -97,27 +97,27 @@ class EVBLOCK extends BLOCK {
 	/**
 	 *  Number of Scope Links
 	 */
-	long scopeCount;
+	private long scopeCount;
 
 	/**
 	 *  Number of Attachments
 	 */
-	int attachmentCount;
+	private int attachmentCount;
 
 	/**
 	 *  Number of FH-Block in list, specifying the tool responsible for this event.
 	 */
-	int creatorIndex;
+	private int creatorIndex;
 
 	/**
 	 *  Base for sync value.
 	 */
-	long syncBaseValue;
+	private long syncBaseValue;
 
 	/**
 	 *  Factor for sync value.
 	 */
-	double syncFactor;
+	private double syncFactor;
 
 	/**
 	 * Constructor.

@@ -566,6 +566,10 @@
 				<name>src_sim</name>
 				<datatype>DT_SHORT</datatype>
 			</application_attribute>
+			<application_attribute>
+				<name>Device</name>
+				<datatype>DT_STRING</datatype>
+			</application_attribute>
 			<relation_attribute>
 				<name>mea</name>
 				<ref_to>mea</ref_to>

@@ -12,7 +12,6 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.nio.channels.FileChannel;
 import java.nio.channels.SeekableByteChannel;
 
 
@@ -47,14 +46,6 @@ abstract class Mdf3Util {
 		}
 
 		return new String(b, 0, strLength, CHARSET_ISO8859);
-	}
-
-	public static double readReal(FileChannel channel) throws IOException {
-		ByteBuffer bb = ByteBuffer.allocate(8);
-		bb.order(ByteOrder.LITTLE_ENDIAN);
-		channel.read(bb);
-		bb.rewind();
-		return bb.getDouble();
 	}
 
 	public static double readReal(ByteBuffer bb) throws IOException {

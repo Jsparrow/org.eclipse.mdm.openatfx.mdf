@@ -116,7 +116,7 @@ class PreviewHelper {
 						smIids[reductionNo], iidMeq, null, "application/x-asam.aolocalcolumn.mdf_preview." + nameExtensions[i]);
 
 				//create AoExternalComponents
-				writer.writeEc(cache, iidLc, idBlock, dgBlock, cgBlock, cnBlock, srBlocks[reductionNo].getLnkRdData(), i+1);
+				writer.writeEc(cache, iidLc, idBlock, dgBlock, cgBlock, cnBlock, ccBlock, srBlocks[reductionNo].getLnkRdData(), i+1);
 			}
 		}
 
