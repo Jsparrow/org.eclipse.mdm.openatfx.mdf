@@ -309,6 +309,29 @@ class CCBLOCK extends BLOCK {
 		}
 		return null;
 	}
+	
+	/**
+	 * Tests whether there are referenced CC blocks (scale conversion).
+	 * 
+	 * @return  true if at least one CC block is referenced
+	 * @throws IOException  thrown if unable to read file
+	 */
+	public boolean hasCCRefs() throws IOException {
+		if(lnkCcRef.length < 1) {
+			return false;
+		}
+		
+		for (int i = 0; i < lnkCcRef.length; i++) {
+			if (lnkCcRef[i] > 0) {
+				String blockType = getBlockType(sbc, lnkCcRef[i]);
+				if (blockType.equals(CCBLOCK.BLOCK_ID)) {
+					return true;
+				}
+			}
+		}
+		
+		return false;
+	}
 
 	/**
 	 * {@inheritDoc}

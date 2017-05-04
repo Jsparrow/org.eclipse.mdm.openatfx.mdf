@@ -98,7 +98,7 @@ public class AoFactoryImplTest {
 		try {
 			URL url = AoFactoryImplTest.class.getResource("/org/eclipse/mdm/openatfx/mdf/mdf4/simple/ETAS_SimpleSorted.mf4");
 			AoSession aoSession = aoFactory.newSession("FILENAME=" + new File(url.getFile()));
-			assertEquals("asam31", aoSession.getType());
+			assertEquals("asam32", aoSession.getType());
 			aoSession.close();
 		} catch (AoException e) {
 			fail(e.reason);
@@ -121,7 +121,7 @@ public class AoFactoryImplTest {
 			auth[0].value.u = new TS_Union();
 			auth[0].value.u.stringVal(url.getPath());
 			AoSession aoSession = aoFactory.newSessionNameValue(auth);
-			assertEquals("asam31", aoSession.getType());
+			assertEquals("asam32", aoSession.getType());
 		} catch (AoException e) {
 			fail(e.reason);
 		}

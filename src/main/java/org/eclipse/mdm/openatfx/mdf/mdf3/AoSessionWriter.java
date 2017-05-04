@@ -85,6 +85,9 @@ public class AoSessionWriter {
 	private boolean skipEmptyChannels = false;
 	// skip channels with an unsupporter donversion formula
 	private boolean skipUnsupportedFormula = false;
+	// skip channels with DT_BYTESTR
+	// remove this once it is save to import channels with byte stream data
+	@Deprecated private boolean skipByteStreamChannels = false;
 
 	/**
 	 * Constructor.
@@ -148,6 +151,9 @@ public class AoSessionWriter {
 			}
 			if(props.containsKey("skip_unsupported_formula")) {
 				skipUnsupportedFormula = Boolean.valueOf(props.getProperty("skip_unsupported_formula"));
+			}
+			if(props.containsKey("skip_byte_stream_channels")) {
+				skipByteStreamChannels = Boolean.valueOf(props.getProperty("skip_byte_stream_channels"));
 			}
 		}
 
@@ -368,6 +374,15 @@ public class AoSessionWriter {
 			if(ccBlock != null && ccBlock.getFormulaIdent() == 10 && skipUnsupportedFormula) {
 				LOG.info("Channel '" + meqName + "' with unsupported formula (10 MCD2 Text Formular) skipped: " + ccBlock);
 				// jump to next channel
+				cnBlock = cnBlock.getNextCnBlock();
+				continue;
+			} else if(skipByteStreamChannels && 8 == cnBlock.getSignalDataType()) {
+				// remove this block once it is save to import channels with byte stream data
+				LOG.info("Channel '" + meqName + "' with byte stream data skipped: " + ccBlock);
+				cnBlock = cnBlock.getNextCnBlock();
+				continue;
+			} else if(8 == cnBlock.getSignalDataType() && cnBlock.getLnkCdBlock() != 0) {
+				LOG.info("Channel '" + meqName + "' with composed byte stream data skipped: " + ccBlock);
 				cnBlock = cnBlock.getNextCnBlock();
 				continue;
 			}

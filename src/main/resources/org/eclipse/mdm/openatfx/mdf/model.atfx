@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <atfx_file version="atfx_file: V1.1.0" xmlns="http://www.asam.net/ODS/5.1/Schema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-	<base_model_version>asam31</base_model_version>
+	<base_model_version>asam32</base_model_version>
 	<application_model>
 		<application_enumeration>
 			<name>axistype</name>
@@ -1035,7 +1035,7 @@
 		<env>
 			<iid>1</iid>
 			<iname>Environment</iname>
-			<BaseModelVersion>asam31</BaseModelVersion>
+			<BaseModelVersion>asam32</BaseModelVersion>
 		</env>
 	</instance_data>
 

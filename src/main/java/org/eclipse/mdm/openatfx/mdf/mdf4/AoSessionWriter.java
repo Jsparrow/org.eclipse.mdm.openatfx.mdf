@@ -76,6 +76,10 @@ public class AoSessionWriter {
 	private String resultMimeType = "application/x-asam.aomeasurement.timeseries"; // default = "application/x-asam.aomeasurement.timeseries"
 	// whether to add a reference to the original file to the AoMeasurement instance
 	private boolean addMDF3FileAsResultAttachment; // default = false
+	private boolean skipScaleConversionChannels = false;
+	// skip channels with DT_BYTESTR
+	// remove this once it is save to import channels with byte stream data
+	@Deprecated private boolean skipByteStreamChannels = false;
 
 	private boolean readOnlyHeader= false;
 	private Path customRatConfPath;
@@ -137,6 +141,12 @@ public class AoSessionWriter {
 				}
 				if(props.containsKey("read_only_header")){
 					readOnlyHeader = Boolean.valueOf(props.getProperty("read_only_header"));
+				}
+				if(props.containsKey("skip_scale_conversion_channels")) {
+					skipScaleConversionChannels = Boolean.valueOf(props.getProperty("skip_scale_conversion_channels"));
+				}
+				if(props.containsKey("skip_byte_stream_channels")) {
+					skipByteStreamChannels = Boolean.valueOf(props.getProperty("skip_byte_stream_channels"));
 				}
 			}
 
@@ -565,9 +575,26 @@ public class AoSessionWriter {
 				}
 			}
 
+			CCBLOCK ccBlock = cnBlock.getCcConversionBlock();
+			
+			// check whether channel has to be or shall be skipped
+			if(skipScaleConversionChannels && ccBlock != null && ccBlock.hasCCRefs()) {
+				LOG.info("Channel '" + meqName + "' with scale conversion rules in CCBlocks skipped: " + ccBlock);
+				cnBlock = cnBlock.getCnNextBlock();
+				continue;
+			} else if(skipByteStreamChannels && 10 == cnBlock.getDataType()) {
+				// remove this block once it is save to import channels with byte stream data
+				LOG.info("Channel '" + meqName + "' with byte stream data skipped: " + ccBlock);
+				cnBlock = cnBlock.getCnNextBlock();
+				continue;
+			} else if(10 == cnBlock.getDataType() && cnBlock.getLnkComposition() != 0) {
+				LOG.info("Channel '" + meqName + "' with composed byte stream data skipped: " + ccBlock);
+				cnBlock = cnBlock.getCnNextBlock();
+				continue;
+			}
+
 			// create instance of 'AoMeasurementQuantity' (if not yet existing)
 			Long iidMeq = meqInstances.get(meqName);
-			CCBLOCK ccBlock = cnBlock.getCcConversionBlock();
 			if (iidMeq == null) {
 				iidMeq = createMeasurementQuantity(modelCache, cnBlock, ccBlock, meqName, iidMea, null, untInstances);
 				meqInstances.put(meqName, iidMeq);
@@ -767,7 +794,11 @@ public class AoSessionWriter {
 	private void insertVLSDValues(ODSInsertStatement ins, DGBLOCK dgBlock, CGBLOCK cgBlock, CNBLOCK cnBlock)
 			throws IOException {
 		BLOCK blk = cnBlock.getDataBlock();
-		if (blk == null || !(blk instanceof SDBLOCK)) {
+		if (blk == null) {
+			// assume empty SDBLOCK
+			ins.setNameValueUnit(ODSHelper.createStringSeqNVU("val", new String[0]));
+			return;
+		} else if (!(blk instanceof SDBLOCK)) {
 			throw new RuntimeException("Found VLSD Block with no valid signal data.");
 		}
 		SDBLOCK sdBlock = (SDBLOCK) blk;
