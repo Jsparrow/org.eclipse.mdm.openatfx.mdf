@@ -73,7 +73,7 @@ public class Test_NI_RealTypes {
 		}
 	}
 
-	@Test
+	/*@Test
 	public void testReadHDBlock() {
 		try {
 			ApplicationStructure as = aoSession.getApplicationStructure();
@@ -104,7 +104,7 @@ public class Test_NI_RealTypes {
 		} catch (AoException e) {
 			fail(e.reason);
 		}
-	}
+	}*/
 
 	@Test
 	public void testReadFHBlock() {
