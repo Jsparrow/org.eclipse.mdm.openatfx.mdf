@@ -13,12 +13,13 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.channels.SeekableByteChannel;
 
-
 /**
  * <p>
- * Program block: Contains proprietary data of the application generating the MDF file
+ * Program block: Contains proprietary data of the application generating the
+ * MDF file
  * </p>
- * The PRBLOCK contains non standardized data to exchange between the acquisition program and the evaluation program.
+ * The PRBLOCK contains non standardized data to exchange between the
+ * acquisition program and the evaluation program.
  *
  * @author Christian Rechner
  */
@@ -32,8 +33,10 @@ class PRBLOCK extends BLOCK {
 	/**
 	 * Constructor.
 	 *
-	 * @param sbc The byte channel pointing to the MDF file.
-	 * @param pos The position of the block within the MDF file.
+	 * @param sbc
+	 *            The byte channel pointing to the MDF file.
+	 * @param pos
+	 *            The position of the block within the MDF file.
 	 */
 	private PRBLOCK(SeekableByteChannel sbc, long pos) {
 		super(sbc, pos);
@@ -58,10 +61,13 @@ class PRBLOCK extends BLOCK {
 	/**
 	 * Reads a PRBLOCK from the channel starting at pos
 	 *
-	 * @param sbc The channel to read from.
-	 * @param pos The position to start reading.
+	 * @param sbc
+	 *            The channel to read from.
+	 * @param pos
+	 *            The position to start reading.
 	 * @return The block data.
-	 * @throws IOException The exception.
+	 * @throws IOException
+	 *             The exception.
 	 */
 	public static PRBLOCK read(SeekableByteChannel sbc, long pos) throws IOException {
 		PRBLOCK block = new PRBLOCK(sbc, pos);

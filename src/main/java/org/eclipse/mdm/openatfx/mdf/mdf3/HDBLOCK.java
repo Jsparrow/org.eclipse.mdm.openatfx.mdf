@@ -14,13 +14,12 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.channels.SeekableByteChannel;
 
-
 /**
  * <p>
  * Header block: General description of the measurement file
  * </p>
- * The HDBLOCK always begins at file position 64. It contains general information about the contents of the measured
- * data file.
+ * The HDBLOCK always begins at file position 64. It contains general
+ * information about the contents of the measured data file.
  *
  * @author Christian Rechner
  */
@@ -31,7 +30,8 @@ class HDBLOCK extends BLOCK {
 	// LINK 1 Pointer to the first file group block (DGBLOCK)
 	private long lnkFirstFileGroup;
 
-	// LINK 1 Pointer to the measurement file comment text (TXBLOCK) (NIL allowed)
+	// LINK 1 Pointer to the measurement file comment text (TXBLOCK) (NIL
+	// allowed)
 	private long lnkFileCommentTxt;
 
 	// LINK 1 Pointer to program block (PRBLOCK) (NIL allowed)
@@ -58,13 +58,17 @@ class HDBLOCK extends BLOCK {
 	// CHAR 32 Measurement object e. g. the vehicle identification
 	private String meaObject;
 
-	// UINT64 1 Time stamp at which recording was started in nanoseconds. Elapsed time since 00:00:00 01.01.1970 (local
-	// time) (local time = UTC time + UTC time offset) Note: the local time does not contain a daylight saving time
+	// UINT64 1 Time stamp at which recording was started in nanoseconds.
+	// Elapsed time since 00:00:00 01.01.1970 (local
+	// time) (local time = UTC time + UTC time offset) Note: the local time does
+	// not contain a daylight saving time
 	// (DST) offset! Valid since version 3.20. Default value: 0 See remark below
 	private long timestamp;
 
-	// INT16 1 UTC time offset in hours (= GMT time zone) For example 1 means GMT+1 time zone = Central European Time
-	// (CET). The value must be in range [-12, 12], i.e. it can be negative! Valid since version 3.20. Default value: 0
+	// INT16 1 UTC time offset in hours (= GMT time zone) For example 1 means
+	// GMT+1 time zone = Central European Time
+	// (CET). The value must be in range [-12, 12], i.e. it can be negative!
+	// Valid since version 3.20. Default value: 0
 	// (= GMT time)
 	private int utcTimeOffsetHours;
 
@@ -74,15 +78,18 @@ class HDBLOCK extends BLOCK {
 	// 16 = external absolute synchronized time
 	private int timeQualityClass;
 
-	// CHAR 32 Timer identification (time source), e.g. "Local PC Reference Time" or "GPS Reference Time". Valid since
+	// CHAR 32 Timer identification (time source), e.g. "Local PC Reference
+	// Time" or "GPS Reference Time". Valid since
 	// version 3.20. Default value: empty string
 	private String timerIdent;
 
 	/**
 	 * Constructor.
 	 *
-	 * @param sbc The byte channel pointing to the MDF file.
-	 * @param pos The position of the block within the MDF file.
+	 * @param sbc
+	 *            The byte channel pointing to the MDF file.
+	 * @param pos
+	 *            The position of the block within the MDF file.
 	 */
 	private HDBLOCK(SeekableByteChannel sbc, long pos) {
 		super(sbc, pos);
@@ -234,9 +241,11 @@ class HDBLOCK extends BLOCK {
 	/**
 	 * Reads a HDBLOCK from the channel starting at current channel position.
 	 *
-	 * @param sbc The channel to read from.
+	 * @param sbc
+	 *            The channel to read from.
 	 * @return The block data.
-	 * @throws IOException The exception.
+	 * @throws IOException
+	 *             The exception.
 	 */
 	public static HDBLOCK read(SeekableByteChannel sbc) throws IOException {
 		HDBLOCK block = new HDBLOCK(sbc, 64);
@@ -267,7 +276,8 @@ class HDBLOCK extends BLOCK {
 		// LINK 1 Pointer to the first file group block (DGBLOCK)
 		block.setLnkFirstFileGroup(Mdf3Util.readLink(bb));
 
-		// LINK 1 Pointer to the measurement file comment text (TXBLOCK) (NIL allowed)
+		// LINK 1 Pointer to the measurement file comment text (TXBLOCK) (NIL
+		// allowed)
 		block.setLnkFileCommentTxt(Mdf3Util.readLink(bb));
 
 		// LINK 1 Pointer to program block (PRBLOCK) (NIL allowed)
@@ -276,7 +286,8 @@ class HDBLOCK extends BLOCK {
 		// UINT16 1 Number of data groups
 		block.setNumberOfDataGroups(Mdf3Util.readUInt16(bb));
 
-		// CHAR 10 Date at which the recording was started in "DD:MM:YYYY" format
+		// CHAR 10 Date at which the recording was started in "DD:MM:YYYY"
+		// format
 		block.setDateStarted(Mdf3Util.readChars(bb, 10));
 
 		// CHAR 8 Time at which the recording was started in "HH:MM:SS" format

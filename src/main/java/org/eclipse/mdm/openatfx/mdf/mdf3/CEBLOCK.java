@@ -13,13 +13,12 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.channels.SeekableByteChannel;
 
-
 /**
  * <p>
  * The Channel Extension Block CEBLOCK
  * </p>
- * The CEBLOCK serves to specify source specific properties of a channel, e.g. name of the ECU or name and sender of the
- * CAN message
+ * The CEBLOCK serves to specify source specific properties of a channel, e.g.
+ * name of the ECU or name and sender of the CAN message
  *
  * @author Christian Rechner
  */
@@ -38,8 +37,10 @@ class CEBLOCK extends BLOCK {
 	/**
 	 * Constructor.
 	 *
-	 * @param sbc The byte channel pointing to the MDF file.
-	 * @param pos The position of the block within the MDF file.
+	 * @param sbc
+	 *            The byte channel pointing to the MDF file.
+	 * @param pos
+	 *            The position of the block within the MDF file.
 	 */
 	private CEBLOCK(SeekableByteChannel sbc, long pos) {
 		super(sbc, pos);
@@ -81,10 +82,13 @@ class CEBLOCK extends BLOCK {
 	/**
 	 * Reads a CEBLOCK from the channel starting at pos
 	 *
-	 * @param sbc The channel to read from.
-	 * @param pos The position to start reading.
+	 * @param sbc
+	 *            The channel to read from.
+	 * @param pos
+	 *            The position to start reading.
 	 * @return The block data.
-	 * @throws IOException The exception.
+	 * @throws IOException
+	 *             The exception.
 	 */
 	public static CEBLOCK read(SeekableByteChannel sbc, long pos) throws IOException {
 		CEBLOCK block = new CEBLOCK(sbc, pos);

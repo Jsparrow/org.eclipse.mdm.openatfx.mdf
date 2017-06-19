@@ -14,13 +14,12 @@ import java.nio.ByteOrder;
 import java.nio.channels.SeekableByteChannel;
 import java.util.Arrays;
 
-
 /**
  * <p>
  * THE CHANNEL BLOCK <code>CNBLOCK</code>
  * </p>
- * The CNBLOCK describes a channel, i.e. it contains information about the recorded signal and how its signal values are
- * stored in the MDF file.
+ * The CNBLOCK describes a channel, i.e. it contains information about the
+ * recorded signal and how its signal values are stored in the MDF file.
  *
  * @author Christian Rechner
  */
@@ -34,7 +33,8 @@ class CNBLOCK extends BLOCK {
 	// LINK
 	private long lnkCnNext;
 
-	// Composition of channels: Pointer to channel array block (CABLOCK) or channel block (CNBLOCK) (can be NIL).
+	// Composition of channels: Pointer to channel array block (CABLOCK) or
+	// channel block (CNBLOCK) (can be NIL).
 	// LINK
 	private long lnkComposition;
 
@@ -43,12 +43,15 @@ class CNBLOCK extends BLOCK {
 	private long lnkTxName;
 
 	// Pointer to channel source (SIBLOCK) (can be NIL)
-	// Must be NIL for component channels (members of a structure or array elements) because they all must have the same
-	// source and thus simply use the SIBLOCK of their parent CNBLOCK (direct child of CGBLOCK).
+	// Must be NIL for component channels (members of a structure or array
+	// elements) because they all must have the same
+	// source and thus simply use the SIBLOCK of their parent CNBLOCK (direct
+	// child of CGBLOCK).
 	// LINK
 	private long lnkSiSource;
 
-	// Pointer to the conversion formula (CCBLOCK) (can be NIL, must be NIL for complex channel data types, i.e. for
+	// Pointer to the conversion formula (CCBLOCK) (can be NIL, must be NIL for
+	// complex channel data types, i.e. for
 	// cn_data_type ≥ 10).
 	// LINK
 	private long lnkCcConversion;
@@ -57,29 +60,38 @@ class CNBLOCK extends BLOCK {
 	// LINK
 	private long lnkData;
 
-	// Pointer to TXBLOCK/MDBLOCK with designation for physical unit of signal data (after conversion) or (only for
-	// channel data types "MIME sample" and "MIME stream") to MIME context-type text. (can be NIL).
+	// Pointer to TXBLOCK/MDBLOCK with designation for physical unit of signal
+	// data (after conversion) or (only for
+	// channel data types "MIME sample" and "MIME stream") to MIME context-type
+	// text. (can be NIL).
 	// LINK
 	private long lnkMdUnit;
 
-	// Pointer to TXBLOCK/MDBLOCK with comment and additional information about the channel. (can be NIL)
+	// Pointer to TXBLOCK/MDBLOCK with comment and additional information about
+	// the channel. (can be NIL)
 	// LINK
 	private long lnkMdComment;
 
-	// List of attachments for this channel (references to ATBLOCKs in global linked list of ATBLOCKs).
-	// The length of the list is given by cn_attachment_count. It can be empty (cn_attachment_count = 0), i.e. there are
+	// List of attachments for this channel (references to ATBLOCKs in global
+	// linked list of ATBLOCKs).
+	// The length of the list is given by cn_attachment_count. It can be empty
+	// (cn_attachment_count = 0), i.e. there are
 	// no attachments for this channel.
 	// LINK
 	private long[] lnkAtReference;
 
 	// Only present if "default X" flag (bit 12) is set.
 	// Reference to channel to be preferably used as X axis.
-	// The reference is a link triple with pointer to parent DGBLOCK, parent CGBLOCK and CNBLOCK for the channel (none
+	// The reference is a link triple with pointer to parent DGBLOCK, parent
+	// CGBLOCK and CNBLOCK for the channel (none
 	// of them must be NIL).
-	// The referenced channel does not need to have the same raster nor monotonously increasing values. It can be a
-	// master channel, e.g. in case several master channels are present. In case of different rasters, visualization may
+	// The referenced channel does not need to have the same raster nor
+	// monotonously increasing values. It can be a
+	// master channel, e.g. in case several master channels are present. In case
+	// of different rasters, visualization may
 	// depend on the interpolation method used by the tool.
-	// In case no default X channel is specified, the tool is free to choose the X axis; usually a master channels would
+	// In case no default X channel is specified, the tool is free to choose the
+	// X axis; usually a master channels would
 	// be used.
 	// LINK
 	private long[] lnkDefaultX;
@@ -88,7 +100,8 @@ class CNBLOCK extends BLOCK {
 
 	// Channel type
 	// 0 = fixed length data channel channel value is contained in record.
-	// 1 = variable length data channel also denoted as "variable length signal data" (VLSD) channel
+	// 1 = variable length data channel also denoted as "variable length signal
+	// data" (VLSD) channel
 	// 2 = master channel for all signals of this group
 	// 3 = virtual master channel
 	// 4 = synchronization channel
@@ -113,26 +126,35 @@ class CNBLOCK extends BLOCK {
 	// 3 = signed integer (two’s complement) (BE Byte order)
 	// 4 = IEEE 754 floating-point format (LE Byte order)
 	// 5 = IEEE 754 floating-point format (BE Byte order)
-	// 6 = String (SBC, standard ASCII encoded (ISO-8859-1 Latin), NULL terminated)
+	// 6 = String (SBC, standard ASCII encoded (ISO-8859-1 Latin), NULL
+	// terminated)
 	// 7 = String (UTF-8 encoded, NULL terminated)
 	// 8 = String (UTF-16 encoded LE Byte order, NULL terminated)
 	// 9 = String (UTF-16 encoded BE Byte order, NULL terminated)
 	// 10 = Byte Array with unknown content (e.g. structure)
-	// 11 = MIME sample (sample is Byte Array with MIME content-type specified in cn_md_unit)
-	// 12 = MIME stream (all samples of channel represent a stream with MIME content-type specified in cn_md_unit)
-	// 13 = CANopen date (Based on 7 Byte CANopen Date data structure, see Table 36)
-	// 14 = CANopen time (Based on 6 Byte CANopen Time data structure, see Table 37)
+	// 11 = MIME sample (sample is Byte Array with MIME content-type specified
+	// in cn_md_unit)
+	// 12 = MIME stream (all samples of channel represent a stream with MIME
+	// content-type specified in cn_md_unit)
+	// 13 = CANopen date (Based on 7 Byte CANopen Date data structure, see Table
+	// 36)
+	// 14 = CANopen time (Based on 6 Byte CANopen Time data structure, see Table
+	// 37)
 	// UINT8
 	private byte dataType;
 
-	// Bit offset (0-7): first bit (=LSB) of signal value after Byte offset has been applied.
-	// If zero, the signal value is 1-Byte aligned. A value different to zero is only allowed for Integer data types
-	// (cn_data_type ≤ 3) and if the Integer signal value fits into 8 contiguous Bytes (cn_bit_count + cn_bit_offset ≤
+	// Bit offset (0-7): first bit (=LSB) of signal value after Byte offset has
+	// been applied.
+	// If zero, the signal value is 1-Byte aligned. A value different to zero is
+	// only allowed for Integer data types
+	// (cn_data_type ≤ 3) and if the Integer signal value fits into 8
+	// contiguous Bytes (cn_bit_count + cn_bit_offset ≤
 	// 64). For all other cases, cn_bit_offset must be zero.
 	// UINT8
 	private byte bitOffset;
 
-	// Offset to first Byte in the data record that contains bits of the signal value. The offset is applied to the
+	// Offset to first Byte in the data record that contains bits of the signal
+	// value. The offset is applied to the
 	// plain record data, i.e. skipping the record ID.
 	// UINT32
 	private long byteOffset;
@@ -158,19 +180,23 @@ class CNBLOCK extends BLOCK {
 	private long flags;
 
 	// Position of invalidation bit.
-	// The invalidation bit can be used to specify if the signal value in the current record is valid or not.
-	// Note: the invalidation bit is optional and can only be used if the "invalidation bit valid" flag (bit 1) is set.
+	// The invalidation bit can be used to specify if the signal value in the
+	// current record is valid or not.
+	// Note: the invalidation bit is optional and can only be used if the
+	// "invalidation bit valid" flag (bit 1) is set.
 	// UINT32
 	private long invalBitPos;
 
 	// Precision for display of floating point values.
 	// 0xFF means unrestricted precision (infinite).
-	// Any other value specifies the number of decimal places to use for display of floating point values.
+	// Any other value specifies the number of decimal places to use for display
+	// of floating point values.
 	// Only valid if "precision valid" flag (bit 2) is set
 	// UINT8
 	private byte precision;
 
-	// Length N of cn_at_reference list, i.e. number of attachments for this channel. Can be zero.
+	// Length N of cn_at_reference list, i.e. number of attachments for this
+	// channel. Can be zero.
 	// UINT16
 	private int attachmentCount;
 
@@ -184,33 +210,41 @@ class CNBLOCK extends BLOCK {
 	// REAL
 	private double valRangeMax;
 
-	// Lower limit for this signal (physical value for numeric conversion rule, otherwise raw value)
+	// Lower limit for this signal (physical value for numeric conversion rule,
+	// otherwise raw value)
 	// Only valid if "limit range valid" flag (bit 4) is set.
 	// REAL
 	private double limitMin;
 
-	// Upper limit for this signal (physical value for numeric conversion rule, otherwise raw value)
+	// Upper limit for this signal (physical value for numeric conversion rule,
+	// otherwise raw value)
 	// Only valid if "limit range valid" flag (bit 4) is set.
 	// REAL
 	private double limitMax;
 
-	// Lower extended limit for this signal (physical value for numeric conversion rule, otherwise raw value)
+	// Lower extended limit for this signal (physical value for numeric
+	// conversion rule, otherwise raw value)
 	// Only valid if "extended limit range valid" flag (bit 5) is set.
-	// If cn_limit_min is valid, cn_limit_min must be larger or equal to cn_limit_ext_min.
+	// If cn_limit_min is valid, cn_limit_min must be larger or equal to
+	// cn_limit_ext_min.
 	// REAL
 	private double limitExtMin;
 
-	// Upper extended limit for this signal (physical value for numeric conversion rule, otherwise raw value)
+	// Upper extended limit for this signal (physical value for numeric
+	// conversion rule, otherwise raw value)
 	// Only valid if "extended limit range valid" flag (bit 5) is set.
-	// If cn_limit_max is valid, cn_limit_max must be less or equal to cn_limit_ext_max.
+	// If cn_limit_max is valid, cn_limit_max must be less or equal to
+	// cn_limit_ext_max.
 	// REAL
 	private double limitExtMax;
 
 	/**
 	 * Constructor.
 	 *
-	 * @param sbc The byte channel pointing to the MDF file.
-	 * @param pos The position of the block within the MDF file.
+	 * @param sbc
+	 *            The byte channel pointing to the MDF file.
+	 * @param pos
+	 *            The position of the block within the MDF file.
 	 */
 	private CNBLOCK(SeekableByteChannel sbc, long pos) {
 		super(sbc, pos);
@@ -284,8 +318,8 @@ class CNBLOCK extends BLOCK {
 		return flags;
 	}
 
-	public boolean isValueRangeValid(){ //3rd bit of the flags
-		return (flags & (byte)0x8)!=0;
+	public boolean isValueRangeValid() { // 3rd bit of the flags
+		return (flags & (byte) 0x8) != 0;
 	}
 
 	public long getInvalBitPos() {
@@ -529,10 +563,13 @@ class CNBLOCK extends BLOCK {
 	/**
 	 * Reads a CNBLOCK from the channel starting at current channel position.
 	 *
-	 * @param channel The channel to read from.
-	 * @param pos The position within the channel.
+	 * @param channel
+	 *            The channel to read from.
+	 * @param pos
+	 *            The position within the channel.
 	 * @return The block data.
-	 * @throws IOException The exception.
+	 * @throws IOException
+	 *             The exception.
 	 */
 	public static CNBLOCK read(SeekableByteChannel channel, long pos) throws IOException {
 		CNBLOCK block = new CNBLOCK(channel, pos);
@@ -586,7 +623,8 @@ class CNBLOCK extends BLOCK {
 		// UINT8: Bit offset (0-7)
 		block.setBitOffset(MDF4Util.readUInt8(bb));
 
-		// UINT32: Offset to first Byte in the data record that contains bits of the signal value.
+		// UINT32: Offset to first Byte in the data record that contains bits of
+		// the signal value.
 		block.setByteOffset(MDF4Util.readUInt32(bb));
 
 		// UINT32: Number of bits for signal value in record.
@@ -604,7 +642,8 @@ class CNBLOCK extends BLOCK {
 		// BYTE: Reserved
 		bb.get();
 
-		// UINT16: Length N of cn_at_reference list, i.e. number of attachments for this channel. Can be zero.
+		// UINT16: Length N of cn_at_reference list, i.e. number of attachments
+		// for this channel. Can be zero.
 		block.setAttachmentCount(MDF4Util.readUInt16(bb));
 
 		// REAL: Minimum signal value that occurred for this signal (raw value)
@@ -613,16 +652,20 @@ class CNBLOCK extends BLOCK {
 		// REAL: Maximum signal value that occurred for this signal (raw value)
 		block.setValRangeMax(MDF4Util.readReal(bb));
 
-		// REAL: Lower limit for this signal (physical value for numeric conversion rule, otherwise raw value)
+		// REAL: Lower limit for this signal (physical value for numeric
+		// conversion rule, otherwise raw value)
 		block.setLimitMin(MDF4Util.readReal(bb));
 
-		// REAL: Upper limit for this signal (physical value for numeric conversion rule, otherwise raw value)
+		// REAL: Upper limit for this signal (physical value for numeric
+		// conversion rule, otherwise raw value)
 		block.setLimitMax(MDF4Util.readReal(bb));
 
-		// REAL: Lower extended limit for this signal (physical value for numeric conversion rule, otherwise raw value)
+		// REAL: Lower extended limit for this signal (physical value for
+		// numeric conversion rule, otherwise raw value)
 		block.setLimitExtMin(MDF4Util.readReal(bb));
 
-		// REAL: Upper extended limit for this signal (physical value for numeric conversion rule, otherwise raw value)
+		// REAL: Upper extended limit for this signal (physical value for
+		// numeric conversion rule, otherwise raw value)
 		block.setLimitExtMax(MDF4Util.readReal(bb));
 
 		// extract links after reading data (then we know how many attachments)

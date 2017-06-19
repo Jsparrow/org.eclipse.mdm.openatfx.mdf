@@ -15,12 +15,11 @@ import java.util.Properties;
 import org.apache.log4j.BasicConfigurator;
 import org.omg.CORBA.ORB;
 
-
 public class ConvertMain {
 
 	public static void main(String[] args) {
-		String filename ="C:\\Users\\EU2IYD9\\Documents\\MDF-Standard\\Testdaten_EA_MDF\\AU491out.mf4";
-		if(args.length>=1){
+		String filename = "C:\\Users\\EU2IYD9\\Documents\\MDF-Standard\\Testdaten_EA_MDF\\AU491out.mf4";
+		if (args.length >= 1) {
 			filename = args[0];
 		}
 		try {
@@ -31,7 +30,7 @@ public class ConvertMain {
 			MDFConverter converter = new MDFConverter();
 			Properties props = new Properties();
 			props.setProperty("replace_square_brackets", "true");
-			//props.setProperty("readOnlyHeader", "true");
+			// props.setProperty("readOnlyHeader", "true");
 			converter.writeATFXHeader(orb, mdfFile, props);
 		} catch (ConvertException e) {
 			System.err.println(e.getMessage());

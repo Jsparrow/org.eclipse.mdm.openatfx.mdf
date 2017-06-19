@@ -29,9 +29,9 @@ import org.omg.CORBA.ORB;
 import de.rechner.openatfx.util.ODSHelper;
 import junit.framework.JUnit4TestAdapter;
 
-
 /**
- * Test case for reading the example MDF4-file <code>dSPACE_MeasurementArrays.mf4</code>.
+ * Test case for reading the example MDF4-file
+ * <code>dSPACE_MeasurementArrays.mf4</code>.
  *
  * @author Christian Rechner
  */
@@ -78,11 +78,13 @@ public class Test_dSPACE_MeasurementArrays {
 		try {
 			ApplicationStructure as = aoSession.getApplicationStructure();
 			InstanceElementIterator iter = as.getElementByName("mea").getInstances("*");
-			assertEquals(2, iter.getCount()); //one for Channel Group, one for sample reduction
+			assertEquals(2, iter.getCount()); // one for Channel Group, one for
+												// sample reduction
 
 			InstanceElement ieMea = as.getElementByName("mea").getInstances("dSPACE_MeasurementArrays.mf4").nextOne();
 			assertEquals("dSPACE_MeasurementArrays.mf4", ODSHelper.getStringVal(ieMea.getValue("iname")));
-			assertEquals("ASAM COMMON MDF 4.1 sample file created by dSPACE. Contents: signals with measurement array types",
+			assertEquals(
+					"ASAM COMMON MDF 4.1 sample file created by dSPACE. Contents: signals with measurement array types",
 					ODSHelper.getStringVal(ieMea.getValue("desc")));
 			assertEquals("20121107121603", ODSHelper.getDateVal(ieMea.getValue("date_created")));
 			assertEquals("20121107121603", ODSHelper.getDateVal(ieMea.getValue("mea_begin")));
@@ -99,8 +101,10 @@ public class Test_dSPACE_MeasurementArrays {
 			assertEquals(0, ODSHelper.getDoubleVal(ieMea.getValue("start_distance_m")), 0.0000001);
 
 			assertEquals(9, ieMea.listAttributes("*", AttrType.INSTATTR_ONLY).length);
-			//TODO investigate, StartCondition / StopCondition with no Value are not set. (correct?)
-			//assertEquals(7, ieMea.listAttributes("*", AttrType.INSTATTR_ONLY).length);
+			// TODO investigate, StartCondition / StopCondition with no Value
+			// are not set. (correct?)
+			// assertEquals(7, ieMea.listAttributes("*",
+			// AttrType.INSTATTR_ONLY).length);
 
 			assertEquals("Thilo Maeck", ODSHelper.getStringVal(ieMea.getValue("User")));
 			assertEquals("20121107101603", ODSHelper.getDateVal(ieMea.getValue("DateTime")));
@@ -149,7 +153,8 @@ public class Test_dSPACE_MeasurementArrays {
 		try {
 			ApplicationStructure as = aoSession.getApplicationStructure();
 			InstanceElementIterator iter = as.getElementByName("sm").getInstances("*");
-			assertEquals(2, iter.getCount()); //one for Channel Group, one for sample reduction
+			assertEquals(2, iter.getCount()); // one for Channel Group, one for
+												// sample reduction
 
 			InstanceElement ieSm = as.getElementByName("sm").getInstances("sm_00001").nextOne();
 			assertEquals("sm_00001", ODSHelper.getStringVal(ieSm.getValue("iname")));
@@ -184,6 +189,7 @@ public class Test_dSPACE_MeasurementArrays {
 			fail(e.reason);
 		}
 	}
+
 	public static junit.framework.Test suite() {
 		return new JUnit4TestAdapter(Test_dSPACE_MeasurementArrays.class);
 	}

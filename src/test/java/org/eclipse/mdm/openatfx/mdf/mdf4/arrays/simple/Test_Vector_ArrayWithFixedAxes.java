@@ -29,9 +29,9 @@ import org.omg.CORBA.ORB;
 import de.rechner.openatfx.util.ODSHelper;
 import junit.framework.JUnit4TestAdapter;
 
-
 /**
- * Test case for reading the example MDF4-file <code>Vector_ArrayWithFixedAxes.MF4</code>.
+ * Test case for reading the example MDF4-file
+ * <code>Vector_ArrayWithFixedAxes.MF4</code>.
  *
  * @author Christian Rechner
  */
@@ -171,8 +171,8 @@ public class Test_Vector_ArrayWithFixedAxes {
 			assertEquals("KF3", ODSHelper.getStringVal(ieMeq.getValue("iname")));
 			assertEquals("8*6 BYTE fixed axis", ODSHelper.getStringVal(ieMeq.getValue("desc")));
 			assertEquals("CCPsim", ODSHelper.getStringVal(ieMeq.getValue("src_path")));
-			assertEquals(1, ODSHelper.getEnumVal(ieMeq.getValue("src_type"))); //ECU
-			assertEquals(2, ODSHelper.getEnumVal(ieMeq.getValue("src_bus"))); //CAN
+			assertEquals(1, ODSHelper.getEnumVal(ieMeq.getValue("src_type"))); // ECU
+			assertEquals(2, ODSHelper.getEnumVal(ieMeq.getValue("src_bus"))); // CAN
 			assertEquals("map_kf3", ODSHelper.getStringVal(ieMeq.getValue("linker_name")));
 			assertEquals(1, ODSHelper.getLongVal(ieMeq.getValue("linker_address_byte_count")));
 			assertEquals(1, ODSHelper.getLongVal(ieMeq.getValue("address_byte_count")));

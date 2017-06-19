@@ -14,13 +14,13 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.channels.SeekableByteChannel;
 
-
 /**
  * <p>
  * THE HEADER BLOCK <code>HDBLOCK<code>
  * </p>
- * The HDBLOCK always begins at file position 64. It contains general information about the contents of the measured
- * data file and is the root for the block hierarchy.
+ * The HDBLOCK always begins at file position 64. It contains general
+ * information about the contents of the measured data file and is the root for
+ * the block hierarchy.
  *
  * @author Christian Rechner
  */
@@ -35,7 +35,8 @@ class HDBLOCK extends BLOCK {
 	private long lnkDgFirst;
 
 	// Pointer to first file history block (FHBLOCK)
-	// There must be at least one FHBLOCK with information about the application which created the MDF file.
+	// There must be at least one FHBLOCK with information about the application
+	// which created the MDF file.
 	// LINK
 	private long lnkFhFirst;
 
@@ -57,21 +58,26 @@ class HDBLOCK extends BLOCK {
 
 	/** Data section */
 
-	// Time stamp at start of measurement in nanoseconds elapsed since 00:00:00 01.01.1970 (UTC time or local time,
-	// depending on "local time" flag, see [UTC]). All time stamps for time synchronized master channels or events are
+	// Time stamp at start of measurement in nanoseconds elapsed since 00:00:00
+	// 01.01.1970 (UTC time or local time,
+	// depending on "local time" flag, see [UTC]). All time stamps for time
+	// synchronized master channels or events are
 	// always relative to this start time stamp.
 	// UINT64
 	private long startTimeNs;
 
 	// Time zone offset in minutes.
-	// The value is not necessarily a multiple of 60 and can be negative! For the current time zone definitions, it is
+	// The value is not necessarily a multiple of 60 and can be negative! For
+	// the current time zone definitions, it is
 	// expected to be in the range [-840,840] min.
-	// For example a value of 60 (min) means UTC+1 time zone = Central European Time
+	// For example a value of 60 (min) means UTC+1 time zone = Central European
+	// Time
 	// Only valid if "time offsets valid" flag is set in time flags.
 	// INT16
 	private short tzOffsetMin;
 
-	// Daylight saving time (DST) offset in minutes for start time stamp. During the summer months, most regions observe
+	// Daylight saving time (DST) offset in minutes for start time stamp. During
+	// the summer months, most regions observe
 	// a DST offset of 60 min (1 hour).
 	// Only valid if "time offsets valid" flag is set in time flags.
 	// INT16
@@ -80,14 +86,19 @@ class HDBLOCK extends BLOCK {
 	// Time flags
 	// The value contains the following bit flags (Bit 0 = LSB):
 	// Bit 0: Local time flag
-	// If set, the start time stamp in nanoseconds represents the local time instead of the UTC time, In this case, time
-	// zone and DST offset must not be considered (time offsets flag must not be set). Should only be used if UTC time
+	// If set, the start time stamp in nanoseconds represents the local time
+	// instead of the UTC time, In this case, time
+	// zone and DST offset must not be considered (time offsets flag must not be
+	// set). Should only be used if UTC time
 	// is unknown.
-	// If the bit is not set (default), the start time stamp represents the UTC time.
+	// If the bit is not set (default), the start time stamp represents the UTC
+	// time.
 	// Bit 1: Time offsets valid flag
-	// If set, the time zone and DST offsets are valid. Must not be set together with "local time" flag (mutually
+	// If set, the time zone and DST offsets are valid. Must not be set together
+	// with "local time" flag (mutually
 	// exclusive).
-	// If the offsets are valid, the locally displayed time at start of recording can be determined
+	// If the offsets are valid, the locally displayed time at start of
+	// recording can be determined
 	// (after conversion of offsets to ns) by
 	// Local time = UTC time + time zone offset + DST offset.
 	// UINT8
@@ -102,12 +113,15 @@ class HDBLOCK extends BLOCK {
 
 	// Flags
 	// The value contains the following bit flags (Bit 0 = LSB):
-	// Bit 0: Start angle valid flag. If set, the start angle value below is valid.
-	// Bit 1: Start distance valid flag. If set, the start distance value below is valid.
+	// Bit 0: Start angle valid flag. If set, the start angle value below is
+	// valid.
+	// Bit 1: Start distance valid flag. If set, the start distance value below
+	// is valid.
 	// UINT8
 	private byte flags;
 
-	// Start angle in radians at start of measurement (only for angle synchronous measurements)
+	// Start angle in radians at start of measurement (only for angle
+	// synchronous measurements)
 	// Only valid if "start angle valid" flag is set.
 	// REAL
 	private double startAngleRad;
@@ -122,8 +136,10 @@ class HDBLOCK extends BLOCK {
 	/**
 	 * Constructor.
 	 *
-	 * @param sbc The byte channel pointing to the MDF file.
-	 * @param mdfFilePath THe path to the MDF file.
+	 * @param sbc
+	 *            The byte channel pointing to the MDF file.
+	 * @param mdfFilePath
+	 *            THe path to the MDF file.
 	 */
 	public HDBLOCK(SeekableByteChannel sbc) {
 		super(sbc, 64);
@@ -316,9 +332,11 @@ class HDBLOCK extends BLOCK {
 	/**
 	 * Reads a HDBLOCK from the channel starting at current channel position.
 	 *
-	 * @param sbc The channel to read from.
+	 * @param sbc
+	 *            The channel to read from.
 	 * @return The block data.
-	 * @throws IOException The exception.
+	 * @throws IOException
+	 *             The exception.
 	 */
 	public static HDBLOCK read(SeekableByteChannel sbc) throws IOException {
 		HDBLOCK block = new HDBLOCK(sbc);
@@ -351,7 +369,8 @@ class HDBLOCK extends BLOCK {
 		// LINK: Pointer to first file history block (FHBLOCK)
 		block.setLnkFhFirst(MDF4Util.readLink(bb));
 
-		// LINK: Pointer to first channel hierarchy block (CHBLOCK) (can be NIL).
+		// LINK: Pointer to first channel hierarchy block (CHBLOCK) (can be
+		// NIL).
 		block.setLnkChFirst(MDF4Util.readLink(bb));
 
 		// LINK: Pointer to first attachment block (ATBLOCK) (can be NIL)
@@ -360,16 +379,19 @@ class HDBLOCK extends BLOCK {
 		// LINK: Pointer to first event block (EVBLOCK) (can be NIL)
 		block.setLnkEvFirst(MDF4Util.readLink(bb));
 
-		// LINK: Pointer to the measurement file comment (TXBLOCK or MDBLOCK) (can be NIL)
+		// LINK: Pointer to the measurement file comment (TXBLOCK or MDBLOCK)
+		// (can be NIL)
 		block.setLnkMdComment(MDF4Util.readLink(bb));
 
-		// UINT64: Time stamp at start of measurement in nanoseconds elapsed since 00:00:00 01.01.1970
+		// UINT64: Time stamp at start of measurement in nanoseconds elapsed
+		// since 00:00:00 01.01.1970
 		block.setStartTimeNs(MDF4Util.readUInt64(bb));
 
 		// INT16: Time zone offset in minutes.
 		block.setTzOffsetMin(MDF4Util.readInt16(bb));
 
-		// INT16: Daylight saving time (DST) offset in minutes for start time stamp.
+		// INT16: Daylight saving time (DST) offset in minutes for start time
+		// stamp.
 		block.setDstOffsetMin(MDF4Util.readInt16(bb));
 
 		// UINT8: Time flags
@@ -387,7 +409,8 @@ class HDBLOCK extends BLOCK {
 		// BYTE: Reserved
 		bb.get();
 
-		// REAL: Start angle in radians at start of measurement (only for angle synchronous measurements)
+		// REAL: Start angle in radians at start of measurement (only for angle
+		// synchronous measurements)
 		block.setStartAngleRad(MDF4Util.readReal(bb));
 
 		// REAL: Start distance in meters at start of measurement

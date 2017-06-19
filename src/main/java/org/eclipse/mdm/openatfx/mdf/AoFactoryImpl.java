@@ -24,9 +24,9 @@ import org.asam.ods.TS_Union;
 import org.asam.ods.TS_Value;
 import org.omg.CORBA.ORB;
 
-
 /**
- * Implementation of <code>org.asam.ods.AoFactory</code> enabling opening MDF4 files.
+ * Implementation of <code>org.asam.ods.AoFactory</code> enabling opening MDF4
+ * files.
  *
  * @author Christian Rechner
  */
@@ -39,7 +39,8 @@ class AoFactoryImpl extends AoFactoryPOA {
 	/**
 	 * Creates a new AoFactory object.
 	 *
-	 * @param orb The ORB.
+	 * @param orb
+	 *            The ORB.
 	 */
 	public AoFactoryImpl(ORB orb) {
 		this.orb = orb;

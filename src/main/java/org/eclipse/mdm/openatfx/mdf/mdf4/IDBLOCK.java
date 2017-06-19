@@ -14,15 +14,16 @@ import java.nio.ByteOrder;
 import java.nio.channels.SeekableByteChannel;
 import java.nio.file.Path;
 
-
 /**
  * <p>
  * THE FILE IDENTIFICATION BLOCK <code>IDBLOCK</code>
  * </p>
- * The IDBLOCK always begins at file position 0 and has a constant length of 64 Bytes. It contains information to
- * identify the file. This includes information about the source of the file and general format specifications. To be
- * compliant with older MDF formats in this section each CHAR must be a 1-Byte ASCII character. The IDBLOCK is the only
- * block without a Header section and without a Link section.
+ * The IDBLOCK always begins at file position 0 and has a constant length of 64
+ * Bytes. It contains information to identify the file. This includes
+ * information about the source of the file and general format specifications.
+ * To be compliant with older MDF formats in this section each CHAR must be a
+ * 1-Byte ASCII character. The IDBLOCK is the only block without a Header
+ * section and without a Link section.
  *
  * @author Christian Rechner
  */
@@ -31,22 +32,31 @@ public class IDBLOCK extends BLOCK {
 	// The path to the MDF file
 	private final Path mdfFilePath;
 
-	// File identifier, always contains "MDF     " ("MDF" followed by five spaces, no zero termination), except for
-	// "unfinalized" MDF files. The file identifier for unfinalized MDF files contains "UnFinMF " ("UnFinMF" followed by
+	// File identifier, always contains "MDF " ("MDF" followed by five spaces,
+	// no zero termination), except for
+	// "unfinalized" MDF files. The file identifier for unfinalized MDF files
+	// contains "UnFinMF " ("UnFinMF" followed by
 	// one space, no zero termination).
 	// CHAR 8
 	private String idFile;
 
-	// Format identifier, a textual representation of the format version for display, e.g. "4.11" (including zero
-	// termination) or "4.11    " (followed by spaces, no zero termination required if 4 spaces).
+	// Format identifier, a textual representation of the format version for
+	// display, e.g. "4.11" (including zero
+	// termination) or "4.11 " (followed by spaces, no zero termination required
+	// if 4 spaces).
 	// CHAR 8
 	private String idVers;
 
-	// Program identifier, to identify the program which generated the MDF file (no zero termination required).
-	// This program identifier serves only for compatibility with previous MDF format versions. Detailed information
-	// about the generating application must be written to the first FHBLOCK referenced by the HDBLOCK.
-	// As a recommendation, the program identifier inserted into the 8 characters should be the base name (first 8
-	// characters) of the EXE/DLL of the writing application. Alternatively, also version information of the application
+	// Program identifier, to identify the program which generated the MDF file
+	// (no zero termination required).
+	// This program identifier serves only for compatibility with previous MDF
+	// format versions. Detailed information
+	// about the generating application must be written to the first FHBLOCK
+	// referenced by the HDBLOCK.
+	// As a recommendation, the program identifier inserted into the 8
+	// characters should be the base name (first 8
+	// characters) of the EXE/DLL of the writing application. Alternatively,
+	// also version information of the application
 	// can be appended (e.g. "MyApp45" for version 4.5 of MyApp.exe).
 	// CHAR 8
 	private String idProg;
@@ -56,13 +66,15 @@ public class IDBLOCK extends BLOCK {
 	private int idVer;
 
 	// Standard flags for unfinalized MDF.
-	// Bit combination of flags that indicate the steps required to finalize the MDF file.
+	// Bit combination of flags that indicate the steps required to finalize the
+	// MDF file.
 	// For a finalized MDF file, the value must be 0 (no flag set).
 	// UINT16 1
 	private int idUnfinFlags;
 
 	// Custom flags for unfinalized MDF.
-	// Bit combination of flags that indicate custom steps required to finalize the MDF file.
+	// Bit combination of flags that indicate custom steps required to finalize
+	// the MDF file.
 	// For a finalized MDF file, the value must be 0 (no flag set).
 	// UINT16 1
 	private int idCustomUnfinFlags;
@@ -70,8 +82,10 @@ public class IDBLOCK extends BLOCK {
 	/**
 	 * Constructor.
 	 *
-	 * @param mdfFilePath The path to the MDF file.
-	 * @param sbc The byte channel pointing to the MDF file.
+	 * @param mdfFilePath
+	 *            The path to the MDF file.
+	 * @param sbc
+	 *            The byte channel pointing to the MDF file.
 	 */
 	private IDBLOCK(Path mdfFilePath, SeekableByteChannel sbc) {
 		super(sbc, 0);
@@ -149,10 +163,13 @@ public class IDBLOCK extends BLOCK {
 	/**
 	 * Reads a IDBLOCK from the channel starting at current channel position.
 	 *
-	 * @param mdfFilePath The path to the MDF file.
-	 * @param sbc The channel to read from.
+	 * @param mdfFilePath
+	 *            The path to the MDF file.
+	 * @param sbc
+	 *            The channel to read from.
 	 * @return The block data.
-	 * @throws IOException The exception.
+	 * @throws IOException
+	 *             The exception.
 	 */
 	public static IDBLOCK read(Path mdfFilePath, SeekableByteChannel sbc) throws IOException {
 		IDBLOCK block = new IDBLOCK(mdfFilePath, sbc);

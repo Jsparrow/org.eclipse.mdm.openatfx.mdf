@@ -13,13 +13,13 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.channels.SeekableByteChannel;
 
-
 /**
  * <p>
  * THE SOURCE INFORMATION BLOCK <code>SIBLOCK<code>
  * </p>
- * The SIBLOCK describes the source of an acquisition mode or of a signal. The source information is also used to ensure
- * a unique identification of a channel.
+ * The SIBLOCK describes the source of an acquisition mode or of a signal. The
+ * source information is also used to ensure a unique identification of a
+ * channel.
  *
  * @author Christian Rechner
  */
@@ -37,7 +37,8 @@ class SIBLOCK extends BLOCK {
 	// LINK
 	private long lnkTxPath;
 
-	// Pointer to source comment and additional information (TXBLOCK or MDBLOCK) (can be NIL)
+	// Pointer to source comment and additional information (TXBLOCK or MDBLOCK)
+	// (can be NIL)
 	// LINK
 	private long lnkMdComment;
 
@@ -48,14 +49,16 @@ class SIBLOCK extends BLOCK {
 	// 1 = ECU source is an ECU
 	// 2 = BUS source is a bus (e.g. for bus monitoring)
 	// 3 = I/O source is an I/O device (e.g. analog I/O)
-	// 4 = TOOL source is a software tool (e.g. for tool generated signals/events)
+	// 4 = TOOL source is a software tool (e.g. for tool generated
+	// signals/events)
 	// 5 = USER source is a user interaction/input
 	// (e.g. for user generated events)
 	// UINT8
 	private byte sourceType;
-	private String[] sourceTypes = {"OTHER", "ECU", "CAN", "BUS", "I/O", "TOOL", "USER"};
+	private String[] sourceTypes = { "OTHER", "ECU", "CAN", "BUS", "I/O", "TOOL", "USER" };
 
-	// Bus type: additional classification of used bus (should be 0 for si_type ≥ 3):
+	// Bus type: additional classification of used bus (should be 0 for si_type
+	// ≥ 3):
 	// 0 = NONE no bus
 	// 1 = OTHER bus type does not fit into given categories or is unknown
 	// 2 = CAN
@@ -68,7 +71,7 @@ class SIBLOCK extends BLOCK {
 	// Vender defined bus types can be added starting with value 128.
 	// UINT8
 	private byte busType;
-	private String[] busTypes = {"NONE", "OTHER", "CAN", "LIN", "MOST", "FLEXRAY", "K_LINE", "ETHERNET", "USB"};
+	private String[] busTypes = { "NONE", "OTHER", "CAN", "LIN", "MOST", "FLEXRAY", "K_LINE", "ETHERNET", "USB" };
 
 	// Flags
 	// The value contains the following bit flags (Bit 0 = LSB):
@@ -81,8 +84,10 @@ class SIBLOCK extends BLOCK {
 	/**
 	 * Constructor.
 	 *
-	 * @param sbc The byte channel pointing to the MDF file.
-	 * @param pos The position of the block within the MDF file.
+	 * @param sbc
+	 *            The byte channel pointing to the MDF file.
+	 * @param pos
+	 *            The position of the block within the MDF file.
 	 */
 	private SIBLOCK(SeekableByteChannel sbc, long pos) {
 		super(sbc, pos);
@@ -178,10 +183,13 @@ class SIBLOCK extends BLOCK {
 	/**
 	 * Reads a SIBLOCK from the channel starting at current channel position.
 	 *
-	 * @param channel The channel to read from.
-	 * @param pos The position within the channel.
+	 * @param channel
+	 *            The channel to read from.
+	 * @param pos
+	 *            The position within the channel.
 	 * @return The block data.
-	 * @throws IOException The exception.
+	 * @throws IOException
+	 *             The exception.
 	 */
 	public static SIBLOCK read(SeekableByteChannel channel, long pos) throws IOException {
 		SIBLOCK block = new SIBLOCK(channel, pos);
@@ -208,19 +216,23 @@ class SIBLOCK extends BLOCK {
 		// UINT64: Number of links
 		block.setLinkCount(MDF4Util.readUInt64(bb));
 
-		// LINK: Pointer to TXBLOCK with name (identification) of source (can be NIL).
+		// LINK: Pointer to TXBLOCK with name (identification) of source (can be
+		// NIL).
 		block.setLnkTxName(MDF4Util.readLink(bb));
 
-		// LINK: Pointer to TXBLOCK with (tool-specific) path of source (can be NIL).
+		// LINK: Pointer to TXBLOCK with (tool-specific) path of source (can be
+		// NIL).
 		block.setLnkTxPath(MDF4Util.readLink(bb));
 
-		// LINK: Pointer to source comment and additional information (TXBLOCK or MDBLOCK) (can be NIL).
+		// LINK: Pointer to source comment and additional information (TXBLOCK
+		// or MDBLOCK) (can be NIL).
 		block.setLnkMdComment(MDF4Util.readLink(bb));
 
 		// UINT8: Source type: additional classification of source:
 		block.setSourceType(MDF4Util.readUInt8(bb));
 
-		// UINT8: Bus type: additional classification of used bus (should be 0 for si_type ≥ 3):
+		// UINT8: Bus type: additional classification of used bus (should be 0
+		// for si_type ≥ 3):
 		block.setBusType(MDF4Util.readUInt8(bb));
 
 		// UINT8: Flags
@@ -229,15 +241,15 @@ class SIBLOCK extends BLOCK {
 		return block;
 	}
 
-	public String getSrcTypeString(){
-		if(sourceType<0 || sourceType >5){
+	public String getSrcTypeString() {
+		if (sourceType < 0 || sourceType > 5) {
 			throw new IllegalArgumentException("Invalid source type.");
 		}
 		return sourceTypes[sourceType];
 	}
 
-	public String getBusTypeString(){
-		if(busType<0 || busType >8){
+	public String getBusTypeString() {
+		if (busType < 0 || busType > 8) {
 			return "OTHER";
 		}
 		return busTypes[busType];

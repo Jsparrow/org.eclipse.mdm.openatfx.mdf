@@ -27,7 +27,6 @@ import org.omg.CORBA.ORB;
 import de.rechner.openatfx.util.ODSHelper;
 import junit.framework.JUnit4TestAdapter;
 
-
 /**
  * Test case for reading the example MDF4-file <code>Vector_External.MF4</code>.
  *

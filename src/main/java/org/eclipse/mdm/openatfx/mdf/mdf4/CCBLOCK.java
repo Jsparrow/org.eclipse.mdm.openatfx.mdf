@@ -15,14 +15,15 @@ import java.nio.ByteOrder;
 import java.nio.channels.SeekableByteChannel;
 import java.util.Arrays;
 
-
 /**
  * <p>
  * THE CHANNEL CONVERSION BLOCK <code>CCBLOCK<code>
  * </p>
- * The data records can be used to store raw values (often also denoted as implementation values or internal values).
- * The CCBLOCK serves to specify a conversion formula to convert the raw values to physical values with a physical unit.
- * The result of a conversion always is either a floating-point value (REAL) or a character string (UTF-8).
+ * The data records can be used to store raw values (often also denoted as
+ * implementation values or internal values). The CCBLOCK serves to specify a
+ * conversion formula to convert the raw values to physical values with a
+ * physical unit. The result of a conversion always is either a floating-point
+ * value (REAL) or a character string (UTF-8).
  *
  * @author Christian Rechner
  */
@@ -36,21 +37,26 @@ class CCBLOCK extends BLOCK {
 	// LINK
 	private long lnkTxName;
 
-	// Link to TXBLOCK/MDBLOCK with physical unit of signal data (after conversion). (can be NIL)
+	// Link to TXBLOCK/MDBLOCK with physical unit of signal data (after
+	// conversion). (can be NIL)
 	// LINK
 	private long lnkMdUnit;
 
-	// Link to TXBLOCK/MDBLOCK with comment of conversion and additional information. (can be NIL)
+	// Link to TXBLOCK/MDBLOCK with comment of conversion and additional
+	// information. (can be NIL)
 	// LINK
 	private long lnkMdComment;
 
-	// Link to CCBLOCK for inverse formula (can be NIL, must be NIL for CCBLOCK of the inverse formula (no cyclic
+	// Link to CCBLOCK for inverse formula (can be NIL, must be NIL for CCBLOCK
+	// of the inverse formula (no cyclic
 	// reference allowed).
 	// LINK
 	private long lnkCcInverse;
 
-	// List of additional links to TXBLOCKs with strings or to CCBLOCKs with partial conversion rules. Length of list is
-	// given by cc_ref_count. The list can be empty. Details are explained in formula-specific block supplement.
+	// List of additional links to TXBLOCKs with strings or to CCBLOCKs with
+	// partial conversion rules. Length of list is
+	// given by cc_ref_count. The list can be empty. Details are explained in
+	// formula-specific block supplement.
 	// LINK
 	private long[] lnkCcRef;
 
@@ -73,8 +79,10 @@ class CCBLOCK extends BLOCK {
 
 	// Precision for display of floating point values.
 	// 0xFF means unrestricted precision (infinite)
-	// Any other value specifies the number of decimal places to use for display of floating point values.
-	// Note: only valid if "precision valid" flag (bit 0) is set and if cn_precision of the parent CNBLOCK is invalid,
+	// Any other value specifies the number of decimal places to use for display
+	// of floating point values.
+	// Note: only valid if "precision valid" flag (bit 0) is set and if
+	// cn_precision of the parent CNBLOCK is invalid,
 	// otherwise cn_precision must be used.
 	// UINT8
 	private byte precision;
@@ -111,8 +119,10 @@ class CCBLOCK extends BLOCK {
 	/**
 	 * Constructor.
 	 *
-	 * @param sbc The byte channel pointing to the MDF file.
-	 * @param pos The position of the block within the MDF file.
+	 * @param sbc
+	 *            The byte channel pointing to the MDF file.
+	 * @param pos
+	 *            The position of the block within the MDF file.
 	 */
 	private CCBLOCK(SeekableByteChannel sbc, long pos) {
 		super(sbc, pos);
@@ -150,9 +160,10 @@ class CCBLOCK extends BLOCK {
 		return flags;
 	}
 
-	public boolean isPhysicalRangeValid(){
+	public boolean isPhysicalRangeValid() {
 		return BigInteger.valueOf(flags).testBit(1);
 	}
+
 	public int getRefCount() {
 		return refCount;
 	}
@@ -279,6 +290,7 @@ class CCBLOCK extends BLOCK {
 
 	/**
 	 * Returns all referenced TXBLOCKS.
+	 * 
 	 * @return
 	 * @throws IOException
 	 */
@@ -287,7 +299,7 @@ class CCBLOCK extends BLOCK {
 			TXBLOCK[] ccRef = new TXBLOCK[lnkCcRef.length];
 			for (int i = 0; i < ccRef.length; i++) {
 				if (lnkCcRef[i] > 0) {
-					//There might be a CC Block, but this is not supported.
+					// There might be a CC Block, but this is not supported.
 
 					String blockType = getBlockType(sbc, lnkCcRef[i]);
 					// link points to a TXBLOCK
@@ -309,18 +321,19 @@ class CCBLOCK extends BLOCK {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Tests whether there are referenced CC blocks (scale conversion).
 	 * 
-	 * @return  true if at least one CC block is referenced
-	 * @throws IOException  thrown if unable to read file
+	 * @return true if at least one CC block is referenced
+	 * @throws IOException
+	 *             thrown if unable to read file
 	 */
 	public boolean hasCCRefs() throws IOException {
-		if(lnkCcRef.length < 1) {
+		if (lnkCcRef.length < 1) {
 			return false;
 		}
-		
+
 		for (int i = 0; i < lnkCcRef.length; i++) {
 			if (lnkCcRef[i] > 0) {
 				String blockType = getBlockType(sbc, lnkCcRef[i]);
@@ -329,7 +342,7 @@ class CCBLOCK extends BLOCK {
 				}
 			}
 		}
-		
+
 		return false;
 	}
 
@@ -348,10 +361,13 @@ class CCBLOCK extends BLOCK {
 	/**
 	 * Reads a CCBLOCK from the channel starting at current channel position.
 	 *
-	 * @param channel The channel to read from.
-	 * @param pos The position
+	 * @param channel
+	 *            The channel to read from.
+	 * @param pos
+	 *            The position
 	 * @return The block data.
-	 * @throws IOException The exception.
+	 * @throws IOException
+	 *             The exception.
 	 */
 	public static CCBLOCK read(SeekableByteChannel channel, long pos) throws IOException {
 		CCBLOCK block = new CCBLOCK(channel, pos);
@@ -437,65 +453,71 @@ class CCBLOCK extends BLOCK {
 
 	/**
 	 * Returns the values WITHOUT the default value.
+	 * 
 	 * @return
 	 * @throws IOException
 	 */
 	public String[] getValuesForTextTable() throws IOException {
-		if(type == 7 || type == 8){
+		if (type == 7 || type == 8) {
 			TXBLOCK[] txblks = getCcRefBlocks();
-			String[] ret = new String[getRefCount()-1]; //without default value
-			for(int i = 0; i < ret.length; i++){
+			String[] ret = new String[getRefCount() - 1]; // without default
+															// value
+			for (int i = 0; i < ret.length; i++) {
 				ret[i] = txblks[i].getTxData();
 			}
 			return ret;
-		}else{
+		} else {
 			return new String[0];
 		}
 	}
 
 	/**
 	 * Returns the values of all linked TextBlocks.
+	 * 
 	 * @return The values as String-Array.
 	 * @throws IOException
 	 */
 	public String[] getRefValues() throws IOException {
-		if(type == 7 || type == 8){
+		if (type == 7 || type == 8) {
 			TXBLOCK[] txblks = getCcRefBlocks();
-			String[] ret = new String[getRefCount()]; //all values
-			for(int i = 0; i < ret.length; i++){
+			String[] ret = new String[getRefCount()]; // all values
+			for (int i = 0; i < ret.length; i++) {
 				ret[i] = txblks[i].getTxData();
 			}
 			return ret;
-		}else{
+		} else {
 			return new String[0];
 		}
 	}
 
 	/**
-	 * Returns the values WITHOUT the default value. (only used for text to value table)
+	 * Returns the values WITHOUT the default value. (only used for text to
+	 * value table)
+	 * 
 	 * @return The values without default.
 	 * @throws IOException
 	 */
 	public double[] getValuesForTextToValueTable() throws IOException {
-		if(type == 9){
-			double[] ret = new double[val.length -1];
+		if (type == 9) {
+			double[] ret = new double[val.length - 1];
 			System.arraycopy(val, 0, ret, 0, ret.length);
 			return ret;
-		}else{
+		} else {
 			return new double[0];
 		}
 	}
 
 	/**
 	 * Returns the default value for this conversion.
+	 * 
 	 * @return The default value.
 	 * @throws IOException
 	 */
-	public String getDefaultValue() throws IOException{
-		if(type == 7 || type == 8 || type == 10){
-			long lnkLastRef = lnkCcRef[getRefCount()-1];
-			if(lnkLastRef>0){
-				//There might be a CC Block, but this is not supported.
+	public String getDefaultValue() throws IOException {
+		if (type == 7 || type == 8 || type == 10) {
+			long lnkLastRef = lnkCcRef[getRefCount() - 1];
+			if (lnkLastRef > 0) {
+				// There might be a CC Block, but this is not supported.
 				String blockType = getBlockType(sbc, lnkLastRef);
 				// link points to a TXBLOCK, return content.
 				if (blockType.equals(TXBLOCK.BLOCK_ID)) {
@@ -514,46 +536,46 @@ class CCBLOCK extends BLOCK {
 		return null; // NO default value.
 	}
 
-	public double getDefaultValueDouble() throws IOException{
-		if(type == 6){
-			return val[val.length-1]; //return last value
+	public double getDefaultValueDouble() throws IOException {
+		if (type == 6) {
+			return val[val.length - 1]; // return last value
 		}
 		return 0; // NO default value.
 	}
 
-	public double[] getSecondValues(boolean even){
-		if(type ==4 || type == 5|| type == 8){
-			double[] ret = new double[val.length/2];
-			for(int i=even?0:1; i<val.length; i+=2){
-				ret[i/2]=val[i];
+	public double[] getSecondValues(boolean even) {
+		if (type == 4 || type == 5 || type == 8) {
+			double[] ret = new double[val.length / 2];
+			for (int i = even ? 0 : 1; i < val.length; i += 2) {
+				ret[i / 2] = val[i];
 			}
 			return ret;
-		}else{
+		} else {
 			return new double[0];
 		}
 	}
 
-	public double[] getThirdValues(int start){
-		if(type == 6){
-			double[] ret = new double[val.length/3];
-			for(int i=start; i<val.length-val.length%3; i+=3){
-				ret[i/3]=val[i];
+	public double[] getThirdValues(int start) {
+		if (type == 6) {
+			double[] ret = new double[val.length / 3];
+			for (int i = start; i < val.length - val.length % 3; i += 3) {
+				ret[i / 3] = val[i];
 			}
 			return ret;
-		}else{
+		} else {
 			return new double[0];
 		}
 	}
 
-	public String[] getSecondTexts(boolean even) throws IOException{
-		if(type == 10){
+	public String[] getSecondTexts(boolean even) throws IOException {
+		if (type == 10) {
 			String[] texts = getValuesForTextTable();
-			String[] ret = new String[texts.length/2];
-			for(int i=even?0:1; i<texts.length; i+=2){
-				ret[i/2]=texts[i];
+			String[] ret = new String[texts.length / 2];
+			for (int i = even ? 0 : 1; i < texts.length; i += 2) {
+				ret[i / 2] = texts[i];
 			}
 			return ret;
-		}else{
+		} else {
 			return new String[0];
 		}
 	}

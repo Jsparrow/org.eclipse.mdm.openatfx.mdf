@@ -13,13 +13,12 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.channels.SeekableByteChannel;
 
-
 /**
  * <p>
  * THE DATA BLOCK <code>DTBLOCK</code>
  * </p>
- * The data section of the DTBLOCK contains a sequence of records. It contains records of all channel groups assigned to
- * its parent DGBLOCK.
+ * The data section of the DTBLOCK contains a sequence of records. It contains
+ * records of all channel groups assigned to its parent DGBLOCK.
  *
  * @author Christian Rechner
  */
@@ -30,8 +29,10 @@ class DTBLOCK extends BLOCK {
 	/**
 	 * Constructor.
 	 *
-	 * @param sbc The byte channel pointing to the MDF file.
-	 * @param pos The position of the block within the MDF file.
+	 * @param sbc
+	 *            The byte channel pointing to the MDF file.
+	 * @param pos
+	 *            The position of the block within the MDF file.
 	 */
 	private DTBLOCK(SeekableByteChannel sbc, long pos) {
 		super(sbc, pos);
@@ -48,10 +49,13 @@ class DTBLOCK extends BLOCK {
 	/**
 	 * Reads a DTBLOCK from the channel starting at current channel position.
 	 *
-	 * @param channel The channel to read from.
-	 * @param pos The position
+	 * @param channel
+	 *            The channel to read from.
+	 * @param pos
+	 *            The position
 	 * @return The block data.
-	 * @throws IOException The exception.
+	 * @throws IOException
+	 *             The exception.
 	 */
 	public static DTBLOCK read(SeekableByteChannel channel, long pos) throws IOException {
 		DTBLOCK block = new DTBLOCK(channel, pos);

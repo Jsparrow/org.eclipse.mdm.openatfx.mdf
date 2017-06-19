@@ -14,7 +14,6 @@ import java.io.InputStream;
 
 import de.rechner.openatfx.IFileHandler;
 
-
 /**
  * Implementation of the IFileHandler interface for the local file system.
  *
@@ -23,8 +22,6 @@ import de.rechner.openatfx.IFileHandler;
 class TmpFileHandler implements IFileHandler {
 
 	private static final String ATFX_TEMPLATE = "model.atfx";
-
-
 
 	/**
 	 * {@inheritDoc}

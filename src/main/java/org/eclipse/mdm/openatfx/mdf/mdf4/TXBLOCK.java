@@ -13,13 +13,12 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.channels.SeekableByteChannel;
 
-
 /**
  * <p>
  * THE TEXT BLOCK <code>TXBLOCK<code>
  * </p>
- * The TXBLOCK is very similar to the MDBLOCK but only contains a plain string encoded in UTF-8. The text length results
- * from the block size.
+ * The TXBLOCK is very similar to the MDBLOCK but only contains a plain string
+ * encoded in UTF-8. The text length results from the block size.
  *
  * @author Christian Rechner
  */
@@ -37,8 +36,10 @@ class TXBLOCK extends BLOCK {
 	/**
 	 * Constructor.
 	 *
-	 * @param sbc The byte channel pointing to the MDF file.
-	 * @param pos The position of the block within the MDF file.
+	 * @param sbc
+	 *            The byte channel pointing to the MDF file.
+	 * @param pos
+	 *            The position of the block within the MDF file.
 	 */
 	private TXBLOCK(SeekableByteChannel sbc, long pos) {
 		super(sbc, pos);
@@ -65,10 +66,13 @@ class TXBLOCK extends BLOCK {
 	/**
 	 * Reads a HDBLOCK from the channel starting at current channel position.
 	 *
-	 * @param channel The channel to read from.
-	 * @param pos The position
+	 * @param channel
+	 *            The channel to read from.
+	 * @param pos
+	 *            The position
 	 * @return The block data.
-	 * @throws IOException The exception.
+	 * @throws IOException
+	 *             The exception.
 	 */
 	public static TXBLOCK read(SeekableByteChannel channel, long pos) throws IOException {
 		TXBLOCK block = new TXBLOCK(channel, pos);

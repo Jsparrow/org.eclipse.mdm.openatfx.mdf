@@ -15,14 +15,14 @@ import java.nio.ByteOrder;
 import java.nio.channels.SeekableByteChannel;
 import java.util.Arrays;
 
-
 /**
  * <p>
  * THE DATA LIST BLOCK <code>DLBLOCK</code>
  * </p>
- * The DLBLOCK references a list of data blocks (DTBLOCK) or a list of signal data blocks (SDBLOCK) or a list of
- * reduction data blocks (RDBLOCK). This list of blocks is equivalent to using a single (signal/reduction) data block
- * and can be used to avoid a huge data block by splitting it into smaller parts.
+ * The DLBLOCK references a list of data blocks (DTBLOCK) or a list of signal
+ * data blocks (SDBLOCK) or a list of reduction data blocks (RDBLOCK). This list
+ * of blocks is equivalent to using a single (signal/reduction) data block and
+ * can be used to avoid a huge data block by splitting it into smaller parts.
  *
  * @author Christian Rechner
  */
@@ -36,7 +36,8 @@ class DLBLOCK extends BLOCK {
 	// LINK
 	private long lnkDlNext;
 
-	// Pointers to the data blocks (DTBLOCK, SDBLOCK or RDBLOCK or a DZBLOCK of the respective block type).
+	// Pointers to the data blocks (DTBLOCK, SDBLOCK or RDBLOCK or a DZBLOCK of
+	// the respective block type).
 	// None of the links in the list can be NIL.
 	// LINK N
 	private long[] lnkDlData;
@@ -65,8 +66,10 @@ class DLBLOCK extends BLOCK {
 	/**
 	 * Constructor.
 	 *
-	 * @param sbc The byte channel pointing to the MDF file.
-	 * @param pos The position of the block within the MDF file.
+	 * @param sbc
+	 *            The byte channel pointing to the MDF file.
+	 * @param pos
+	 *            The position of the block within the MDF file.
 	 */
 	private DLBLOCK(SeekableByteChannel sbc, long pos) {
 		super(sbc, pos);
@@ -141,7 +144,7 @@ class DLBLOCK extends BLOCK {
 	}
 
 	public long getDataBlockSize(int index) throws IOException {
-		if(getLnkDlData()[index]==0){
+		if (getLnkDlData()[index] == 0) {
 			return 0;
 		}
 		String blockType = getBlockType(sbc, lnkDlData[index]);
@@ -166,10 +169,13 @@ class DLBLOCK extends BLOCK {
 	/**
 	 * Reads a DLBLOCK from the channel starting at current channel position.
 	 *
-	 * @param channel The channel to read from.
-	 * @param pos The position
+	 * @param channel
+	 *            The channel to read from.
+	 * @param pos
+	 *            The position
 	 * @return The block data.
-	 * @throws IOException The exception.
+	 * @throws IOException
+	 *             The exception.
 	 */
 	public static DLBLOCK read(SeekableByteChannel channel, long pos) throws IOException {
 		DLBLOCK block = new DLBLOCK(channel, pos);
@@ -221,13 +227,15 @@ class DLBLOCK extends BLOCK {
 		block.setCount(MDF4Util.readUInt32(bb));
 
 		// UINT64: Equal data section length.
-		// !!! Only present if "equal length" flag (bit 0 in dl_flags) is set. !!!
+		// !!! Only present if "equal length" flag (bit 0 in dl_flags) is set.
+		// !!!
 		if (block.isEqualLengthFlag()) {
 			block.setEqualLength(MDF4Util.readUInt64(bb));
 		}
 
-		if(!block.isEqualLengthFlag()){
-			// UINT64 N: Start offset (in Bytes) for the data section of each referenced block.
+		if (!block.isEqualLengthFlag()) {
+			// UINT64 N: Start offset (in Bytes) for the data section of each
+			// referenced block.
 			long[] offset = new long[(int) block.getCount()];
 			for (int i = 0; i < offset.length; i++) {
 				offset[i] = MDF4Util.readUInt64(bb);
@@ -247,25 +255,26 @@ class DLBLOCK extends BLOCK {
 		return block;
 	}
 
-	public boolean breaksRecords(long recordsize) throws IOException{
-		if(isEqualLengthFlag()){
-			if (equalLength % recordsize != 0){
-				// if we are the only block in the list, this size doesn't matter.
+	public boolean breaksRecords(long recordsize) throws IOException {
+		if (isEqualLengthFlag()) {
+			if (equalLength % recordsize != 0) {
+				// if we are the only block in the list, this size doesn't
+				// matter.
 				// Check size of DTBlock instead.
-				if(getCount() != 1){
+				if (getCount() != 1) {
 					return true;
 				}
 			}
 		} else {
-			for(long offset : this.offset) {
-				if (offset % recordsize != 0){
+			for (long offset : this.offset) {
+				if (offset % recordsize != 0) {
 					return true;
 				}
 			}
 		}
 
-		//this list fulfills requirements, but next one?
-		if(getLnkDlNext() > 0){
+		// this list fulfills requirements, but next one?
+		if (getLnkDlNext() > 0) {
 			return getDlNextBlock().breaksRecords(recordsize);
 		} else {
 			return false;

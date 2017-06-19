@@ -13,7 +13,6 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.channels.SeekableByteChannel;
 
-
 /**
  * CEBLOCK extension type Vector CAN
  *
@@ -36,8 +35,10 @@ class CEBLOCK_VectorCAN extends BLOCK {
 	/**
 	 * Constructor.
 	 *
-	 * @param sbc The byte channel pointing to the MDF file.
-	 * @param pos The position of the block within the MDF file.
+	 * @param sbc
+	 *            The byte channel pointing to the MDF file.
+	 * @param pos
+	 *            The position of the block within the MDF file.
 	 */
 	private CEBLOCK_VectorCAN(SeekableByteChannel sbc, long pos) {
 		super(sbc, pos);
@@ -84,10 +85,13 @@ class CEBLOCK_VectorCAN extends BLOCK {
 	/**
 	 * Reads a CEBLOCK DIM from the channel starting at pos
 	 *
-	 * @param sbc The channel to read from.
-	 * @param pos The position to start reading.
+	 * @param sbc
+	 *            The channel to read from.
+	 * @param pos
+	 *            The position to start reading.
 	 * @return The block data.
-	 * @throws IOException The exception.
+	 * @throws IOException
+	 *             The exception.
 	 */
 	public static CEBLOCK_VectorCAN read(SeekableByteChannel sbc, long pos) throws IOException {
 		CEBLOCK_VectorCAN ceBlockVector = new CEBLOCK_VectorCAN(sbc, pos);

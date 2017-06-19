@@ -13,12 +13,13 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.channels.SeekableByteChannel;
 
-
 /**
  * <p>
- * Data group block: Description of data block that may refer to one or several channel groups
+ * Data group block: Description of data block that may refer to one or several
+ * channel groups
  * </p>
- * The DGBlock contains the actual measurement data for one ("sorted") or several ("unsorted") channel groups.
+ * The DGBlock contains the actual measurement data for one ("sorted") or
+ * several ("unsorted") channel groups.
  *
  * @author Christian Rechner
  */
@@ -50,8 +51,10 @@ class DGBLOCK extends BLOCK {
 	/**
 	 * Constructor.
 	 *
-	 * @param sbc The byte channel pointing to the MDF file.
-	 * @param pos The position of the block within the MDF file.
+	 * @param sbc
+	 *            The byte channel pointing to the MDF file.
+	 * @param pos
+	 *            The position of the block within the MDF file.
 	 */
 	private DGBLOCK(SeekableByteChannel sbc, long pos) {
 		super(sbc, pos);
@@ -132,10 +135,13 @@ class DGBLOCK extends BLOCK {
 	/**
 	 * Reads a DGBLOCK from the channel starting at pos
 	 *
-	 * @param sbc The channel to read from.
-	 * @param pos The position to start reading.
+	 * @param sbc
+	 *            The channel to read from.
+	 * @param pos
+	 *            The position to start reading.
 	 * @return The block data.
-	 * @throws IOException The exception.
+	 * @throws IOException
+	 *             The exception.
 	 */
 	public static DGBLOCK read(SeekableByteChannel sbc, long pos) throws IOException {
 		DGBLOCK block = new DGBLOCK(sbc, pos);
@@ -165,7 +171,8 @@ class DGBLOCK extends BLOCK {
 		// LINK 1 Reserved
 		block.setLnkTrBlock(Mdf3Util.readLink(bb));
 
-		// LINK 1 Pointer to the data records (see separate chapter on data storage)
+		// LINK 1 Pointer to the data records (see separate chapter on data
+		// storage)
 		block.setLnkDataRecords(Mdf3Util.readLink(bb));
 
 		// UINT16 1 Number of channel groups

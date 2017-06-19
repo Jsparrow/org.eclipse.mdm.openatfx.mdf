@@ -10,7 +10,6 @@ package org.eclipse.mdm.openatfx.mdf.util;
 
 import java.io.IOException;
 
-
 /**
  * A bit-wise input stream.
  *
@@ -30,7 +29,8 @@ public class BitInputStream {
 	/**
 	 * Create object from byte array.
 	 *
-	 * @param buf a byte array containing data
+	 * @param buf
+	 *            a byte array containing data
 	 */
 	public BitInputStream(byte buf[]) {
 		mBuf = buf;
@@ -46,12 +46,14 @@ public class BitInputStream {
 	}
 
 	/**
-	 * Read some data and increment the current position. The 8-bit limit on access to bitwise streams is intentional to
-	 * avoid endianness issues.
+	 * Read some data and increment the current position. The 8-bit limit on
+	 * access to bitwise streams is intentional to avoid endianness issues.
 	 *
-	 * @param bits the amount of data to read (gte 0, lte 8)
+	 * @param bits
+	 *            the amount of data to read (gte 0, lte 8)
 	 * @return byte of read data (possibly partially filled, from lsb)
-	 * @throws IOException If a reading error occurs
+	 * @throws IOException
+	 *             If a reading error occurs
 	 */
 	public int read(int bits) throws IOException {
 		int index = mPos >>> 3;
@@ -72,9 +74,11 @@ public class BitInputStream {
 	/**
 	 * Read data in bulk into a byte array and increment the current position.
 	 *
-	 * @param bits the amount of data to read
+	 * @param bits
+	 *            the amount of data to read
 	 * @return newly allocated byte array of read data
-	 * @throws IOException If a reading error occurs
+	 * @throws IOException
+	 *             If a reading error occurs
 	 */
 	public byte[] readByteArray(int bits) throws IOException {
 		int bytes = (bits >>> 3) + ((bits & 0x07) > 0 ? 1 : 0); // &7==%8
@@ -89,8 +93,10 @@ public class BitInputStream {
 	/**
 	 * Increment the current position and ignore contained data.
 	 *
-	 * @param bits the amount by which to increment the position
-	 * @throws IOException If a reading error occurs
+	 * @param bits
+	 *            the amount by which to increment the position
+	 * @throws IOException
+	 *             If a reading error occurs
 	 */
 	public void skip(int bits) throws IOException {
 		if (mPos + bits > mEnd) {

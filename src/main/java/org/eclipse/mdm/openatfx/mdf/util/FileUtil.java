@@ -18,7 +18,8 @@ public abstract class FileUtil {
 	/**
 	 * Strips the file extension (e.g. '.txt').
 	 *
-	 * @param s The file name.
+	 * @param s
+	 *            The file name.
 	 * @return File name without extension.
 	 */
 	public static String stripExtension(final String s) {

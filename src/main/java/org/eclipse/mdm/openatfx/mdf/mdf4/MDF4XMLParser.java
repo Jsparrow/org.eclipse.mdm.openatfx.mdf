@@ -43,11 +43,13 @@ public class MDF4XMLParser {
 	 */
 	public MDF4XMLParser() {
 		xmlInputFactory = XMLInputFactory.newInstance();
-		xmlDateTimeFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss"); // e.g. 2012-11-07T10:16:03
+		xmlDateTimeFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss"); // e.g.
+																			// 2012-11-07T10:16:03
 	}
 
 	/**
-	 * Writes the content of the meta data block of a header block to the instance element attributes
+	 * Writes the content of the meta data block of a header block to the
+	 * instance element attributes
 	 *
 	 * @param ins
 	 *            The ODSInsertStatement to use.
@@ -78,7 +80,7 @@ public class MDF4XMLParser {
 						if (reader.isStartElement() && reader.getLocalName().equals("const")) {
 							String name = reader.getAttributeValue(null, "name");
 							String value = reader.getElementText();
-							vars.add(name+"="+value);
+							vars.add(name + "=" + value);
 						}
 						reader.next();
 					}
@@ -146,7 +148,8 @@ public class MDF4XMLParser {
 	}
 
 	/**
-	 * Writes the content of the meta data block of a data group block to the instance element attributes
+	 * Writes the content of the meta data block of a data group block to the
+	 * instance element attributes
 	 *
 	 * @param ins
 	 *            The ODSInsertStatement to use.
@@ -186,7 +189,8 @@ public class MDF4XMLParser {
 	}
 
 	/**
-	 * Writes the content of the meta data block of a file history block to the instance element attributes
+	 * Writes the content of the meta data block of a file history block to the
+	 * instance element attributes
 	 *
 	 * @param ins
 	 *            The InsertStatement in use
@@ -242,7 +246,8 @@ public class MDF4XMLParser {
 	}
 
 	/**
-	 * Writes the content of the meta data block of a channel block to the instance element attributes
+	 * Writes the content of the meta data block of a channel block to the
+	 * instance element attributes
 	 *
 	 * @param ins
 	 *            The InsertStatement in use
@@ -360,7 +365,8 @@ public class MDF4XMLParser {
 	}
 
 	/**
-	 * Writes the content of the unit comment block of a channel block to the instance element attributes
+	 * Writes the content of the unit comment block of a channel block to the
+	 * instance element attributes
 	 *
 	 * @param ins
 	 *            The InsertStatement in use
@@ -404,7 +410,8 @@ public class MDF4XMLParser {
 	}
 
 	/**
-	 * Writes the content of the meta data block of a channel group block to the instance element attributes
+	 * Writes the content of the meta data block of a channel group block to the
+	 * instance element attributes
 	 *
 	 * @param ins
 	 *            The ODSInsertStatement to use.
@@ -448,7 +455,8 @@ public class MDF4XMLParser {
 	}
 
 	/**
-	 * Writes the content of the meta data block of a channel group block to the instance element attributes
+	 * Writes the content of the meta data block of a channel group block to the
+	 * instance element attributes
 	 *
 	 * @param ins
 	 *            The ODSInsertStatement to use
@@ -510,7 +518,8 @@ public class MDF4XMLParser {
 	}
 
 	/**
-	 * Writes the content of the meta data block of a channel group block to the instance element attributes
+	 * Writes the content of the meta data block of a channel group block to the
+	 * instance element attributes
 	 *
 	 * @param ins
 	 *            The ODSInsertStatement to use.
@@ -566,7 +575,8 @@ public class MDF4XMLParser {
 	}
 
 	/**
-	 * Writes the content of 'formulas' from the XML stream reader as ASAM ODS instance attributes.
+	 * Writes the content of 'formulas' from the XML stream reader as ASAM ODS
+	 * instance attributes.
 	 *
 	 * @param ins
 	 *            The insert statement in use.
@@ -659,10 +669,10 @@ public class MDF4XMLParser {
 		if (names.size() == 1) {
 			ins.setStringVal(nameExtension + "names", names.get(0));
 		}
-		if (vendors.size() == 1 ) {
+		if (vendors.size() == 1) {
 			ins.setStringVal(nameExtension + "vendors", vendors.get(0));
 		}
-		if (descriptions.size() ==1 ) {
+		if (descriptions.size() == 1) {
 			ins.setStringVal(nameExtension + "descriptions" + nameExtension, descriptions.get(0));
 		}
 		if (displays.size() == 1) {
@@ -671,7 +681,8 @@ public class MDF4XMLParser {
 	}
 
 	/**
-	 * Writes the content of 'common_properties' from the XML stream reader as ASAM ODS instance attributes.
+	 * Writes the content of 'common_properties' from the XML stream reader as
+	 * ASAM ODS instance attributes.
 	 *
 	 * @param ins
 	 *            The insert statement in use.
@@ -688,14 +699,16 @@ public class MDF4XMLParser {
 	}
 
 	/**
-	 * Writes the content of 'common_properties' from the XML stream reader as ASAM ODS instance attributes.
+	 * Writes the content of 'common_properties' from the XML stream reader as
+	 * ASAM ODS instance attributes.
 	 *
 	 * @param ins
 	 *            The insert statement in use.
 	 * @param reader
 	 *            The XML stream reader.
 	 * @param nameExtension
-	 *            Prefix to append to attribute names. For unique instance attribute names.
+	 *            Prefix to append to attribute names. For unique instance
+	 *            attribute names.
 	 * @throws XMLStreamException
 	 *             Error reading XML content.
 	 * @throws AoException
@@ -768,7 +781,8 @@ public class MDF4XMLParser {
 		return 0;
 	}
 
-	private void writeEList(ODSInsertStatement ins, XMLStreamReader reader, String nameExtension) throws XMLStreamException{
+	private void writeEList(ODSInsertStatement ins, XMLStreamReader reader, String nameExtension)
+			throws XMLStreamException {
 		String attrname = nameExtension + reader.getAttributeValue(null, "name");
 		String attrtype = reader.getAttributeValue(null, "type");
 		LinkedList<Object> valuelist = new LinkedList<Object>();
@@ -804,7 +818,7 @@ public class MDF4XMLParser {
 			reader.next();
 		}
 		if (attrtype == null || attrtype.length() < 1 || attrtype.equalsIgnoreCase("string")) {
-			//ins.setStringSeq(attrname, valuelist.toArray(new String[0]));
+			// ins.setStringSeq(attrname, valuelist.toArray(new String[0]));
 		} else if (attrtype.equalsIgnoreCase("decimal")) {
 			ins.setDoubleSeq(attrname, valuelist.toArray(new Double[0]));
 		} else if (attrtype.equalsIgnoreCase("integer")) {
@@ -816,7 +830,7 @@ public class MDF4XMLParser {
 		} else if (attrtype.equalsIgnoreCase("datetime")) {
 			ins.setDateSeq(attrname, valuelist.toArray(new Date[0]));
 		} else {
-			//ins.setStringSeq(attrname, valuelist.toArray(new String[0]));
+			// ins.setStringSeq(attrname, valuelist.toArray(new String[0]));
 		}
 	}
 }

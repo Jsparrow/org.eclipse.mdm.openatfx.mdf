@@ -13,7 +13,6 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.channels.SeekableByteChannel;
 
-
 /**
  * Base class for all blocks.
  *
@@ -43,8 +42,10 @@ abstract class BLOCK {
 	/**
 	 * Constructor.
 	 *
-	 * @param sbc The byte channel pointing to the MDF file.
-	 * @param pos The position of the block within the MDF file.
+	 * @param sbc
+	 *            The byte channel pointing to the MDF file.
+	 * @param pos
+	 *            The position of the block within the MDF file.
 	 */
 	protected BLOCK(SeekableByteChannel sbc, long pos) {
 		this.sbc = sbc;
@@ -128,10 +129,13 @@ abstract class BLOCK {
 	/**
 	 * Returns the block type string at given position.
 	 *
-	 * @param channel The channel to read from.
-	 * @param pos The position within the channel.
+	 * @param channel
+	 *            The channel to read from.
+	 * @param pos
+	 *            The position within the channel.
 	 * @return The block type as string.
-	 * @throws IOException Error reading block type.
+	 * @throws IOException
+	 *             Error reading block type.
 	 */
 	protected static String getBlockType(SeekableByteChannel channel, long pos) throws IOException {
 		// read block header

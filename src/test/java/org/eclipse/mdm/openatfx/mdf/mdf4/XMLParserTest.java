@@ -27,21 +27,12 @@ import org.omg.CORBA.ORB;
 
 import de.rechner.openatfx.util.ODSHelper;
 
-public class XMLParserTest  {
+public class XMLParserTest {
 	public void testXMLParseElist() throws ConvertException, URISyntaxException, AoException, IOException {
-		String test = "<common_properties>"+
-				"<elist ci=\"1\" name=\"Outlaws\">" +
-				"<eli ci=\"1\">Robin Hood</eli> "+
-				"<eli ci=\"1\">John Little</eli>"+
-				"<eli ci=\"2\">Friar Tuck</eli>"+
-				"</elist>" +
-				"<elist name=\"score\" unit=\"points\" type=\"integer\">" +
-				"<eli>1</eli>" +
-				"<eli ci=\"1\">1</eli>"+
-				"<eli>2</eli>"+
-				"<eli>4</eli>" +
-				"</elist>"+
-				"</common_properties>";
+		String test = "<common_properties>" + "<elist ci=\"1\" name=\"Outlaws\">" + "<eli ci=\"1\">Robin Hood</eli> "
+				+ "<eli ci=\"1\">John Little</eli>" + "<eli ci=\"2\">Friar Tuck</eli>" + "</elist>"
+				+ "<elist name=\"score\" unit=\"points\" type=\"integer\">" + "<eli>1</eli>" + "<eli ci=\"1\">1</eli>"
+				+ "<eli>2</eli>" + "<eli>4</eli>" + "</elist>" + "</common_properties>";
 
 		String mdfFile = "org/eclipse/mdm/openatfx/mdf/mdf4/arrays/simple/Vector_ArrayWithFixedAxes.MF4";
 		MDF4XMLParser pars = new MDF4XMLParser();
@@ -57,10 +48,9 @@ public class XMLParserTest  {
 		ApplicationStructure as = aoSession.getApplicationStructure();
 
 		InstanceElement ieMea = as.getElementByName("mea").getInstances("TestMea").nextOne();
-		assertArrayEquals(new String[]{"Robin Hood", "John Little", "Friar Tuck"}, ODSHelper.getStringSeq(ieMea.getValue("Outlaws")));
-		assertArrayEquals(new int[]{1,1,2,4}, ODSHelper.getLongSeq(ieMea.getValue("score")));
-
-
+		assertArrayEquals(new String[] { "Robin Hood", "John Little", "Friar Tuck" },
+				ODSHelper.getStringSeq(ieMea.getValue("Outlaws")));
+		assertArrayEquals(new int[] { 1, 1, 2, 4 }, ODSHelper.getLongSeq(ieMea.getValue("score")));
 
 	}
 }

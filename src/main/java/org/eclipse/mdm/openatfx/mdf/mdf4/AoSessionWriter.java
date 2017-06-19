@@ -43,7 +43,8 @@ import org.eclipse.mdm.openatfx.mdf.util.ODSInsertStatement;
 import org.eclipse.mdm.openatfx.mdf.util.ODSModelCache;
 
 /**
- * Main class for writing the MDF4 file content into an ASAM ODS session backed by an ATFX file.
+ * Main class for writing the MDF4 file content into an ASAM ODS session backed
+ * by an ATFX file.
  *
  * @author Christian Rechner
  */
@@ -63,25 +64,32 @@ public class AoSessionWriter {
 	/** helper class for previews */
 	private PreviewHelper previewHelper;
 
-	//Properties
+	// Properties
 	// replace channel name characters '[' with '{' and ']' with '}'
 	private boolean replaceSquareBrackets; // default = false
-	// whether to use the file name as AoMeasurement name, if false, property value of 'result_name' is used
-	private boolean useFileNameAsResultName=true; // default = true
-	// the name of the created AoMeasurement (only used if use_file_name_as_result_name=false)
+	// whether to use the file name as AoMeasurement name, if false, property
+	// value of 'result_name' is used
+	private boolean useFileNameAsResultName = true; // default = true
+	// the name of the created AoMeasurement (only used if
+	// use_file_name_as_result_name=false)
 	private String resultName = "Messdaten"; // default = "Messdaten"
-	// the name suffix of the created AoMeasurement, e.g. if suffix='_123' then 'test.mf4' will be converted to 'test_123.mf4'
-	private String resultSuffix=""; // default = null
+	// the name suffix of the created AoMeasurement, e.g. if suffix='_123' then
+	// 'test.mf4' will be converted to 'test_123.mf4'
+	private String resultSuffix = ""; // default = null
 	// the mimetype of the created AoMeasurement
-	private String resultMimeType = "application/x-asam.aomeasurement.timeseries"; // default = "application/x-asam.aomeasurement.timeseries"
-	// whether to add a reference to the original file to the AoMeasurement instance
+	private String resultMimeType = "application/x-asam.aomeasurement.timeseries"; // default
+																					// =
+																					// "application/x-asam.aomeasurement.timeseries"
+	// whether to add a reference to the original file to the AoMeasurement
+	// instance
 	private boolean addMDF3FileAsResultAttachment; // default = false
 	private boolean skipScaleConversionChannels = false;
 	// skip channels with DT_BYTESTR
 	// remove this once it is save to import channels with byte stream data
-	@Deprecated private boolean skipByteStreamChannels = false;
+	@Deprecated
+	private boolean skipByteStreamChannels = false;
 
-	private boolean readOnlyHeader= false;
+	private boolean readOnlyHeader = false;
 	private Path customRatConfPath;
 
 	/**
@@ -101,7 +109,8 @@ public class AoSessionWriter {
 	 *            The application model cache.
 	 * @param idBlock
 	 *            The IDBLOCK.
-	 * @param props Map with additional attributes to be set.
+	 * @param props
+	 *            Map with additional attributes to be set.
 	 * @throws AoException
 	 *             Error writing to session.
 	 * @throws IOException
@@ -114,38 +123,54 @@ public class AoSessionWriter {
 		}
 
 		try {
-			if(props!= null){
+			if (props != null) {
 				// replace channel name characters '[' with '{' and ']' with '}'
-				if(props.containsKey("replace_square_brackets")){
-					replaceSquareBrackets = Boolean.valueOf(props.getProperty("replace_square_brackets")) ; // default = false
+				if (props.containsKey("replace_square_brackets")) {
+					replaceSquareBrackets = Boolean.valueOf(props.getProperty("replace_square_brackets")); // default
+																											// =
+																											// false
 				}
-				// whether to use the file name as AoMeasurement name, if false, property value of 'result_name' is used
-				if(props.containsKey("use_file_name_as_result_name")){
-					useFileNameAsResultName = Boolean.valueOf(props.getProperty("use_file_name_as_result_name")); // default = true
+				// whether to use the file name as AoMeasurement name, if false,
+				// property value of 'result_name' is used
+				if (props.containsKey("use_file_name_as_result_name")) {
+					useFileNameAsResultName = Boolean.valueOf(props.getProperty("use_file_name_as_result_name")); // default
+																													// =
+																													// true
 				}
-				// the name of the created AoMeasurement (only used if use_file_name_as_result_name=false)
-				if(props.containsKey("result_name")){
-					resultName = props.getProperty("result_name"); // default = "Messdaten"
+				// the name of the created AoMeasurement (only used if
+				// use_file_name_as_result_name=false)
+				if (props.containsKey("result_name")) {
+					resultName = props.getProperty("result_name"); // default =
+																	// "Messdaten"
 				}
-				// the name suffix of the created AoMeasurement, e.g. if suffix='_123' then 'test.mf4' will be converted to 'test_123.mf4'
-				if(props.containsKey("result_suffix")){
-					resultSuffix = props.getProperty("result_suffix"); // default = null
+				// the name suffix of the created AoMeasurement, e.g. if
+				// suffix='_123' then 'test.mf4' will be converted to
+				// 'test_123.mf4'
+				if (props.containsKey("result_suffix")) {
+					resultSuffix = props.getProperty("result_suffix"); // default
+																		// =
+																		// null
 				}
 				// the mimetype of the created AoMeasurement
-				if(props.containsKey("result_mimetype")){
-					resultMimeType = props.getProperty("result_mimetype"); // default = "application/x-asam.aomeasurement.timeseries"
+				if (props.containsKey("result_mimetype")) {
+					resultMimeType = props.getProperty("result_mimetype"); // default
+																			// =
+																			// "application/x-asam.aomeasurement.timeseries"
 				}
-				// whether to add a reference to the original file to the AoMeasurement instance
-				if(props.containsKey("attach_source_files")){
-					addMDF3FileAsResultAttachment = Boolean.valueOf(props.getProperty("attach_source_files")); // default = false
+				// whether to add a reference to the original file to the
+				// AoMeasurement instance
+				if (props.containsKey("attach_source_files")) {
+					addMDF3FileAsResultAttachment = Boolean.valueOf(props.getProperty("attach_source_files")); // default
+																												// =
+																												// false
 				}
-				if(props.containsKey("read_only_header")){
+				if (props.containsKey("read_only_header")) {
 					readOnlyHeader = Boolean.valueOf(props.getProperty("read_only_header"));
 				}
-				if(props.containsKey("skip_scale_conversion_channels")) {
+				if (props.containsKey("skip_scale_conversion_channels")) {
 					skipScaleConversionChannels = Boolean.valueOf(props.getProperty("skip_scale_conversion_channels"));
 				}
-				if(props.containsKey("skip_byte_stream_channels")) {
+				if (props.containsKey("skip_byte_stream_channels")) {
 					skipByteStreamChannels = Boolean.valueOf(props.getProperty("skip_byte_stream_channels"));
 				}
 			}
@@ -160,12 +185,12 @@ public class AoSessionWriter {
 			ins.setLongVal("mdf_unfin_flags", idBlock.getIdUnfinFlags());
 			ins.setLongVal("mdf_custom_unfin_flags", idBlock.getIdCustomUnfinFlags());
 
-			//write properties
-			if(props!=null){
+			// write properties
+			if (props != null) {
 				MDF4Util.writeProperites(ins, props);
 			}
 
-			//set Relations, to environment
+			// set Relations, to environment
 			ins.setLongLongVal("env", 1L);
 
 			long iidTst = ins.execute();
@@ -175,12 +200,13 @@ public class AoSessionWriter {
 
 			// write 'AoMeasurement' instance
 			writeMea(modelCache, iidTst, idBlock);
-		} catch(AoException | IOException e) {
-			// make sure file with manually calculated values is deleted in case of errors
-			if(customRatConfPath != null && Files.exists(customRatConfPath)) {
+		} catch (AoException | IOException e) {
+			// make sure file with manually calculated values is deleted in case
+			// of errors
+			if (customRatConfPath != null && Files.exists(customRatConfPath)) {
 				try {
 					Files.delete(customRatConfPath);
-				} catch(IOException e2) {
+				} catch (IOException e2) {
 					LOG.warn("failed to delete file with manually calculated values: '" + customRatConfPath + "'");
 				}
 			}
@@ -205,8 +231,7 @@ public class AoSessionWriter {
 	 * @throws IOException
 	 *             Error reading from MDF file.
 	 */
-	private void writeMea(ODSModelCache modelCache, long iidTst, IDBLOCK idBlock)
-			throws AoException, IOException {
+	private void writeMea(ODSModelCache modelCache, long iidTst, IDBLOCK idBlock) throws AoException, IOException {
 		Path fileName = idBlock.getMdfFilePath().getFileName();
 		if (fileName == null) {
 			throw new IOException("Unable to obtain file name!");
@@ -216,14 +241,14 @@ public class AoSessionWriter {
 
 		ODSInsertStatement ins = new ODSInsertStatement(modelCache, "mea");
 
-		if(useFileNameAsResultName){
+		if (useFileNameAsResultName) {
 			ins.setStringVal("iname", FileUtil.getResultName(fileName.toString(), resultSuffix));
-		}else{
+		} else {
 			ins.setStringVal("iname", resultName + resultSuffix);
 		}
 		ins.setStringVal("mt", resultMimeType);
 
-		if(addMDF3FileAsResultAttachment){
+		if (addMDF3FileAsResultAttachment) {
 			ins.setExtRefVal("attachment", new T_ExternalReference("original MDF-File", "", fileName.toString()));
 		}
 
@@ -238,7 +263,10 @@ public class AoSessionWriter {
 
 		Calendar cal = Calendar.getInstance();
 		cal.setTimeInMillis(hdBlock.getStartTimeNs() / 1000000);
-		if (!hdBlock.isLocalTime() && hdBlock.isTimeFlagsValid()) { // UTC time given, calc local
+		if (!hdBlock.isLocalTime() && hdBlock.isTimeFlagsValid()) { // UTC time
+																	// given,
+																	// calc
+																	// local
 			cal.add(Calendar.MINUTE, hdBlock.getTzOffsetMin());
 			cal.add(Calendar.MINUTE, hdBlock.getDstOffsetMin());
 		}
@@ -253,14 +281,12 @@ public class AoSessionWriter {
 
 		ins.setEnumVal("time_quality_class", hdBlock.getTimeClass());
 		ins.setShortVal("start_angle_valid", hdBlock.isStartAngleValid() ? (short) 1 : (short) 0);
-		ins.setShortVal("start_distance_valid",
-				hdBlock.isStartDistanceValid() ? (short) 1 : (short) 0);
+		ins.setShortVal("start_distance_valid", hdBlock.isStartDistanceValid() ? (short) 1 : (short) 0);
 
 		ins.setDoubleVal("start_angle_rad", hdBlock.getStartAngleRad());
 		ins.setDoubleVal("start_distance_m", hdBlock.getStartDistanceM());
 
-
-		//set Relations, to test
+		// set Relations, to test
 		ins.setLongLongVal("tst", iidTst);
 
 		long iidMea = ins.execute();
@@ -278,7 +304,7 @@ public class AoSessionWriter {
 			LOG.warn("Found ATBLOCK, currently not yet supported!");
 		}
 
-		if(!readOnlyHeader){
+		if (!readOnlyHeader) {
 			writeEv(modelCache, iidTst, iidFh, hdBlock);
 
 			// write submatrices
@@ -301,8 +327,7 @@ public class AoSessionWriter {
 	 * @throws IOException
 	 *             Error reading from MDF file.
 	 */
-	private Long[] writeFh(ODSModelCache modelCache, long iidTst, HDBLOCK hdBlock)
-			throws AoException, IOException {
+	private Long[] writeFh(ODSModelCache modelCache, long iidTst, HDBLOCK hdBlock) throws AoException, IOException {
 		int no = 1;
 		FHBLOCK fhBlock = hdBlock.getFhFirstBlock();
 		List<Long> iids = new LinkedList<Long>();
@@ -314,7 +339,11 @@ public class AoSessionWriter {
 			// meta information
 			Calendar cal = Calendar.getInstance();
 			cal.setTimeInMillis(fhBlock.getStartTimeNs() / 1000000);
-			if (!fhBlock.isLocalTime() && fhBlock.isTimeFlagsValid()) { // UTC time given, calc local
+			if (!fhBlock.isLocalTime() && fhBlock.isTimeFlagsValid()) { // UTC
+																		// time
+																		// given,
+																		// calc
+																		// local
 				cal.add(Calendar.MINUTE, fhBlock.getTzOffsetMin());
 				cal.add(Calendar.MINUTE, fhBlock.getDstOffsetMin());
 			}
@@ -325,11 +354,11 @@ public class AoSessionWriter {
 			ins.setShortVal("time_offsets_valid", fhBlock.isTimeFlagsValid() ? (short) 1 : (short) 0);
 			ins.setShortVal("tz_offset_min", fhBlock.getTzOffsetMin());
 			ins.setShortVal("dst_offset_min", fhBlock.getDstOffsetMin());
-			if(fhBlock.getLnkMdComment()!=0){
+			if (fhBlock.getLnkMdComment() != 0) {
 				xmlParser.writeFHCommentToFh(ins, fhBlock.getMdCommentBlock().getMdData());
 			}
 
-			//set Relations.
+			// set Relations.
 			ins.setLongLongVal("tst", iidTst);
 			iids.add(ins.execute());
 			no++;
@@ -357,16 +386,16 @@ public class AoSessionWriter {
 		int no = 1;
 		EVBLOCK evBlock = hdBlock.getEvFirstBlock();
 		while (evBlock != null) {
-			if(evBlock.getLnkEvParent()!=0){
+			if (evBlock.getLnkEvParent() != 0) {
 				LOG.warn("Event Hirachy not supported.");
 			}
 
-			if(evBlock.getLnkEvRange()!=0){
+			if (evBlock.getLnkEvRange() != 0) {
 				LOG.warn("Event Range not supported.");
 			}
 			ODSInsertStatement ins = new ODSInsertStatement(modelCache, "ev");
 			TXBLOCK name;
-			if((name=evBlock.getEvTxNameBlock())!=null){
+			if ((name = evBlock.getEvTxNameBlock()) != null) {
 				ins.setStringVal("iname", name.getTxData());
 			} else {
 				ins.setStringVal("iname", "ev_" + countFormat.format(no));
@@ -376,15 +405,15 @@ public class AoSessionWriter {
 			BLOCK mdblock = evBlock.getMdCommentBlock();
 			if (mdblock != null) {
 				if (mdblock instanceof MDBLOCK) {
-					xmlParser.writeEVCommentToEv(ins, ((MDBLOCK)mdblock).getMdData());
+					xmlParser.writeEVCommentToEv(ins, ((MDBLOCK) mdblock).getMdData());
 				} else if (mdblock instanceof TXBLOCK) {
-					ins.setStringVal("desc", ((TXBLOCK)mdblock).getTxData());
+					ins.setStringVal("desc", ((TXBLOCK) mdblock).getTxData());
 				}
 			}
 
 			ins.setEnumVal("type", evBlock.getType());
 
-			//System.out.println("Synctype: "+evBlock.getSyncType());
+			// System.out.println("Synctype: "+evBlock.getSyncType());
 
 			ins.setEnumVal("sync_type", evBlock.getSyncType());
 			ins.setEnumVal("range_type", evBlock.getRangeType());
@@ -392,9 +421,9 @@ public class AoSessionWriter {
 			ins.setShortVal("flags", evBlock.getFlags());
 			ins.setDoubleVal("sync_val", evBlock.getSyncValue());
 
-			//set Relations.
+			// set Relations.
 			ins.setLongLongVal("tst", iidTst);
-			if(evBlock.getCreatorIndex() < iidFh.length && evBlock.getCreatorIndex() >= 0){
+			if (evBlock.getCreatorIndex() < iidFh.length && evBlock.getCreatorIndex() >= 0) {
 				ins.setLongLongVal("creator", iidFh[evBlock.getCreatorIndex()]);
 			}
 
@@ -404,6 +433,7 @@ public class AoSessionWriter {
 			evBlock = evBlock.getEvNextBlock();
 		}
 	}
+
 	/**
 	 * Write the instances of 'AoSubMatrix'.
 	 *
@@ -415,7 +445,7 @@ public class AoSessionWriter {
 	 *            The IDBLOCK.
 	 * @param hdBlock
 	 *            The HDBLOCK.
-	 * @param  meqNames
+	 * @param meqNames
 	 *            Map with existing MeasurmentQuantities and their IDs.
 	 * @throws AoException
 	 *             Error writing to session.
@@ -438,7 +468,6 @@ public class AoSessionWriter {
 						"Only 'sorted' MDF4 files are supported, found 'unsorted' data! [DGBLOCK=" + dgBlock + "]");
 			}
 
-
 			// skip channel groups having no channels (or optionally no values)
 			if (cgBlock != null) {
 
@@ -455,23 +484,23 @@ public class AoSessionWriter {
 				ODSInsertStatement ins = new ODSInsertStatement(modelCache, "sm");
 				ins.setStringVal("iname", "sm_" + countFormat.format(grpNo));
 
-				//write CGComment
+				// write CGComment
 				BLOCK mdblock = cgBlock.getMdCommentBlock();
 				if (mdblock != null) {
 					if (mdblock instanceof MDBLOCK) {
 						xmlParser.writeCGCommentToCg(ins, ((MDBLOCK) mdblock).getMdData());
 					} else if (mdblock instanceof TXBLOCK) {
-						ins.setStringVal("desc", ((TXBLOCK)mdblock).getTxData());
+						ins.setStringVal("desc", ((TXBLOCK) mdblock).getTxData());
 					}
 				}
 
-				//write DGComment
+				// write DGComment
 				mdblock = dgBlock.getMdCommentBlock();
 				if (mdblock != null) {
 					if (mdblock instanceof MDBLOCK) {
 						xmlParser.writeDGCommentToCg(ins, ((MDBLOCK) mdblock).getMdData());
 					} else if (mdblock instanceof TXBLOCK) {
-						ins.setStringVal("dg_desc", ((TXBLOCK)mdblock).getTxData());
+						ins.setStringVal("dg_desc", ((TXBLOCK) mdblock).getTxData());
 					}
 				}
 
@@ -492,14 +521,15 @@ public class AoSessionWriter {
 				ApplicationElement aeMea = modelCache.getApplicationElement("mea");
 				InstanceElement ieMea = aeMea.getInstanceById(ODSHelper.asODSLongLong(iidMea));
 
-				// write instances of AoMeasurementQuantity,AoLocalColumn,AoExternalReference
+				// write instances of
+				// AoMeasurementQuantity,AoLocalColumn,AoExternalReference
 				Map<String, Integer> mapMeq = new HashMap<String, Integer>();
-
 
 				SRBLOCK srBlock = cgBlock.getSrFirstBlock();
 
 				long[] iidPrevSm = previewHelper.createPreviewSubMatrices(ieMea, srBlock);
-				writeLc(modelCache, iidMea, iidSm, iidPrevSm, idBlock, dgBlock, cgBlock, mapMeq, meqInstances, untInstances, srBlock);
+				writeLc(modelCache, iidMea, iidSm, iidPrevSm, idBlock, dgBlock, cgBlock, mapMeq, meqInstances,
+						untInstances, srBlock);
 			}
 
 			dgBlock = dgBlock.getDgNextBlock();
@@ -527,11 +557,11 @@ public class AoSessionWriter {
 	 * @throws IOException
 	 *             Error reading from MDF file.
 	 */
-	private void writeLc(ODSModelCache modelCache, long iidMea, long iidSm, long[] iidPrevSm, IDBLOCK idBlock, DGBLOCK dgBlock,
-			CGBLOCK cgBlock, Map<String, Integer> meqNames, Map<String, Long> meqInstances, Map<String, Long> untInstances, SRBLOCK srBlock)
-					throws AoException, IOException {
+	private void writeLc(ODSModelCache modelCache, long iidMea, long iidSm, long[] iidPrevSm, IDBLOCK idBlock,
+			DGBLOCK dgBlock, CGBLOCK cgBlock, Map<String, Integer> meqNames, Map<String, Long> meqInstances,
+			Map<String, Long> untInstances, SRBLOCK srBlock) throws AoException, IOException {
 
-		//Performance?
+		// Performance?
 		ApplicationElement aeMea = modelCache.getApplicationElement("mea");
 		ApplicationElement aeLc = modelCache.getApplicationElement("lc");
 		ApplicationElement aeSm = modelCache.getApplicationElement("sm");
@@ -545,7 +575,8 @@ public class AoSessionWriter {
 			// check invalidation bits (not yet supported)
 			if (cnBlock.getLnkComposition() != 0) {
 				LOG.warn("Composition of channels not supported! [CNBLOCK=" + cnBlock + "]");
-				//throw new IOException("Composition of channels not supported! [CNBLOCK=" + cnBlock + "]");
+				// throw new IOException("Composition of channels not supported!
+				// [CNBLOCK=" + cnBlock + "]");
 			}
 
 			// cn_at_reference: attachments TODO
@@ -562,7 +593,8 @@ public class AoSessionWriter {
 				meqName = meqName.replaceAll("\\]", "}");
 			}
 
-			// check for duplicate signal names and add suffix (except time channel)
+			// check for duplicate signal names and add suffix (except time
+			// channel)
 			if (cnBlock.getChannelType() == 0) {
 				Integer noChannels = meqNames.get(meqName);
 				if (noChannels == null) {
@@ -576,18 +608,19 @@ public class AoSessionWriter {
 			}
 
 			CCBLOCK ccBlock = cnBlock.getCcConversionBlock();
-			
+
 			// check whether channel has to be or shall be skipped
-			if(skipScaleConversionChannels && ccBlock != null && ccBlock.hasCCRefs()) {
+			if (skipScaleConversionChannels && ccBlock != null && ccBlock.hasCCRefs()) {
 				LOG.info("Channel '" + meqName + "' with scale conversion rules in CCBlocks skipped: " + ccBlock);
 				cnBlock = cnBlock.getCnNextBlock();
 				continue;
-			} else if(skipByteStreamChannels && 10 == cnBlock.getDataType()) {
-				// remove this block once it is save to import channels with byte stream data
+			} else if (skipByteStreamChannels && 10 == cnBlock.getDataType()) {
+				// remove this block once it is save to import channels with
+				// byte stream data
 				LOG.info("Channel '" + meqName + "' with byte stream data skipped: " + ccBlock);
 				cnBlock = cnBlock.getCnNextBlock();
 				continue;
-			} else if(10 == cnBlock.getDataType() && cnBlock.getLnkComposition() != 0) {
+			} else if (10 == cnBlock.getDataType() && cnBlock.getLnkComposition() != 0) {
 				LOG.info("Channel '" + meqName + "' with composed byte stream data skipped: " + ccBlock);
 				cnBlock = cnBlock.getCnNextBlock();
 				continue;
@@ -601,16 +634,18 @@ public class AoSessionWriter {
 			}
 
 			// create 'AoLocalColumn' instance
-			long iidLc = createLocalColumn(modelCache, dgBlock, cgBlock, cnBlock, ccBlock, meqName, iidSm, iidMeq, iidPrevSm, null);
-			//relation to previews
-			if(iidPrevSm!= null){
+			long iidLc = createLocalColumn(modelCache, dgBlock, cgBlock, cnBlock, ccBlock, meqName, iidSm, iidMeq,
+					iidPrevSm, null);
+			// relation to previews
+			if (iidPrevSm != null) {
 				InstanceElement ieLc = aeLc.getInstanceById(ODSHelper.asODSLongLong(iidLc));
 				for (long element : iidPrevSm) {
 					ieLc.createRelation(relLcSmPrev, aeSm.getInstanceById(ODSHelper.asODSLongLong(element)));
 				}
 			}
 
-			// create 'AoExternalComponent' instance (if not a string data type (6-9) or VLSD-Channel (Type ==1))
+			// create 'AoExternalComponent' instance (if not a string data type
+			// (6-9) or VLSD-Channel (Type ==1))
 			if (!(cnBlock.getDataType() >= 6 && cnBlock.getDataType() <= 9 || cnBlock.getChannelType() == 1)) {
 				writeEc(modelCache, iidLc, idBlock, dgBlock, cgBlock, cnBlock, ccBlock, dgBlock.getLnkData(), 0);
 			}
@@ -636,21 +671,32 @@ public class AoSessionWriter {
 	}
 
 	/**
-	 * Create and insert the actual MeasurementQuantity
-	 * This function also creates the corresponding unit if it doesn't already exist.
-	 * @param modelCache Cache with model Object
-	 * @param cnBlock The Channel Block.
-	 * @param ccBlock The Conversion Block.
-	 * @param meqName The Name the Measurement will have.
-	 * @param iidMea The ID of the Measurement this Quantity is related to.
-	 * @param mimeType The MIME-Type of this MeasurementQuantity. if mimeType==null, no MIME-Type is set.
-	 * @param untInstances Map that contains iids of all created units so far. Key is the name of the unit
+	 * Create and insert the actual MeasurementQuantity This function also
+	 * creates the corresponding unit if it doesn't already exist.
+	 * 
+	 * @param modelCache
+	 *            Cache with model Object
+	 * @param cnBlock
+	 *            The Channel Block.
+	 * @param ccBlock
+	 *            The Conversion Block.
+	 * @param meqName
+	 *            The Name the Measurement will have.
+	 * @param iidMea
+	 *            The ID of the Measurement this Quantity is related to.
+	 * @param mimeType
+	 *            The MIME-Type of this MeasurementQuantity. if mimeType==null,
+	 *            no MIME-Type is set.
+	 * @param untInstances
+	 *            Map that contains iids of all created units so far. Key is the
+	 *            name of the unit
 	 * @return The ID of the created MeasurmentQuantity
-	 * @throws IOException If an I/O-error occurs.
+	 * @throws IOException
+	 *             If an I/O-error occurs.
 	 * @throws AoException
 	 */
-	long createMeasurementQuantity(ODSModelCache modelCache, CNBLOCK cnBlock, CCBLOCK ccBlock,
-			String meqName, long iidMea, String mimeType, Map<String, Long> untInstances) throws IOException, AoException {
+	long createMeasurementQuantity(ODSModelCache modelCache, CNBLOCK cnBlock, CCBLOCK ccBlock, String meqName,
+			long iidMea, String mimeType, Map<String, Long> untInstances) throws IOException, AoException {
 		int seqRep = getSeqRep(ccBlock);
 		double[] genParams = getGenerationParameters(ccBlock);
 
@@ -662,12 +708,11 @@ public class AoSessionWriter {
 		if (mdblock instanceof MDBLOCK) {
 			xmlParser.writeCNCommentToMeq(ins, ((MDBLOCK) mdblock).getMdData());
 		} else if (mdblock instanceof TXBLOCK) {
-			ins.setStringVal("desc",  ((TXBLOCK) mdblock).getTxData().trim());
+			ins.setStringVal("desc", ((TXBLOCK) mdblock).getTxData().trim());
 		}
 
-
-		//MIME-Type
-		if(mimeType!=null){
+		// MIME-Type
+		if (mimeType != null) {
 			ins.setStringVal("mt", mimeType);
 		}
 
@@ -679,14 +724,19 @@ public class AoSessionWriter {
 			ins.setDoubleVal("max", ccBlock.getPhyRangeMax());
 		}
 		/*
-		 * // CEBLOCK (extension block) info CEBLOCK ceBlock = cnBlock.getCeblock(); if (ceBlock != null &&
-		 * ceBlock.getCeBlockDim() != null) { CEBLOCK_DIM ext = ceBlock.getCeBlockDim();
-		 * ins.setLongVal("NumberOfModule", ext.getNumberOfModule()); ins.setLongLongVal("Address", ext.getAddress());
-		 * ins.setStringVal("DIMDescription", ext.getDescription()); ins.setStringVal("ECUIdent", ext.getEcuIdent()); }
-		 * else if (ceBlock != null && ceBlock.getCeBlockVectorCAN() != null) { CEBLOCK_VectorCAN ext =
-		 * ceBlock.getCeBlockVectorCAN(); ins.setLongLongVal("CANIndex", ext.getCanIndex());
-		 * ins.setLongLongVal("MessageId", ext.getMessageId()); ins.setStringVal("MessageName", ext.getMessageName());
-		 * ins.setStringVal("SenderName", ext.getSenderName()); }
+		 * // CEBLOCK (extension block) info CEBLOCK ceBlock =
+		 * cnBlock.getCeblock(); if (ceBlock != null && ceBlock.getCeBlockDim()
+		 * != null) { CEBLOCK_DIM ext = ceBlock.getCeBlockDim();
+		 * ins.setLongVal("NumberOfModule", ext.getNumberOfModule());
+		 * ins.setLongLongVal("Address", ext.getAddress());
+		 * ins.setStringVal("DIMDescription", ext.getDescription());
+		 * ins.setStringVal("ECUIdent", ext.getEcuIdent()); } else if (ceBlock
+		 * != null && ceBlock.getCeBlockVectorCAN() != null) { CEBLOCK_VectorCAN
+		 * ext = ceBlock.getCeBlockVectorCAN(); ins.setLongLongVal("CANIndex",
+		 * ext.getCanIndex()); ins.setLongLongVal("MessageId",
+		 * ext.getMessageId()); ins.setStringVal("MessageName",
+		 * ext.getMessageName()); ins.setStringVal("SenderName",
+		 * ext.getSenderName()); }
 		 */
 		ins.setLongLongVal("mea", iidMea);
 
@@ -697,7 +747,7 @@ public class AoSessionWriter {
 
 		// create 'AoUnit' instance if not yet existing
 		long uiid = writeUnit(modelCache, cnBlock, ccBlock, untInstances);
-		if(uiid != -1){
+		if (uiid != -1) {
 			ins.setLongLongVal("unt", uiid);
 		}
 		long iidMeq = ins.execute();
@@ -707,36 +757,52 @@ public class AoSessionWriter {
 
 	/**
 	 * Create and insert the actual LocalColumn.
-	 * @param modelCache Cache with model Object
-	 * @param dgBlock The Data Group Block.
-	 * @param cgBlock The Channel Group Block.
-	 * @param cnBlock The Channel Block.
-	 * @param ccBlock The Conversion Block.
-	 * @param lcName The Name the Local Column will have.
-	 * @param iidMeq The ID of the SubMatrix this LocalColumn is related to.
-	 * @param iidMeq The ID of the MeasurementQuantity this LocalColumn is related to.
-	 * @param mimeType The MIME-Type of this MeasurementQuantity. if mimeType==null, no MIME-Type is set.
+	 * 
+	 * @param modelCache
+	 *            Cache with model Object
+	 * @param dgBlock
+	 *            The Data Group Block.
+	 * @param cgBlock
+	 *            The Channel Group Block.
+	 * @param cnBlock
+	 *            The Channel Block.
+	 * @param ccBlock
+	 *            The Conversion Block.
+	 * @param lcName
+	 *            The Name the Local Column will have.
+	 * @param iidMeq
+	 *            The ID of the SubMatrix this LocalColumn is related to.
+	 * @param iidMeq
+	 *            The ID of the MeasurementQuantity this LocalColumn is related
+	 *            to.
+	 * @param mimeType
+	 *            The MIME-Type of this MeasurementQuantity. if mimeType==null,
+	 *            no MIME-Type is set.
 	 * @return The ID of the created MeasurmentQuantity
-	 * @throws IOException If an I/O-error occurs.
+	 * @throws IOException
+	 *             If an I/O-error occurs.
 	 * @throws AoException
 	 */
-	long createLocalColumn(ODSModelCache modelCache, DGBLOCK dgBlock, CGBLOCK cgBlock , CNBLOCK cnBlock,
-			CCBLOCK ccBlock, String lcName, long iidSm, long iidMeq, long[] iidPrevSm, String mimeType) throws IOException, AoException {
+	long createLocalColumn(ODSModelCache modelCache, DGBLOCK dgBlock, CGBLOCK cgBlock, CNBLOCK cnBlock, CCBLOCK ccBlock,
+			String lcName, long iidSm, long iidMeq, long[] iidPrevSm, String mimeType) throws IOException, AoException {
 		int seqRep = getSeqRep(ccBlock);
 		double[] genParams = getGenerationParameters(ccBlock);
 		ODSInsertStatement ins = new ODSInsertStatement(modelCache, "lc");
 		ins.setStringVal("iname", lcName);
 		ins.setLongLongVal("sm", iidSm);
 
-		//MIME-Type
-		if(mimeType!=null){
+		// MIME-Type
+		if (mimeType != null) {
 			ins.setStringVal("mt", mimeType);
 		}
 		// global flag
 		ins.setShortVal("glb", (short) 15);
 
-		// sequence_representation: string channels cannot be referenced in ASAM ODS: read and write external
-		if (cnBlock.getDataType() >= 6 && cnBlock.getDataType() <= 9 && cnBlock.getChannelType() != 1) { // 6 To 9:
+		// sequence_representation: string channels cannot be referenced in ASAM
+		// ODS: read and write external
+		if (cnBlock.getDataType() >= 6 && cnBlock.getDataType() <= 9 && cnBlock.getChannelType() != 1) { // 6
+																											// To
+																											// 9:
 			// Datatype
 			// String
 			String[] stringDataValues = readStringDataValues(dgBlock, cgBlock, cnBlock);
@@ -776,7 +842,6 @@ public class AoSessionWriter {
 		// relation to submatrix
 		ins.setLongLongVal("sm", iidSm);
 		ins.setLongLongVal("meq", iidMeq);
-
 
 		long iidLc = ins.execute();
 		return iidLc;
@@ -869,7 +934,8 @@ public class AoSessionWriter {
 	}
 
 	/**
-	 * Creates a Lookup-Table from the given conversion Block. (must not be null!)
+	 * Creates a Lookup-Table from the given conversion Block. (must not be
+	 * null!)
 	 *
 	 * @param modelCache
 	 * @param cc
@@ -877,13 +943,14 @@ public class AoSessionWriter {
 	 * @throws IOException
 	 * @throws AoException
 	 */
-	private long createLookupTable(ODSModelCache modelCache, CCBLOCK ccBlock, InstanceElement ieMea, InstanceElement ieLc)
-			throws IOException, AoException {
+	private long createLookupTable(ODSModelCache modelCache, CCBLOCK ccBlock, InstanceElement ieMea,
+			InstanceElement ieLc) throws IOException, AoException {
 		// Scale Lookups are not yet supported.
 		if (ccBlock.getType() == 4 || ccBlock.getType() == 5) {
 			double[] keys = ccBlock.getSecondValues(true);
 			double[] values = ccBlock.getSecondValues(false);
-			return lookupTableHelper.createValueToValueTable(modelCache, ieMea, ieLc, keys, values, ccBlock.getType() == 4);
+			return lookupTableHelper.createValueToValueTable(modelCache, ieMea, ieLc, keys, values,
+					ccBlock.getType() == 4);
 
 		} else if (ccBlock.getType() == 6) {
 			double[] minKeys = ccBlock.getThirdValues(0);
@@ -898,7 +965,8 @@ public class AoSessionWriter {
 			if (values.length != keys.length) {
 				LOG.warn("Number of values and keys for Lookup-Table are not equal!");
 			}
-			return lookupTableHelper.createValueToTextTable(modelCache, ieMea, ieLc, keys, values, ccBlock.getDefaultValue());
+			return lookupTableHelper.createValueToTextTable(modelCache, ieMea, ieLc, keys, values,
+					ccBlock.getDefaultValue());
 
 		} else if (ccBlock.getType() == 8) { // Value Range to Text/Scale lookup
 			double[] keysMin = ccBlock.getSecondValues(true);
@@ -928,11 +996,16 @@ public class AoSessionWriter {
 
 	/**
 	 * Reads String values from a string channel.
-	 * @param dgBlock The data group block.
-	 * @param cgBlock The channel group block.
-	 * @param cnBlock The channel block.
+	 * 
+	 * @param dgBlock
+	 *            The data group block.
+	 * @param cgBlock
+	 *            The channel group block.
+	 * @param cnBlock
+	 *            The channel block.
 	 * @return The values as String-Array.
-	 * @throws IOException If an input error occurs.
+	 * @throws IOException
+	 *             If an input error occurs.
 	 */
 	private static String[] readStringDataValues(DGBLOCK dgBlock, CGBLOCK cgBlock, CNBLOCK cnBlock) throws IOException {
 		List<String> list = new ArrayList<String>();
@@ -985,32 +1058,43 @@ public class AoSessionWriter {
 	}
 
 	/**
-	 * Write the instances of 'AoExternalComponent'. One instance is written for each data block.
+	 * Write the instances of 'AoExternalComponent'. One instance is written for
+	 * each data block.
 	 *
 	 * @param modelCache
 	 *            The application model cache.
 	 * @param iidLc
 	 *            The instance id of the 'AoLocalColumn' instance.
-	 * @param idBlock The IDBLOCK.
-	 * @param dgBlock The DGBLOCK.
-	 * @param cgBlock The CGBLOCK.
-	 * @param cnBlock The CNBLOCK.
-	 * @param ccBlock The CCBLOCK.
+	 * @param idBlock
+	 *            The IDBLOCK.
+	 * @param dgBlock
+	 *            The DGBLOCK.
+	 * @param cgBlock
+	 *            The CGBLOCK.
+	 * @param cnBlock
+	 *            The CNBLOCK.
+	 * @param ccBlock
+	 *            The CCBLOCK.
 	 * @param sectionstart
-	 *            The link to data, can be a DL, RD or DT Block or HL, DZ, but these are not supported.
-	 * @param parity Used for previews, where only each third record has to be addressed. If every record will be addressed, parity has
-	 * 	to be set to 0. Otherwise valid values are 1, 2 and 3. (e.g. if parity==1 the first of each three records will be addressed)
+	 *            The link to data, can be a DL, RD or DT Block or HL, DZ, but
+	 *            these are not supported.
+	 * @param parity
+	 *            Used for previews, where only each third record has to be
+	 *            addressed. If every record will be addressed, parity has to be
+	 *            set to 0. Otherwise valid values are 1, 2 and 3. (e.g. if
+	 *            parity==1 the first of each three records will be addressed)
 	 *
 	 * @throws AoException
 	 *             Error writing to session.
 	 * @throws IOException
 	 *             Error reading from MDF file.
 	 */
-	void writeEc(ODSModelCache modelCache, long iidLc, IDBLOCK idBlock, DGBLOCK dgBlock, CGBLOCK cgBlock, CNBLOCK cnBlock,
-			CCBLOCK ccBlock, long sectionstart, int parity) throws AoException, IOException {
+	void writeEc(ODSModelCache modelCache, long iidLc, IDBLOCK idBlock, DGBLOCK dgBlock, CGBLOCK cgBlock,
+			CNBLOCK cnBlock, CCBLOCK ccBlock, long sectionstart, int parity) throws AoException, IOException {
 
-		if(isRatConv2ExtComp(ccBlock)) {
-			// NOTE: once CCBLOCK is no longer required, it should be removed from this method's signature!
+		if (isRatConv2ExtComp(ccBlock)) {
+			// NOTE: once CCBLOCK is no longer required, it should be removed
+			// from this method's signature!
 			createCustomRatConvEC(modelCache, iidLc, idBlock, dgBlock, cgBlock, cnBlock, ccBlock, sectionstart, parity);
 		} else {
 			ODSInsertStatement ins = new ODSInsertStatement(modelCache, "ec");
@@ -1051,7 +1135,6 @@ public class AoSessionWriter {
 				ins.setEnumVal("vt", getValueType(cnBlock));
 				ins.setLongLongVal("so", currblock + 24L);
 
-
 				// TODO Strings, write number of Bytes? Spec4/61
 				ins.setLongVal("vb", 1); // one value per block
 
@@ -1059,24 +1142,25 @@ public class AoSessionWriter {
 				long bytesize;
 				long valueOffset;
 				long recSizeWoInval = cgBlock.getDataBytes() + dgBlock.getRecIdSize();
-				if(parity==0){
-					bytesize =  recSizeWoInval + cgBlock.getInvalBytes();
+				if (parity == 0) {
+					bytesize = recSizeWoInval + cgBlock.getInvalBytes();
 					valueOffset = dgBlock.getRecIdSize() + cnBlock.getByteOffset() + cnBlock.getBitOffset() / 8;
-				}else{
-					//inval bytes once at the end
-					bytesize = 3*recSizeWoInval + cgBlock.getInvalBytes();
-					valueOffset = (parity-1)*recSizeWoInval + dgBlock.getRecIdSize() + cnBlock.getByteOffset() + cnBlock.getBitOffset() / 8;
+				} else {
+					// inval bytes once at the end
+					bytesize = 3 * recSizeWoInval + cgBlock.getInvalBytes();
+					valueOffset = (parity - 1) * recSizeWoInval + dgBlock.getRecIdSize() + cnBlock.getByteOffset()
+							+ cnBlock.getBitOffset() / 8;
 				}
 
 				ins.setLongVal("bs", (int) bytesize);
 				ins.setLongVal("vo", (int) valueOffset);
 
-				//get Cycle count from Block size.
-				if(BLOCK.getBlockType(idBlock.sbc, currblock).equals(DTBLOCK.BLOCK_ID)){
-					ins.setLongVal("cl", (int) ((DTBLOCK.read(idBlock.sbc, currblock).getLength()-24)/bytesize));
-				}else if (BLOCK.getBlockType(idBlock.sbc, currblock).equals(RDBLOCK.BLOCK_ID)){
-					ins.setLongVal("cl", (int) ((RDBLOCK.read(idBlock.sbc, currblock).getLength()-24)/bytesize));
-				}else{
+				// get Cycle count from Block size.
+				if (BLOCK.getBlockType(idBlock.sbc, currblock).equals(DTBLOCK.BLOCK_ID)) {
+					ins.setLongVal("cl", (int) ((DTBLOCK.read(idBlock.sbc, currblock).getLength() - 24) / bytesize));
+				} else if (BLOCK.getBlockType(idBlock.sbc, currblock).equals(RDBLOCK.BLOCK_ID)) {
+					ins.setLongVal("cl", (int) ((RDBLOCK.read(idBlock.sbc, currblock).getLength() - 24) / bytesize));
+				} else {
 
 				}
 				short bitOffset = cnBlock.getBitOffset();
@@ -1112,16 +1196,22 @@ public class AoSessionWriter {
 
 	/**
 	 * Create a new Unit for a channel, if needed.
-	 * @param modelCache The ODSModelCache in use.
-	 * @param cnblock The Channel Block.
-	 * @param ccBlock The Channel's conversion block.
-	 * @param existingUnts Map containing Name (key) and ID (Value) of all created units.
+	 * 
+	 * @param modelCache
+	 *            The ODSModelCache in use.
+	 * @param cnblock
+	 *            The Channel Block.
+	 * @param ccBlock
+	 *            The Channel's conversion block.
+	 * @param existingUnts
+	 *            Map containing Name (key) and ID (Value) of all created units.
 	 * @return The id of the corresponding unit.
 	 */
-	private long writeUnit(ODSModelCache modelCache, CNBLOCK cnblock, CCBLOCK ccBlock, Map<String, Long> existingUnts) throws AoException, IOException {
+	private long writeUnit(ODSModelCache modelCache, CNBLOCK cnblock, CCBLOCK ccBlock, Map<String, Long> existingUnts)
+			throws AoException, IOException {
 
 		// create 'AoUnit' instance if not yet existing
-		//Get unit name and metadata
+		// Get unit name and metadata
 		String unitName = "";
 		BLOCK unitblk = cnblock.getMdUnitBlock();
 		MDBLOCK unitMetadata = null;
@@ -1150,13 +1240,13 @@ public class AoSessionWriter {
 
 		if (unitName.length() > 0) {
 			Long iid = existingUnts.get(unitName);
-			if(iid == null){
+			if (iid == null) {
 				// create unit instance
 				ODSInsertStatement ins = new ODSInsertStatement(modelCache, "unt");
 				ins.setStringVal("iname", unitName);
 				ins.setDoubleVal("factor", 1d);
 				ins.setDoubleVal("offset", 0d);
-				if(unitMetadata!=null){
+				if (unitMetadata != null) {
 					xmlParser.writeCNCommentToUnit(ins, unitMetadata.getMdData());
 				}
 				iid = ins.execute();
@@ -1173,10 +1263,14 @@ public class AoSessionWriter {
 	 **************************************************************************************/
 
 	/**
-	 * Get the conversion parameters of the conversion block for 1:1, linear or rational conversion.
-	 * @param ccBlock The Conversion Block.
+	 * Get the conversion parameters of the conversion block for 1:1, linear or
+	 * rational conversion.
+	 * 
+	 * @param ccBlock
+	 *            The Conversion Block.
 	 * @return The parameters as Double-Array.
-	 * @throws AoException  in case of errors
+	 * @throws AoException
+	 *             in case of errors
 	 */
 	private static double[] getGenerationParameters(CCBLOCK ccBlock) throws AoException {
 		// CCBLOCK may be null, assume explicit
@@ -1195,12 +1289,12 @@ public class AoSessionWriter {
 			return ccBlock.getVal();
 		}
 		// 'rational'
-		else if(formula == 2) {
+		else if (formula == 2) {
 			double[] genParams = ccBlock.getVal();
-			if(isRatConv2RawLinExt(ccBlock)) {
+			if (isRatConv2RawLinExt(ccBlock)) {
 				// sequence rep.: 'raw_linear_external'
 				return new double[] { genParams[2], genParams[1] };
-			} else if(isRatConv2ExtComp(ccBlock)) {
+			} else if (isRatConv2ExtComp(ccBlock)) {
 				// sequence rep.: 'external_component'
 				return new double[0];
 			} else {
@@ -1251,7 +1345,9 @@ public class AoSessionWriter {
 
 	/**
 	 * Read the name of a Channel.
-	 * @param cnBlock The Channel Block
+	 * 
+	 * @param cnBlock
+	 *            The Channel Block
 	 * @return The name.
 	 * @throws IOException
 	 */
@@ -1268,7 +1364,8 @@ public class AoSessionWriter {
 	}
 
 	/**
-	 * Returns the target ASAM ODS sequence representation for the external component description.<br/>
+	 * Returns the target ASAM ODS sequence representation for the external
+	 * component description.<br/>
 	 * List of MDF4 formula types:
 	 * <ul>
 	 * <li>0 = 1:1 Conversion</li>
@@ -1305,10 +1402,10 @@ public class AoSessionWriter {
 		}
 		// 'rational conversion' => 'external_component'
 		else if (formula == 2) {
-			if(isRatConv2RawLinExt(ccBlock)) {
+			if (isRatConv2RawLinExt(ccBlock)) {
 				// redirect => 'raw_linear_external'
 				return 8;
-			} else if(isRatConv2ExtComp(ccBlock)) {
+			} else if (isRatConv2ExtComp(ccBlock)) {
 				// manual calculation => 'external_component'
 				return 7;
 			} else {
@@ -1331,8 +1428,10 @@ public class AoSessionWriter {
 	}
 
 	/**
-	 * Returns the target ASAM ODS external component type specification enum value for a MDF4 channel description.<br/>
-	 * The data type is determined by the signal data type and the number of bits.<br/>
+	 * Returns the target ASAM ODS external component type specification enum
+	 * value for a MDF4 channel description.<br/>
+	 * The data type is determined by the signal data type and the number of
+	 * bits.<br/>
 	 *
 	 * @param cnBlock
 	 *            The MDF3 CNBLOCK.
@@ -1506,23 +1605,29 @@ public class AoSessionWriter {
 		} else if (typeSpec == 26) { // dt_string_utf8_beo
 			ret = 1; // DT_STRING
 		}
-		// dt_bit_int [27], dt_bit_int_beo [28], dt_bit_uint [29], dt_bit_uint_beo [30]
+		// dt_bit_int [27], dt_bit_int_beo [28], dt_bit_uint [29],
+		// dt_bit_uint_beo [30]
 		else if (typeSpec == 27 || typeSpec == 28 || typeSpec == 29 || typeSpec == 30) {
 			int dt = cnBlock.getDataType();
 			int nb = (int) cnBlock.getBitCount();
 			if ((dt == 0 || dt == 1) && nb >= 1 && nb <= 8) { // unsigned byte
 				ret = 5; // DT_BYTE
-			} else if ((dt == 2 || dt == 3) && nb >= 1 && nb <= 8) { // signed byte
+			} else if ((dt == 2 || dt == 3) && nb >= 1 && nb <= 8) { // signed
+																		// byte
 				ret = 5; // DT_BYTE
-			} else if ((dt == 0 || dt == 1) && nb >= 9 && nb <= 16) { // unsigned short
+			} else if ((dt == 0 || dt == 1) && nb >= 9 && nb <= 16) { // unsigned
+																		// short
 				ret = 6; // DT_LONG
-			} else if ((dt == 2 || dt == 3) && nb >= 9 && nb <= 16) { // signed short
+			} else if ((dt == 2 || dt == 3) && nb >= 9 && nb <= 16) { // signed
+																		// short
 				ret = 2; // DT_SHORT
-			} else if ((dt == 0 || dt == 1) && nb >= 17 && nb <= 32) { // unsigned int
+			} else if ((dt == 0 || dt == 1) && nb >= 17 && nb <= 32) { // unsigned
+																		// int
 				ret = 8; // DT_LONGLONG
 			} else if ((dt == 2 || dt == 3) && nb >= 17 && nb <= 32) { // int
 				ret = 6; // DT_LONG
-			} else if ((dt == 0 || dt == 1) && nb >= 33) { // unsigned int >32 bit
+			} else if ((dt == 0 || dt == 1) && nb >= 33) { // unsigned int >32
+															// bit
 				ret = 8; // DT_LONGLONG
 			} else if ((dt == 2 || dt == 3) && nb >= 33) { // signed int >32 bit
 				ret = 8; // DT_LONGLONG
@@ -1550,8 +1655,10 @@ public class AoSessionWriter {
 	}
 
 	/**
-	 * Returns the target ASAM ODS measurement quantity data type for a MDF4 channel description.<br/>
-	 * The data type is determined by the formula, the signal data type and the number of bits.
+	 * Returns the target ASAM ODS measurement quantity data type for a MDF4
+	 * channel description.<br/>
+	 * The data type is determined by the formula, the signal data type and the
+	 * number of bits.
 	 *
 	 * @param expandDataType
 	 *            Indicates whether to expand data type or not.
@@ -1576,11 +1683,12 @@ public class AoSessionWriter {
 		if (dt >= 6 && dt <= 9) {
 			return 1; // DT_STRING
 		}
-		
+
 		// 1 = parametric, linear
 		if (formula == 1) {
 			if (nb == 1) {
-				// 1 bit should be DT_BOOLEAN, but most of tools do not support this
+				// 1 bit should be DT_BOOLEAN, but most of tools do not support
+				// this
 				return 5; // DT_BYTE
 			} else if (nb >= 2 && nb <= 32) {
 				return 3; // DT_FLOAT
@@ -1589,7 +1697,7 @@ public class AoSessionWriter {
 			}
 		}
 		// 2 = rational conversion
-		else if(formula == 2) {
+		else if (formula == 2) {
 			// values are calculated either way with real (64 bit ieee-754)
 			// double values no matter how many bits are used for internal
 			// values, therefore it is safe to return DT_DOUBLE here
@@ -1606,17 +1714,23 @@ public class AoSessionWriter {
 				return expandDataType ? 3 : 5; // [DT_FLOAT] DT_BYTE
 			} else if ((dt == 2 || dt == 3) && nb >= 1 && nb <= 8) { // dt_sbyte
 				return expandDataType ? 3 : 2; // [DT_FLOAT] DT_SHORT
-			} else if ((dt == 0 || dt == 1) && nb >= 9 && nb <= 16) { // dt_ushort, dt_ushort_beo
+			} else if ((dt == 0 || dt == 1) && nb >= 9 && nb <= 16) { // dt_ushort,
+																		// dt_ushort_beo
 				return expandDataType ? 3 : 6; // [DT_FLOAT] DT_LONG
-			} else if ((dt == 2 || dt == 3) && nb >= 9 && nb <= 16) { // dt_short, dt_short_beo
+			} else if ((dt == 2 || dt == 3) && nb >= 9 && nb <= 16) { // dt_short,
+																		// dt_short_beo
 				return expandDataType ? 3 : 2; // [DT_FLOAT] DT_SHORT
-			} else if ((dt == 0 || dt == 1) && nb >= 17 && nb <= 32) { // dt_ulong, dt_ulong_beo
+			} else if ((dt == 0 || dt == 1) && nb >= 17 && nb <= 32) { // dt_ulong,
+																		// dt_ulong_beo
 				return expandDataType ? 7 : 8; // [DT_DOUBLE] DT_LONGLONG
-			} else if ((dt == 2 || dt == 3) && nb >= 17 && nb <= 32) { // dt_long, dt_long_beo
+			} else if ((dt == 2 || dt == 3) && nb >= 17 && nb <= 32) { // dt_long,
+																		// dt_long_beo
 				return expandDataType ? 3 : 6; // [DT_FLOAT] DT_LONG
-			} else if ((dt == 0 || dt == 1) && nb >= 33) { // unsigned int >32 bit
+			} else if ((dt == 0 || dt == 1) && nb >= 33) { // unsigned int >32
+															// bit
 				return expandDataType ? 7 : 8; // [DT_DOUBLE] DT_LONGLONG
-			} else if ((dt == 2 || dt == 3) && nb >= 33 && nb <= 64) { // dt_longlong, dt_longlong_beo
+			} else if ((dt == 2 || dt == 3) && nb >= 33 && nb <= 64) { // dt_longlong,
+																		// dt_longlong_beo
 				return expandDataType ? 7 : 8; // [DT_DOUBLE] DT_LONGLONG
 			} else if ((dt == 4 || dt == 5) && nb == 32) { // ieeefloat4,
 				// ieeefloat4_beo
@@ -1635,26 +1749,30 @@ public class AoSessionWriter {
 	}
 
 	/**
-	 * Checks whether channel with rational conversion may be stored as a 'raw_linear_external'.
+	 * Checks whether channel with rational conversion may be stored as a
+	 * 'raw_linear_external'.
 	 * <p>
-	 * NOTE: This is a workaround to provide channels with formula == 2 with a reduced set of generation parameters.
-	 * Such channel values are described with a rational conversion, which can not be described in ODS.
-	 * To do so the generation parameters p1, p3 and p4 must be ZERO and p5 must be ONE.
+	 * NOTE: This is a workaround to provide channels with formula == 2 with a
+	 * reduced set of generation parameters. Such channel values are described
+	 * with a rational conversion, which can not be described in ODS. To do so
+	 * the generation parameters p1, p3 and p4 must be ZERO and p5 must be ONE.
 	 * <p>
-	 * <b>ATTENTION: THIS IS JUST A WORKAROUND UND HAS TO BE REMOVED AS SOON AS IT IS POSSIBLE TO
-	 * DESCRIBE SUCH CHANNELS IN ODS!</b>
+	 * <b>ATTENTION: THIS IS JUST A WORKAROUND UND HAS TO BE REMOVED AS SOON AS
+	 * IT IS POSSIBLE TO DESCRIBE SUCH CHANNELS IN ODS!</b>
 	 *
-	 * @param ccBlock  the conversion block
-	 * @return  true if the values must be calculated and stored in an external file
+	 * @param ccBlock
+	 *            the conversion block
+	 * @return true if the values must be calculated and stored in an external
+	 *         file
 	 */
 	@Deprecated
 	private static boolean isRatConv2RawLinExt(CCBLOCK ccBlock) {
-		if(ccBlock == null) {
+		if (ccBlock == null) {
 			return false;
-		} else if(ccBlock.getType() == 2) {
+		} else if (ccBlock.getType() == 2) {
 			// rational conversion
 			double[] genParams = ccBlock.getVal();
-			if(genParams == null || genParams.length != 6) {
+			if (genParams == null || genParams.length != 6) {
 				return false;
 			} else {
 				boolean p1Zero = Double.compare(genParams[0], 0D) == 0;
@@ -1669,26 +1787,30 @@ public class AoSessionWriter {
 	}
 
 	/**
-	 * Checks whether channel with rational conversion may be stored as a 'external_component'.
+	 * Checks whether channel with rational conversion may be stored as a
+	 * 'external_component'.
 	 * <p>
-	 * NOTE: This is a workaround to provide channels with formula == 2.
-	 * Such channel values are described with a rational conversion, which can not be described in ODS.
-	 * Therefore the whole value sequence is calculated and referenced as an 'external_component'.
+	 * NOTE: This is a workaround to provide channels with formula == 2. Such
+	 * channel values are described with a rational conversion, which can not be
+	 * described in ODS. Therefore the whole value sequence is calculated and
+	 * referenced as an 'external_component'.
 	 * <p>
-	 * <b>ATTENTION: THIS IS JUST A WORKAROUND UND HAS TO BE REMOVED AS SOON AS IT IS POSSIBLE TO
-	 * DESCRIBE SUCH CHANNELS IN ODS!</b>
+	 * <b>ATTENTION: THIS IS JUST A WORKAROUND UND HAS TO BE REMOVED AS SOON AS
+	 * IT IS POSSIBLE TO DESCRIBE SUCH CHANNELS IN ODS!</b>
 	 *
-	 * @param ccBlock  the conversion block
-	 * @return  true if the values must be calculated and stored in an external file
+	 * @param ccBlock
+	 *            the conversion block
+	 * @return true if the values must be calculated and stored in an external
+	 *         file
 	 */
 	@Deprecated
 	private static boolean isRatConv2ExtComp(CCBLOCK ccBlock) {
-		if(ccBlock == null) {
+		if (ccBlock == null) {
 			return false;
-		} else if(ccBlock.getType() == 2) {
+		} else if (ccBlock.getType() == 2) {
 			// rational conversion
 			double[] genParams = ccBlock.getVal();
-			if(genParams == null || genParams.length != 6) {
+			if (genParams == null || genParams.length != 6) {
 				return false;
 			} else {
 				boolean p1Zero = Double.compare(genParams[0], 0D) != 0;
@@ -1707,26 +1829,36 @@ public class AoSessionWriter {
 	 * <p>
 	 * One instance is written for all calculated vaues.
 	 * <p>
-	 * NOTE: This is a workaround to provide channels with formula == 2.
-	 * Such channel values are described with a rational conversion, which can not be described in ODS.
-	 * Therefore the whole value sequence is calculated and referenced as an 'external_component'.
+	 * NOTE: This is a workaround to provide channels with formula == 2. Such
+	 * channel values are described with a rational conversion, which can not be
+	 * described in ODS. Therefore the whole value sequence is calculated and
+	 * referenced as an 'external_component'.
 	 * <p>
-	 * <b>ATTENTION: THIS IS JUST A WORKAROUND UND HAS TO BE REMOVED AS SOON AS IT IS POSSIBLE TO
-	 * DESCRIBE SUCH CHANNELS IN ODS!</b>
+	 * <b>ATTENTION: THIS IS JUST A WORKAROUND UND HAS TO BE REMOVED AS SOON AS
+	 * IT IS POSSIBLE TO DESCRIBE SUCH CHANNELS IN ODS!</b>
 	 *
 	 * @param modelCache
 	 *            The application model cache.
 	 * @param iidLc
 	 *            The instance id of the 'AoLocalColumn' instance.
-	 * @param idBlock The IDBLOCK.
-	 * @param dgBlock The DGBLOCK.
-	 * @param cgBlock The CGBLOCK.
-	 * @param cnBlock The CNBLOCK.
-	 * @param ccBlock The CCBLOCK.
+	 * @param idBlock
+	 *            The IDBLOCK.
+	 * @param dgBlock
+	 *            The DGBLOCK.
+	 * @param cgBlock
+	 *            The CGBLOCK.
+	 * @param cnBlock
+	 *            The CNBLOCK.
+	 * @param ccBlock
+	 *            The CCBLOCK.
 	 * @param sectionstart
-	 *            The link to data, can be a DL, RD or DT Block or HL, DZ, but these are not supported.
-	 * @param parity Used for previews, where only each third record has to be addressed. If every record will be addressed, parity has
-	 * 	to be set to 0. Otherwise valid values are 1, 2 and 3. (e.g. if parity==1 the first of each three records will be addressed)
+	 *            The link to data, can be a DL, RD or DT Block or HL, DZ, but
+	 *            these are not supported.
+	 * @param parity
+	 *            Used for previews, where only each third record has to be
+	 *            addressed. If every record will be addressed, parity has to be
+	 *            set to 0. Otherwise valid values are 1, 2 and 3. (e.g. if
+	 *            parity==1 the first of each three records will be addressed)
 	 *
 	 * @throws AoException
 	 *             Error writing to session.
@@ -1736,9 +1868,9 @@ public class AoSessionWriter {
 	@Deprecated
 	private void createCustomRatConvEC(ODSModelCache modelCache, long iidLc, IDBLOCK idBlock, DGBLOCK dgBlock,
 			CGBLOCK cgBlock, CNBLOCK cnBlock, CCBLOCK ccBlock, long sectionstart, int parity)
-					throws AoException, IOException {
+			throws AoException, IOException {
 
-		if(parity != 0) {
+		if (parity != 0) {
 			throw new AoException(ErrorCode.AO_BAD_PARAMETER, SeverityFlag.ERROR, 0,
 					"channel preview with formula == 2 (rational conversion) is currently not supported");
 		}
@@ -1765,13 +1897,13 @@ public class AoSessionWriter {
 			throw new IOException("Zipped blocks cannot be parsed into the ODS-Format.");
 		}
 
-		if(currblock < 0) {
+		if (currblock < 0) {
 			return;
 		}
 
-		if(customRatConfPath == null) {
+		if (customRatConfPath == null) {
 			customRatConfPath = idBlock.getMdfFilePath().resolveSibling("rational_conversion.calc");
-			if(!Files.exists(customRatConfPath)) {
+			if (!Files.exists(customRatConfPath)) {
 				Files.createFile(customRatConfPath);
 			}
 		}
@@ -1788,10 +1920,10 @@ public class AoSessionWriter {
 				long so = currblock + 24L;
 
 				int cl;
-				if(BLOCK.getBlockType(idBlock.sbc, currblock).equals(DTBLOCK.BLOCK_ID)){
-					cl = (int) ((DTBLOCK.read(idBlock.sbc, currblock).getLength()-24)/bs);
-				} else if (BLOCK.getBlockType(idBlock.sbc, currblock).equals(RDBLOCK.BLOCK_ID)){
-					cl = (int) ((RDBLOCK.read(idBlock.sbc, currblock).getLength()-24)/bs);
+				if (BLOCK.getBlockType(idBlock.sbc, currblock).equals(DTBLOCK.BLOCK_ID)) {
+					cl = (int) ((DTBLOCK.read(idBlock.sbc, currblock).getLength() - 24) / bs);
+				} else if (BLOCK.getBlockType(idBlock.sbc, currblock).equals(RDBLOCK.BLOCK_ID)) {
+					cl = (int) ((RDBLOCK.read(idBlock.sbc, currblock).getLength() - 24) / bs);
 				} else {
 					throw new AoException(ErrorCode.AO_BAD_PARAMETER, SeverityFlag.ERROR, 0,
 							"component length 'cl' is not allowed to be unknown");
@@ -1801,10 +1933,9 @@ public class AoSessionWriter {
 				short bc = bo != 0 && cnBlock.getBitCount() % 8 != 0 ? (short) cnBlock.getBitCount() : 0;
 				double[] p = ccBlock.getVal();
 
-				if(bo != 0 || bc != 0 || cnBlock.getBitCount() % 8 != 0) {
-					throw new AoException(ErrorCode.AO_BAD_PARAMETER, SeverityFlag.ERROR, 0,
-							"bit count '" + bc + "' and bit offset '" + bo
-							+ "' is not supported for custom ration conversion");
+				if (bo != 0 || bc != 0 || cnBlock.getBitCount() % 8 != 0) {
+					throw new AoException(ErrorCode.AO_BAD_PARAMETER, SeverityFlag.ERROR, 0, "bit count '" + bc
+							+ "' and bit offset '" + bo + "' is not supported for custom ration conversion");
 				}
 
 				int bits = (int) cnBlock.getBitCount();
@@ -1813,7 +1944,7 @@ public class AoSessionWriter {
 				boolean isReal = dt > 3 && dt < 6;
 				boolean isUnsigned = dt == 0 || dt == 1;
 				ByteOrder byteOrder = dt == 1 || dt == 3 || dt == 5 ? ByteOrder.BIG_ENDIAN : ByteOrder.LITTLE_ENDIAN;
-				for(int i = 0; i < cl; i++) {
+				for (int i = 0; i < cl; i++) {
 					idBlock.sbc.position(so + i * bs + vo);
 					ByteBuffer byteBuffer = ByteBuffer.allocate(bits / 8);
 					byteBuffer.order(byteOrder);
@@ -1821,48 +1952,49 @@ public class AoSessionWriter {
 					byteBuffer.rewind();
 
 					double internal = 0;
-					if(isInteger) {
-						if(bits == 8) {
+					if (isInteger) {
+						if (bits == 8) {
 							// isUnsigned ? short : byte
 							internal = isUnsigned ? byteBuffer.get() & 0xFF : byteBuffer.get();
-						} else if(bits == 16) {
+						} else if (bits == 16) {
 							// isUnsigned ? int : short
 							internal = isUnsigned ? byteBuffer.getShort() & 0xFFFF : byteBuffer.getShort();
-						} else if(bits == 32) {
+						} else if (bits == 32) {
 							// isUnsigned ? long : int
 							internal = isUnsigned ? byteBuffer.getInt() & 0xFFFFFFFF : byteBuffer.getInt();
-						} else if(bits == 64) {
-							if(isUnsigned) {
+						} else if (bits == 64) {
+							if (isUnsigned) {
 								throw new AoException(ErrorCode.AO_BAD_PARAMETER, SeverityFlag.ERROR, 0,
 										"reading unsigned 64 bit integeres is not implemented");
 							}
-							// to support unsigned 64 bit, BigInteger has to be used -> performance costs
+							// to support unsigned 64 bit, BigInteger has to be
+							// used -> performance costs
 							internal = byteBuffer.getLong();
 						} else {
 							String unsigned = isUnsigned ? "unsigned" : "signed";
 							throw new AoException(ErrorCode.AO_BAD_PARAMETER, SeverityFlag.ERROR, 0,
-									"customized reading of '" + bits + "' bit '"
-											+ unsigned + "' intergers is not implemented");
+									"customized reading of '" + bits + "' bit '" + unsigned
+											+ "' intergers is not implemented");
 						}
-					} else if(isReal) {
-						if(bits == 32) {
+					} else if (isReal) {
+						if (bits == 32) {
 							// ieee754 floating point
 							internal = byteBuffer.getFloat();
-						} else if(bits == 64) {
+						} else if (bits == 64) {
 							// ieee754 floating point
 							internal = byteBuffer.getDouble();
 						} else {
 							String unsigned = isUnsigned ? "unsigned" : "signed";
 							throw new AoException(ErrorCode.AO_BAD_PARAMETER, SeverityFlag.ERROR, 0,
-									"customized reading of '" + bits + "' bit '"
-											+ unsigned + "' real is not implemented");
+									"customized reading of '" + bits + "' bit '" + unsigned
+											+ "' real is not implemented");
 						}
 					} else {
 						throw new AoException(ErrorCode.AO_BAD_PARAMETER, SeverityFlag.ERROR, 0,
 								"given value is neither an integer nor a real number");
 					}
-					double phys = (p[0]*Math.pow(internal, 2) + p[1]*internal + p[2])
-							/ (p[3]*Math.pow(internal, 2) + p[4]*internal + p[5]);
+					double phys = (p[0] * Math.pow(internal, 2) + p[1] * internal + p[2])
+							/ (p[3] * Math.pow(internal, 2) + p[4] * internal + p[5]);
 
 					writeBuffer.putDouble(phys);
 					writeBuffer.rewind();
@@ -1912,7 +2044,7 @@ public class AoSessionWriter {
 				}
 			}
 
-			if(count < 0 || count != (int) count || count * 8 > Integer.MAX_VALUE) {
+			if (count < 0 || count != (int) count || count * 8 > Integer.MAX_VALUE) {
 				throw new AoException(ErrorCode.AO_IMPLEMENTATION_PROBLEM, SeverityFlag.ERROR, 0,
 						"value count exceeded max supported block size supported by ODS");
 			}
@@ -1921,7 +2053,8 @@ public class AoSessionWriter {
 			ODSInsertStatement ins = new ODSInsertStatement(modelCache, "ec");
 			ins.setStringVal("iname", "ec_custom_rat_conv");
 			ins.setLongVal("cl", (int) count);
-			ins.setEnumVal("vt", 6); // ieeefloat8 (little endian; 11 would be big endian)
+			ins.setEnumVal("vt", 6); // ieeefloat8 (little endian; 11 would be
+										// big endian)
 			ins.setLongLongVal("so", startOffset);
 			ins.setLongVal("bs", (int) count * 8);
 			ins.setLongVal("vb", (int) count);

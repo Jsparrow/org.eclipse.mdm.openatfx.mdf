@@ -40,7 +40,6 @@ import org.asam.ods.NameValueIterator;
 import org.asam.ods.SeverityFlag;
 import org.asam.ods.T_LONGLONG;
 
-
 /**
  * Cache for the ASAM-ODS application model.
  *
@@ -106,7 +105,8 @@ public class ODSModelCache {
 	/**
 	 * Constructor.
 	 *
-	 * @param aoSession the ODS session
+	 * @param aoSession
+	 *            the ODS session
 	 */
 	public ODSModelCache(AoSession aoSession) {
 		if (aoSession == null) {
@@ -122,7 +122,8 @@ public class ODSModelCache {
 	/**
 	 * Returns a Java long from ODS T_LONGLONG.
 	 *
-	 * @param ll ODS T_LONGLONG value
+	 * @param ll
+	 *            ODS T_LONGLONG value
 	 * @return Java long with the same value as ll
 	 */
 	private static long asJLong(T_LONGLONG ll) {
@@ -138,7 +139,8 @@ public class ODSModelCache {
 	/**
 	 * Return ODS T_LONGLONG from Java long.
 	 *
-	 * @param v Java long value
+	 * @param v
+	 *            Java long value
 	 * @return ODS T_LONGLONG with the same value as v
 	 */
 	private static T_LONGLONG asODSLongLong(long v) {
@@ -162,7 +164,8 @@ public class ODSModelCache {
 	 * Returns the cached ODS server context.
 	 *
 	 * @return array containg context parameter
-	 * @throws AoException if something went wrong
+	 * @throws AoException
+	 *             if something went wrong
 	 */
 	public final NameValue[] getContext() throws AoException {
 		if (context == null) {
@@ -181,7 +184,8 @@ public class ODSModelCache {
 	 * Returns the cached ODS base structure.
 	 *
 	 * @return the cached BaseStructure
-	 * @throws AoException if something went wrong
+	 * @throws AoException
+	 *             if something went wrong
 	 */
 	public final BaseStructure getBaseStructure() throws AoException {
 		if (baseStructure == null) {
@@ -194,9 +198,11 @@ public class ODSModelCache {
 	/**
 	 * Returns an ODS base element by given name.
 	 *
-	 * @param beName The base element name
+	 * @param beName
+	 *            The base element name
 	 * @return The base element object
-	 * @throws AoException error getting base element
+	 * @throws AoException
+	 *             error getting base element
 	 */
 	public final BaseElement getBaseElement(String beName) throws AoException {
 		return getBaseStructure().getElementByType(beName);
@@ -205,10 +211,13 @@ public class ODSModelCache {
 	/**
 	 * Returns the ODS base relation by given base element names.
 	 *
-	 * @param beNameFrom first base element name
-	 * @param beNameTo second base element name
+	 * @param beNameFrom
+	 *            first base element name
+	 * @param beNameTo
+	 *            second base element name
 	 * @return the ODS base relation
-	 * @throws AoException application elements or relation not found
+	 * @throws AoException
+	 *             application elements or relation not found
 	 */
 	public final BaseRelation getBaseRelation(String beNameFrom, String beNameTo) throws AoException {
 		BaseElement beFrom = getBaseElement(beNameFrom);
@@ -220,7 +229,8 @@ public class ODSModelCache {
 	 * Returns the cached ODS application structure.
 	 *
 	 * @return the cached application structure
-	 * @throws AoException if something went wrong
+	 * @throws AoException
+	 *             if something went wrong
 	 */
 	public final ApplicationStructure getApplicationStructure() throws AoException {
 		if (applicationStructure == null) {
@@ -234,7 +244,8 @@ public class ODSModelCache {
 	 * Returns the cached ODS application structure value.
 	 *
 	 * @return the cached applicationStructureValue
-	 * @throws AoException if something went wrong
+	 * @throws AoException
+	 *             if something went wrong
 	 */
 	public final ApplicationStructureValue getApplicationStructureValue() throws AoException {
 		if (applicationStructureValue == null) {
@@ -247,9 +258,11 @@ public class ODSModelCache {
 	/**
 	 * Returns an application element of specified type.
 	 *
-	 * @param aeName the name of the application element to retrieve
+	 * @param aeName
+	 *            the name of the application element to retrieve
 	 * @return the cached application element
-	 * @throws AoException application element not found
+	 * @throws AoException
+	 *             application element not found
 	 */
 	public final ApplicationElement getApplicationElement(String aeName) throws AoException {
 		ApplicationElement ae = applicationElemCache.get(aeName);
@@ -263,11 +276,14 @@ public class ODSModelCache {
 	}
 
 	/**
-	 * Returns an array containing all application attributes for an application element.
+	 * Returns an array containing all application attributes for an application
+	 * element.
 	 *
-	 * @param aeName the application element name
+	 * @param aeName
+	 *            the application element name
 	 * @return the ODS <code>ApplicationAttribute</code>
-	 * @throws AoException if something went wrong
+	 * @throws AoException
+	 *             if something went wrong
 	 */
 	public final ApplicationAttribute[] getApplicationAttributes(String aeName) throws AoException {
 		ApplicationAttribute[] attrs = applicationAttrCache.get(aeName);
@@ -282,10 +298,13 @@ public class ODSModelCache {
 	/**
 	 * Returns the ODS application attribute for an application element.
 	 *
-	 * @param aeName the application element name
-	 * @param aaName the application attribute name
+	 * @param aeName
+	 *            the application element name
+	 * @param aaName
+	 *            the application attribute name
 	 * @return the ODS <code>ApplicationAttribute</code>
-	 * @throws AoException if something went wrong
+	 * @throws AoException
+	 *             if something went wrong
 	 */
 	public final ApplicationAttribute getApplicationAttribute(String aeName, String aaName) throws AoException {
 		for (ApplicationAttribute attr : getApplicationAttributes(aeName)) {
@@ -293,17 +312,20 @@ public class ODSModelCache {
 				return attr;
 			}
 		}
-		throw new AoException(ErrorCode.AO_NOT_FOUND, SeverityFlag.ERROR, 0, "ApplicationAttribute [aeName=" + aeName
-				+ ",aaName=" + aaName + "] not found");
+		throw new AoException(ErrorCode.AO_NOT_FOUND, SeverityFlag.ERROR, 0,
+				"ApplicationAttribute [aeName=" + aeName + ",aaName=" + aaName + "] not found");
 	}
 
 	/**
 	 * Returns an application relation between two elements.
 	 *
-	 * @param ae1Name the source application element
-	 * @param ae2Name the target application element
+	 * @param ae1Name
+	 *            the source application element
+	 * @param ae2Name
+	 *            the target application element
 	 * @return the ODS application relation
-	 * @throws AoException if something went wrong
+	 * @throws AoException
+	 *             if something went wrong
 	 */
 	public final ApplicationRelation getApplicationRelation(String ae1Name, String ae2Name) throws AoException {
 		// lookup in cache for application relation
@@ -322,8 +344,7 @@ public class ODSModelCache {
 		// check if relation exist
 		if (ars.length < 1) {
 			throw new AoException(ErrorCode.AO_INVALID_RELATION, SeverityFlag.ERROR, 1,
-					"ApplicationRelation between [ae1Name=" + ae1Name + ",ae2Name=" + ae2Name
-					+ "] not found");
+					"ApplicationRelation between [ae1Name=" + ae1Name + ",ae2Name=" + ae2Name + "] not found");
 		}
 
 		// check if multiple relations between two elements exist
@@ -341,16 +362,19 @@ public class ODSModelCache {
 	/**
 	 * Checks for self relation.
 	 *
-	 * @param ae1Name Application element name 1.
-	 * @param ae2Name Application element name 2.
-	 * @param ars Application relations.
-	 * @throws AoException Thrown if a self relation is detected.
+	 * @param ae1Name
+	 *            Application element name 1.
+	 * @param ae2Name
+	 *            Application element name 2.
+	 * @param ars
+	 *            Application relations.
+	 * @throws AoException
+	 *             Thrown if a self relation is detected.
 	 */
 	private void isSelfRelation(String ae1Name, String ae2Name, ApplicationRelation[] ars) throws AoException {
 		if (ars.length != 2 && !ars[0].getRelationName().equals(ars[1].getInverseRelationName())) {
 			throw new AoException(ErrorCode.AO_INVALID_RELATION, SeverityFlag.ERROR, 1,
-					"More than one relation between [ae1Name=" + ae1Name + ",ae2Name=" + ae2Name
-					+ "] found");
+					"More than one relation between [ae1Name=" + ae1Name + ",ae2Name=" + ae2Name + "] found");
 
 		}
 	}
@@ -358,11 +382,15 @@ public class ODSModelCache {
 	/**
 	 * Returns an application relation between two elements with given name.
 	 *
-	 * @param ae1Name the source application element
-	 * @param ae2Name the target application element
-	 * @param relName the relation name
+	 * @param ae1Name
+	 *            the source application element
+	 * @param ae2Name
+	 *            the target application element
+	 * @param relName
+	 *            the relation name
 	 * @return the ODS application relation
-	 * @throws AoException if something went wrong
+	 * @throws AoException
+	 *             if something went wrong
 	 */
 	public final ApplicationRelation getApplicationRelation(String ae1Name, String ae2Name, String relName)
 			throws AoException {
@@ -397,10 +425,12 @@ public class ODSModelCache {
 	/**
 	 * Returns an ODS enumeration definition by given name.
 	 *
-	 * @param enumName the enumeration name
-	 * @return the ODS <code>EnumerationDefinition</code> or null if the <code>EnumerationDefinition</code> does not
-	 *         exits *
-	 * @throws AoException if something is wrong
+	 * @param enumName
+	 *            the enumeration name
+	 * @return the ODS <code>EnumerationDefinition</code> or null if the
+	 *         <code>EnumerationDefinition</code> does not exits *
+	 * @throws AoException
+	 *             if something is wrong
 	 */
 	public final EnumerationDefinition getEnumerationDefinition(String enumName) throws AoException {
 		EnumerationDefinition enumDef = enumDefCache.get(enumName);
@@ -423,7 +453,8 @@ public class ODSModelCache {
 	 * Returns the cached ODS applElemAccess.
 	 *
 	 * @return the cached applElemAccess
-	 * @throws AoException if something went wrong
+	 * @throws AoException
+	 *             if something went wrong
 	 */
 	public final ApplElemAccess getApplElemAccess() throws AoException {
 		if (applElemAccess == null) {
@@ -441,7 +472,8 @@ public class ODSModelCache {
 	 * Returns all structs of ODS <code>ApplElem</code>.
 	 *
 	 * @return the <code>ApplElem</code>
-	 * @throws AoException if something went wrong
+	 * @throws AoException
+	 *             if something went wrong
 	 */
 	public final ApplElem[] getApplElems() throws AoException {
 		if (applElems == null) {
@@ -451,10 +483,12 @@ public class ODSModelCache {
 	}
 
 	/**
-	 * Returns the map between application element name and application element structure.
+	 * Returns the map between application element name and application element
+	 * structure.
 	 *
 	 * @return The map.
-	 * @throws AoException Error loading application element mapping.
+	 * @throws AoException
+	 *             Error loading application element mapping.
 	 */
 	private Map<String, ApplElem> getAeName2applElemMap() throws AoException {
 		if (aeName2applElemMap == null) {
@@ -467,10 +501,12 @@ public class ODSModelCache {
 	}
 
 	/**
-	 * Returns the map between application element id and application element structure.
+	 * Returns the map between application element id and application element
+	 * structure.
 	 *
 	 * @return The map.
-	 * @throws AoException Error loading application element mapping.
+	 * @throws AoException
+	 *             Error loading application element mapping.
 	 */
 	private Map<Long, ApplElem> getAid2applElemMap() throws AoException {
 		if (aid2applElemMap == null) {
@@ -485,9 +521,11 @@ public class ODSModelCache {
 	/**
 	 * Returns all ODS <code>ApplElems</code> by base name.
 	 *
-	 * @param beName the base element name
+	 * @param beName
+	 *            the base element name
 	 * @return array of <code>ApplElemns</code>
-	 * @throws AoException if something went wrong
+	 * @throws AoException
+	 *             if something went wrong
 	 */
 	public final ApplElem[] getApplElemsByBaseName(String beName) throws AoException {
 		List<ApplElem> list = new LinkedList<ApplElem>();
@@ -502,9 +540,11 @@ public class ODSModelCache {
 	/**
 	 * Returns all application element names by given base name
 	 *
-	 * @param beName the base element name
+	 * @param beName
+	 *            the base element name
 	 * @return list of application element names
-	 * @throws AoException if something went wrong
+	 * @throws AoException
+	 *             if something went wrong
 	 */
 	public final String[] getAeNamesByBaseName(String beName) throws AoException {
 		List<String> list = new LinkedList<String>();
@@ -515,17 +555,21 @@ public class ODSModelCache {
 	}
 
 	/**
-	 * Returns an ODS <code>ApplElem</code> by given base name. If none or multiple were found, an exception is thrown.
+	 * Returns an ODS <code>ApplElem</code> by given base name. If none or
+	 * multiple were found, an exception is thrown.
 	 *
-	 * @param beName the base element name
+	 * @param beName
+	 *            the base element name
 	 * @return the <code>ApplElem</code> if found
-	 * @throws AoException none or multiple application elements by given base name have been found
+	 * @throws AoException
+	 *             none or multiple application elements by given base name have
+	 *             been found
 	 */
 	public final ApplElem getApplElemByBaseName(String beName) throws AoException {
 		ApplElem[] elems = getApplElemsByBaseName(beName);
 		if (elems.length < 1) {
-			throw new AoException(ErrorCode.AO_NOT_FOUND, SeverityFlag.ERROR, 0, "AE for base name [beName=" + beName
-					+ "] not found");
+			throw new AoException(ErrorCode.AO_NOT_FOUND, SeverityFlag.ERROR, 0,
+					"AE for base name [beName=" + beName + "] not found");
 		} else if (elems.length > 1) {
 			throw new AoException(ErrorCode.AO_NOT_UNIQUE, SeverityFlag.ERROR, 01,
 					"Multiple AEs for base name [beName=" + beName + " found");
@@ -536,9 +580,11 @@ public class ODSModelCache {
 	/**
 	 * Returns an ODS <code>ApplElem</code> by given aid.
 	 *
-	 * @param aid the id of the application element
+	 * @param aid
+	 *            the id of the application element
 	 * @return the <code>ApplElem</code>
-	 * @throws AoException application element by given id not found
+	 * @throws AoException
+	 *             application element by given id not found
 	 */
 	public final ApplElem getApplElem(long aid) throws AoException {
 		ApplElem applElem = getAid2applElemMap().get(aid);
@@ -549,11 +595,14 @@ public class ODSModelCache {
 	}
 
 	/**
-	 * Returns an ODS <code>ApplElem</code> by given aid as ODS <code>T_LONGLONG</code>.
+	 * Returns an ODS <code>ApplElem</code> by given aid as ODS
+	 * <code>T_LONGLONG</code>.
 	 *
-	 * @param aid the id of the application element
+	 * @param aid
+	 *            the id of the application element
 	 * @return the <code>ApplElem</code>
-	 * @throws AoException application element by given id not found
+	 * @throws AoException
+	 *             application element by given id not found
 	 */
 	public final ApplElem getApplElem(T_LONGLONG aid) throws AoException {
 		return getApplElem(asJLong(aid));
@@ -562,9 +611,11 @@ public class ODSModelCache {
 	/**
 	 * Returns an ODS <code>ApplElem</code> by given name.
 	 *
-	 * @param aeName the name of the application element
+	 * @param aeName
+	 *            the name of the application element
 	 * @return the <code>ApplElem</code>
-	 * @throws AoException application element with given name not found
+	 * @throws AoException
+	 *             application element with given name not found
 	 */
 	public final ApplElem getApplElem(String aeName) throws AoException {
 		ApplElem applElem = getAeName2applElemMap().get(aeName);
@@ -577,21 +628,27 @@ public class ODSModelCache {
 	/**
 	 * Checks whether an application element with specified name exists.
 	 *
-	 * @param aeName the name of the ApplicationElement
+	 * @param aeName
+	 *            the name of the ApplicationElement
 	 * @return true, if the ApplicationElement exists, otherwise false
-	 * @throws AoException if something went wrong
+	 * @throws AoException
+	 *             if something went wrong
 	 */
 	public final boolean applElemExists(String aeName) throws AoException {
 		return getAeName2applElemMap().containsKey(aeName);
 	}
 
 	/**
-	 * Creates an ODS <code>org.asam.ods.ElemId</code> by given application element name and instance id.
+	 * Creates an ODS <code>org.asam.ods.ElemId</code> by given application
+	 * element name and instance id.
 	 *
-	 * @param aeName the application element name
-	 * @param instanceId the instance id
+	 * @param aeName
+	 *            the application element name
+	 * @param instanceId
+	 *            the instance id
 	 * @return the <code>org.asam.ods.ElemId</code>
-	 * @throws AoException application element not found
+	 * @throws AoException
+	 *             application element not found
 	 */
 	public final ElemId createElemId(String aeName, long instanceId) throws AoException {
 		T_LONGLONG aid = getApplElem(aeName).aid;
@@ -602,10 +659,13 @@ public class ODSModelCache {
 	/**
 	 * Returns an ODS <code>ApplAttr</code> by given name.
 	 *
-	 * @param aeName the name of the application element
-	 * @param aaName name of the application attribute
+	 * @param aeName
+	 *            the name of the application element
+	 * @param aaName
+	 *            name of the application attribute
 	 * @return the <code>ApplAttr</code>, null if not found
-	 * @throws AoException application attribute not found
+	 * @throws AoException
+	 *             application attribute not found
 	 */
 	public final ApplAttr getApplAttr(String aeName, String aaName) throws AoException {
 		ApplElem applElem = getApplElem(aeName);
@@ -614,17 +674,20 @@ public class ODSModelCache {
 				return applAttr;
 			}
 		}
-		throw new AoException(ErrorCode.AO_NOT_FOUND, SeverityFlag.ERROR, 0, "ApplicationAttribute [aeName=" + aeName
-				+ ",aaName=" + aaName + "] not found!");
+		throw new AoException(ErrorCode.AO_NOT_FOUND, SeverityFlag.ERROR, 0,
+				"ApplicationAttribute [aeName=" + aeName + ",aaName=" + aaName + "] not found!");
 	}
 
 	/**
 	 * Checks whether an application attribute exists.
 	 *
-	 * @param aeName the name of the application element
-	 * @param aaName the name of the application attribute
+	 * @param aeName
+	 *            the name of the application element
+	 * @param aaName
+	 *            the name of the application attribute
 	 * @return true, if the application attribute exists, otherwise false
-	 * @throws AoException error accessing the application structure
+	 * @throws AoException
+	 *             error accessing the application structure
 	 */
 	public final boolean applAttrExists(String aeName, String aaName) throws AoException {
 		if (!applElemExists(aeName)) {
@@ -640,12 +703,16 @@ public class ODSModelCache {
 	}
 
 	/**
-	 * Returns an application attribute definition by given base base element and base attribute name.
+	 * Returns an application attribute definition by given base base element
+	 * and base attribute name.
 	 *
-	 * @param beName the base element name
-	 * @param baName the base attribute name
+	 * @param beName
+	 *            the base element name
+	 * @param baName
+	 *            the base attribute name
 	 * @return the application atttribute definition
-	 * @throws AoException none or multiple attributes found
+	 * @throws AoException
+	 *             none or multiple attributes found
 	 */
 	public final ApplAttr getApplAttrByBaseName(String beName, String baName) throws AoException {
 		ApplElem applElem = getApplElemByBaseName(beName);
@@ -654,15 +721,16 @@ public class ODSModelCache {
 				return applAttr;
 			}
 		}
-		throw new AoException(ErrorCode.AO_NOT_FOUND, SeverityFlag.ERROR, 0, "ApplAttr [beName=" + beName + ",baName="
-				+ baName + "] not found!");
+		throw new AoException(ErrorCode.AO_NOT_FOUND, SeverityFlag.ERROR, 0,
+				"ApplAttr [beName=" + beName + ",baName=" + baName + "] not found!");
 	}
 
 	/**
 	 * Returns all application relations as strucuture.
 	 *
 	 * @return array of application relation structures
-	 * @throws AoException error accessing the application structure
+	 * @throws AoException
+	 *             error accessing the application structure
 	 */
 	public final ApplRel[] getApplRels() throws AoException {
 		if (applRels == null) {
@@ -674,11 +742,15 @@ public class ODSModelCache {
 	/**
 	 * Checks whether an application relation exists.
 	 *
-	 * @param elem1 the first application element
-	 * @param elem2 the target application element
-	 * @param relName the relations name
+	 * @param elem1
+	 *            the first application element
+	 * @param elem2
+	 *            the target application element
+	 * @param relName
+	 *            the relations name
 	 * @return true, if the relation exists, otherwise false
-	 * @throws AoException if something went wrong
+	 * @throws AoException
+	 *             if something went wrong
 	 */
 	public final boolean applRelExists(String elem1, String elem2, String relName) throws AoException {
 		long aidElem1 = asJLong(getApplElem(elem1).aid);
@@ -695,9 +767,11 @@ public class ODSModelCache {
 	/**
 	 * Returns all ApplRels for an ODS application element.
 	 *
-	 * @param aeName the name of the application element
+	 * @param aeName
+	 *            the name of the application element
 	 * @return list of ApplRels
-	 * @throws AoException if something went wrong
+	 * @throws AoException
+	 *             if something went wrong
 	 */
 	public final ApplRel[] getApplRelsForAe(String aeName) throws AoException {
 		List<ApplRel> list = new LinkedList<ApplRel>();
@@ -712,11 +786,15 @@ public class ODSModelCache {
 	}
 
 	/**
-	 * Returns all application relations as structure for an application element by given base element name.
+	 * Returns all application relations as structure for an application element
+	 * by given base element name.
 	 *
-	 * @param beName the base element name
+	 * @param beName
+	 *            the base element name
 	 * @return array of application relation structures
-	 * @throws AoException none or multiple application elements with given basename found
+	 * @throws AoException
+	 *             none or multiple application elements with given basename
+	 *             found
 	 */
 	public final ApplRel[] getApplRelsByBaseName(String beName) throws AoException {
 		ApplElem applElem = getApplElemByBaseName(beName);
@@ -734,14 +812,17 @@ public class ODSModelCache {
 	}
 
 	/**
-	 * Returns an application relation as structure for an application element found by given base element and base
-	 * relation name.
+	 * Returns an application relation as structure for an application element
+	 * found by given base element and base relation name.
 	 *
-	 * @param beName the base element name
-	 * @param brName the base relation name
+	 * @param beName
+	 *            the base element name
+	 * @param brName
+	 *            the base relation name
 	 * @return the ApplRel structure
-	 * @throws AoException none or multiple application elements with given base element found or application relation
-	 *             not existing
+	 * @throws AoException
+	 *             none or multiple application elements with given base element
+	 *             found or application relation not existing
 	 */
 	public final ApplRel getApplRelByBaseName(String beName, String brName) throws AoException {
 		for (ApplRel applRel : getApplRelsByBaseName(beName)) {
@@ -749,8 +830,8 @@ public class ODSModelCache {
 				return applRel;
 			}
 		}
-		throw new AoException(ErrorCode.AO_NOT_FOUND, SeverityFlag.ERROR, 0, "ApplRel [beName=" + beName + ",brName="
-				+ brName + "] not found!");
+		throw new AoException(ErrorCode.AO_NOT_FOUND, SeverityFlag.ERROR, 0,
+				"ApplRel [beName=" + beName + ",brName=" + brName + "] not found!");
 	}
 
 	/*******************************************************************************************************************
@@ -761,7 +842,8 @@ public class ODSModelCache {
 	 * Returns the enumeration structure.
 	 *
 	 * @return The enumeration structure.
-	 * @throws AoException Error getting enumeration structure.
+	 * @throws AoException
+	 *             Error getting enumeration structure.
 	 */
 	public EnumerationStructure[] getEnumerationStructure() throws AoException {
 		if (enumerationStructure == null) {
@@ -774,7 +856,8 @@ public class ODSModelCache {
 	 * Returns the enumeration attribute structure.
 	 *
 	 * @return The enumeration attributes.
-	 * @throws AoException Error getting enumeration attributes.
+	 * @throws AoException
+	 *             Error getting enumeration attributes.
 	 */
 	public EnumerationAttributeStructure[] getEnumerationAttributes() throws AoException {
 		if (enumerationAttributes == null) {
@@ -784,12 +867,16 @@ public class ODSModelCache {
 	}
 
 	/**
-	 * Returns the name of the enumeration definition associated to an application attribute.
+	 * Returns the name of the enumeration definition associated to an
+	 * application attribute.
 	 *
-	 * @param aeName The application element name.
-	 * @param aaName The application attribute name.
+	 * @param aeName
+	 *            The application element name.
+	 * @param aaName
+	 *            The application attribute name.
 	 * @return The name of the enumeration definition.
-	 * @throws AoException No enumeration definition defined at the attribute.
+	 * @throws AoException
+	 *             No enumeration definition defined at the attribute.
 	 */
 	public String getEnumName(String aeName, String aaName) throws AoException {
 		long aid = asJLong(getApplElem(aeName).aid);
@@ -820,10 +907,13 @@ public class ODSModelCache {
 	/**
 	 * Returns the enumeration item for a enumeration value.
 	 *
-	 * @param enumName The name of the enumeration definition.
-	 * @param enumValue The enumeration value.
+	 * @param enumName
+	 *            The name of the enumeration definition.
+	 * @param enumValue
+	 *            The enumeration value.
 	 * @return The enumeration item.
-	 * @throws AoException Enumeration definition or value not found.
+	 * @throws AoException
+	 *             Enumeration definition or value not found.
 	 */
 	public final int getEnumItem(String enumName, String enumValue) throws AoException {
 		// fill cache
@@ -854,10 +944,13 @@ public class ODSModelCache {
 	/**
 	 * Returns the enumeration value for an enumeration item.
 	 *
-	 * @param enumName The name of the enumeration definition.
-	 * @param enumItem The enumeration item.
+	 * @param enumName
+	 *            The name of the enumeration definition.
+	 * @param enumItem
+	 *            The enumeration item.
 	 * @return The enumeration value.
-	 * @throws AoException Enumeration definition or item not found.
+	 * @throws AoException
+	 *             Enumeration definition or item not found.
 	 */
 	public final String getEnumValue(String enumName, int enumItem) throws AoException {
 		// fill cache
@@ -897,8 +990,10 @@ public class ODSModelCache {
 		/**
 		 * Creates a new ApplicationRelKey.
 		 *
-		 * @param ae1name the source application element name
-		 * @param ae2name the target application element name
+		 * @param ae1name
+		 *            the source application element name
+		 * @param ae2name
+		 *            the target application element name
 		 */
 		public ApplicationRelKey(String ae1name, String ae2name) {
 			this.ae1name = ae1name;

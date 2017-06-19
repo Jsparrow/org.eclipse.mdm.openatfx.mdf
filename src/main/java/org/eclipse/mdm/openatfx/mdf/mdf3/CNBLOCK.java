@@ -13,7 +13,6 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.channels.SeekableByteChannel;
 
-
 /**
  * <p>
  * Channel block: Description of a channel
@@ -26,34 +25,42 @@ class CNBLOCK extends BLOCK {
 
 	public static String BLOCK_ID = "CN";
 
-	// LINK 1 Pointer to next channel block (CNBLOCK) of this channel group (NIL allowed)
+	// LINK 1 Pointer to next channel block (CNBLOCK) of this channel group (NIL
+	// allowed)
 	private long lnkNextCnBlock;
 
-	// LINK 1 Pointer to the conversion formula (CCBLOCK) of this signal (NIL allowed).
+	// LINK 1 Pointer to the conversion formula (CCBLOCK) of this signal (NIL
+	// allowed).
 	private long lnkCcBlock;
 
-	// LINK 1 Pointer to the source-depending extensions (CEBLOCK) of this signal (NIL allowed)
+	// LINK 1 Pointer to the source-depending extensions (CEBLOCK) of this
+	// signal (NIL allowed)
 	private long lnkCeBlock;
 
-	// LINK 1 Pointer to the dependency block (CDBLOCK) of this signal (NIL allowed)
+	// LINK 1 Pointer to the dependency block (CDBLOCK) of this signal (NIL
+	// allowed)
 	private long lnkCdBlock;
 
-	// LINK 1 Pointer to the channel comment (TXBLOCK) of this signal (NIL allowed)
+	// LINK 1 Pointer to the channel comment (TXBLOCK) of this signal (NIL
+	// allowed)
 	private long lnkChannelComment;
 
 	// UINT16 1 Channel type
 	// 0 = data channel
-	// 1 = time channel for all signals of this group (in each channel group, exactly one
+	// 1 = time channel for all signals of this group (in each channel group,
+	// exactly one
 	// channel must be defined as time channel)
 	private int channelType;
 
-	// CHAR 32 Signal name, i.e. the first 32 characters of the ASAM-MCD unique name
+	// CHAR 32 Signal name, i.e. the first 32 characters of the ASAM-MCD unique
+	// name
 	private String signalName;
 
 	// CHAR 128 Signal description
 	private String signalDescription;
 
-	// UINT16 1 Number of the first bits [0..n] (bit position within a byte: bit 0 is the least significant
+	// UINT16 1 Number of the first bits [0..n] (bit position within a byte: bit
+	// 0 is the least significant
 	// bit, bit 7 is the most significant bit)
 	private int numberOfFirstBits;
 
@@ -83,20 +90,26 @@ class CNBLOCK extends BLOCK {
 	// LINK 1 Pointer to the ASAM-MCD unique name (TXBLOCK) (NIL allowed)
 	private long lnkMcdUniqueName;
 
-	// LINK 1 Pointer to TXBLOCK that contains the signal's display identifier (default: NIL; NIL allowed)
+	// LINK 1 Pointer to TXBLOCK that contains the signal's display identifier
+	// (default: NIL; NIL allowed)
 	private long lnkSignalDisplayIdentifier;
 
-	// UINT16 1 Byte offset of the signal in the data record in addition to bit offset (default value: 0)
-	// note: this fields shall only be used if the CGBLOCK record size and the actual offset
-	// is larger than 8192 Bytes to ensure compatibility; it enables to write data blocks
+	// UINT16 1 Byte offset of the signal in the data record in addition to bit
+	// offset (default value: 0)
+	// note: this fields shall only be used if the CGBLOCK record size and the
+	// actual offset
+	// is larger than 8192 Bytes to ensure compatibility; it enables to write
+	// data blocks
 	// larger than 8kBytes
 	private int byteOffset;
 
 	/**
 	 * Constructor.
 	 *
-	 * @param sbc The byte channel pointing to the MDF file.
-	 * @param pos The position of the block within the MDF file.
+	 * @param sbc
+	 *            The byte channel pointing to the MDF file.
+	 * @param pos
+	 *            The position of the block within the MDF file.
 	 */
 	private CNBLOCK(SeekableByteChannel sbc, long pos) {
 		super(sbc, pos);
@@ -251,14 +264,14 @@ class CNBLOCK extends BLOCK {
 	 */
 	@Override
 	public String toString() {
-		return "CNBLOCK [lnkNextCnBlock=" + lnkNextCnBlock + ", lnkCcBlock=" + lnkCcBlock + ", lnkCeBlock="
-				+ lnkCeBlock + ", lnkCdBlock=" + lnkCdBlock + ", lnkChannelComment=" + lnkChannelComment
-				+ ", channelType=" + channelType + ", signalName=" + signalName + ", signalDescription="
-				+ signalDescription + ", numberOfFirstBits=" + numberOfFirstBits + ", numberOfBits=" + numberOfBits
-				+ ", signalDataType=" + signalDataType + ", knownImplValue=" + knownImplValue + ", minImplValue="
-				+ minImplValue + ", maxImplValue=" + maxImplValue + ", sampleRate=" + sampleRate
-				+ ", lnkMcdUniqueName=" + lnkMcdUniqueName + ", lnkSignalDisplayIdentifier="
-				+ lnkSignalDisplayIdentifier + ", byteOffset=" + byteOffset + "]";
+		return "CNBLOCK [lnkNextCnBlock=" + lnkNextCnBlock + ", lnkCcBlock=" + lnkCcBlock + ", lnkCeBlock=" + lnkCeBlock
+				+ ", lnkCdBlock=" + lnkCdBlock + ", lnkChannelComment=" + lnkChannelComment + ", channelType="
+				+ channelType + ", signalName=" + signalName + ", signalDescription=" + signalDescription
+				+ ", numberOfFirstBits=" + numberOfFirstBits + ", numberOfBits=" + numberOfBits + ", signalDataType="
+				+ signalDataType + ", knownImplValue=" + knownImplValue + ", minImplValue=" + minImplValue
+				+ ", maxImplValue=" + maxImplValue + ", sampleRate=" + sampleRate + ", lnkMcdUniqueName="
+				+ lnkMcdUniqueName + ", lnkSignalDisplayIdentifier=" + lnkSignalDisplayIdentifier + ", byteOffset="
+				+ byteOffset + "]";
 	}
 
 	public CNBLOCK getNextCnBlock() throws IOException {
@@ -306,10 +319,13 @@ class CNBLOCK extends BLOCK {
 	/**
 	 * Reads a CNBLOCK from the channel starting at pos
 	 *
-	 * @param sbc The channel to read from.
-	 * @param pos The position to start reading.
+	 * @param sbc
+	 *            The channel to read from.
+	 * @param pos
+	 *            The position to start reading.
 	 * @return The block data.
-	 * @throws IOException The exception.
+	 * @throws IOException
+	 *             The exception.
 	 */
 	public static CNBLOCK read(SeekableByteChannel sbc, long pos) throws IOException {
 		CNBLOCK block = new CNBLOCK(sbc, pos);
@@ -330,34 +346,42 @@ class CNBLOCK extends BLOCK {
 		// UINT16 1 Block size of this block in bytes
 		block.setLength(Mdf3Util.readUInt16(bb));
 
-		// LINK 1 Pointer to next channel block (CNBLOCK) of this channel group (NIL allowed)
+		// LINK 1 Pointer to next channel block (CNBLOCK) of this channel group
+		// (NIL allowed)
 		block.setLnkNextCnBlock(Mdf3Util.readLink(bb));
 
-		// LINK 1 Pointer to the conversion formula (CCBLOCK) of this signal (NIL allowed).
+		// LINK 1 Pointer to the conversion formula (CCBLOCK) of this signal
+		// (NIL allowed).
 		block.setLnkCcBlock(Mdf3Util.readLink(bb));
 
-		// LINK 1 Pointer to the source-depending extensions (CEBLOCK) of this signal (NIL allowed)
+		// LINK 1 Pointer to the source-depending extensions (CEBLOCK) of this
+		// signal (NIL allowed)
 		block.setLnkCeBlock(Mdf3Util.readLink(bb));
 
-		// LINK 1 Pointer to the dependency block (CDBLOCK) of this signal (NIL allowed)
+		// LINK 1 Pointer to the dependency block (CDBLOCK) of this signal (NIL
+		// allowed)
 		block.setLnkCdBlock(Mdf3Util.readLink(bb));
 
-		// LINK 1 Pointer to the channel comment (TXBLOCK) of this signal (NIL allowed)
+		// LINK 1 Pointer to the channel comment (TXBLOCK) of this signal (NIL
+		// allowed)
 		block.setLnkChannelComment(Mdf3Util.readLink(bb));
 
 		// UINT16 1 Channel type
 		// 0 = data channel
-		// 1 = time channel for all signals of this group (in each channel group, exactly one
+		// 1 = time channel for all signals of this group (in each channel
+		// group, exactly one
 		// channel must be defined as time channel)
 		block.setChannelType(Mdf3Util.readUInt16(bb));
 
-		// CHAR 32 Signal name, i.e. the first 32 characters of the ASAM-MCD unique name
+		// CHAR 32 Signal name, i.e. the first 32 characters of the ASAM-MCD
+		// unique name
 		block.setSignalName(Mdf3Util.readChars(bb, 32));
 
 		// CHAR 128 Signal description
 		block.setSignalDescription(Mdf3Util.readChars(bb, 128));
 
-		// UINT16 1 Number of the first bits [0..n] (bit position within a byte: bit 0 is the least significant
+		// UINT16 1 Number of the first bits [0..n] (bit position within a byte:
+		// bit 0 is the least significant
 		// bit, bit 7 is the most significant bit)
 		block.setNumberOfFirstBits(Mdf3Util.readUInt16(bb));
 
@@ -387,12 +411,16 @@ class CNBLOCK extends BLOCK {
 		// LINK 1 Pointer to the ASAM-MCD unique name (TXBLOCK) (NIL allowed)
 		block.setLnkMcdUniqueName(Mdf3Util.readLink(bb));
 
-		// LINK 1 Pointer to TXBLOCK that contains the signal's display identifier (default: NIL; NIL allowed)
+		// LINK 1 Pointer to TXBLOCK that contains the signal's display
+		// identifier (default: NIL; NIL allowed)
 		block.setLnkSignalDisplayIdentifier(Mdf3Util.readLink(bb));
 
-		// UINT16 1 Byte offset of the signal in the data record in addition to bit offset (default value: 0)
-		// note: this fields shall only be used if the CGBLOCK record size and the actual offset
-		// is larger than 8192 Bytes to ensure compatibility; it enables to write data blocks
+		// UINT16 1 Byte offset of the signal in the data record in addition to
+		// bit offset (default value: 0)
+		// note: this fields shall only be used if the CGBLOCK record size and
+		// the actual offset
+		// is larger than 8192 Bytes to ensure compatibility; it enables to
+		// write data blocks
 		// larger than 8kBytes
 		block.setByteOffset(Mdf3Util.readUInt16(bb));
 
