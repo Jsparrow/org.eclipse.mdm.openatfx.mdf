@@ -13,7 +13,6 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.channels.SeekableByteChannel;
 
-
 /**
  * CEBLOCK extension type DIM
  *
@@ -36,8 +35,10 @@ class CEBLOCK_DIM extends BLOCK {
 	/**
 	 * Constructor.
 	 *
-	 * @param sbc The byte channel pointing to the MDF file.
-	 * @param pos The position of the block within the MDF file.
+	 * @param sbc
+	 *            The byte channel pointing to the MDF file.
+	 * @param pos
+	 *            The position of the block within the MDF file.
 	 */
 	private CEBLOCK_DIM(SeekableByteChannel sbc, long pos) {
 		super(sbc, pos);
@@ -80,17 +81,20 @@ class CEBLOCK_DIM extends BLOCK {
 	 */
 	@Override
 	public String toString() {
-		return "CEBLOCK_DIM [numberOfModule=" + numberOfModule + ", address=" + address + ", description="
-				+ description + ", ecuIdent=" + ecuIdent + "]";
+		return "CEBLOCK_DIM [numberOfModule=" + numberOfModule + ", address=" + address + ", description=" + description
+				+ ", ecuIdent=" + ecuIdent + "]";
 	}
 
 	/**
 	 * Reads a CEBLOCK DIM from the channel starting at pos
 	 *
-	 * @param sbc The channel to read from.
-	 * @param pos The position to start reading.
+	 * @param sbc
+	 *            The channel to read from.
+	 * @param pos
+	 *            The position to start reading.
 	 * @return The block data.
-	 * @throws IOException The exception.
+	 * @throws IOException
+	 *             The exception.
 	 */
 	public static CEBLOCK_DIM read(SeekableByteChannel sbc, long pos) throws IOException {
 		CEBLOCK_DIM ceBlockDim = new CEBLOCK_DIM(sbc, pos);

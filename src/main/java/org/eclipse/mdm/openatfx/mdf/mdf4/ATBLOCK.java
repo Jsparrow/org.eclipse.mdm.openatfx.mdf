@@ -43,18 +43,17 @@ class ATBLOCK extends BLOCK {
 
 	private long embeddedSize;
 
-
 	/**
 	 * Constructor.
 	 *
-	 * @param sbc The byte channel pointing to the MDF file.
-	 * @param pos The position of the block within the MDF file.
+	 * @param sbc
+	 *            The byte channel pointing to the MDF file.
+	 * @param pos
+	 *            The position of the block within the MDF file.
 	 */
 	private ATBLOCK(SeekableByteChannel sbc, long pos) {
 		super(sbc, pos);
 	}
-
-
 
 	public long getLnkAtNext() {
 		return lnkAtNext;
@@ -167,16 +166,20 @@ class ATBLOCK extends BLOCK {
 	/**
 	 * Reads a SDBLOCK from the channel starting at current channel position.
 	 *
-	 * @param channel The channel to read from.
-	 * @param pos The position
+	 * @param channel
+	 *            The channel to read from.
+	 * @param pos
+	 *            The position
 	 * @return The block data.
-	 * @throws IOException The exception.
+	 * @throws IOException
+	 *             The exception.
 	 */
 	public static ATBLOCK read(SeekableByteChannel channel, long pos) throws IOException {
 		ATBLOCK block = new ATBLOCK(channel, pos);
 
 		// read block header
-		ByteBuffer bb = ByteBuffer.allocate(24 +32 +40); //24 Head 32 Links 40 Data
+		ByteBuffer bb = ByteBuffer.allocate(24 + 32 + 40); // 24 Head 32 Links
+															// 40 Data
 		bb.order(ByteOrder.LITTLE_ENDIAN);
 		channel.position(pos);
 		channel.read(bb);

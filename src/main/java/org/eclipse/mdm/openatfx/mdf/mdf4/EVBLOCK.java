@@ -14,12 +14,12 @@ import java.nio.ByteOrder;
 import java.nio.channels.SeekableByteChannel;
 import java.util.Arrays;
 
-
 /**
  * <p>
  * THE EVENT BLOCK <code>EVBLOCK<code>
  * </p>
- * The EVBLOCK stored Data about an event, that influenced the measurement, e.g. start, end, errors...
+ * The EVBLOCK stored Data about an event, that influenced the measurement, e.g.
+ * start, end, errors...
  *
  * @author Tobias Leemann
  */
@@ -37,7 +37,8 @@ class EVBLOCK extends BLOCK {
 	// LINK
 	private long lnkEvParent;
 
-	// Pointer to event block which defines the beginning of a range (EVBLOCK) (can be NIL)
+	// Pointer to event block which defines the beginning of a range (EVBLOCK)
+	// (can be NIL)
 	// LINK
 	private long lnkEvRange;
 
@@ -45,11 +46,13 @@ class EVBLOCK extends BLOCK {
 	// LINK
 	private long lnkTxName;
 
-	// Pointer to comment and additional information (TXBLOCK or MDBLOCK) (can be NIL)
+	// Pointer to comment and additional information (TXBLOCK or MDBLOCK) (can
+	// be NIL)
 	// LINK
 	private long lnkMdComment;
 
-	// Pointers to Blocks affected by this event. (CNBLOCK or CGBLOCK) (can be NIL)
+	// Pointers to Blocks affected by this event. (CNBLOCK or CGBLOCK) (can be
+	// NIL)
 	// LINK
 	private long[] lnkScope;
 
@@ -69,7 +72,6 @@ class EVBLOCK extends BLOCK {
 	// 6 = Marker
 	// UINT8
 	private byte type;
-
 
 	private byte syncType;
 
@@ -95,251 +97,184 @@ class EVBLOCK extends BLOCK {
 	private byte flags;
 
 	/**
-	 *  Number of Scope Links
+	 * Number of Scope Links
 	 */
 	private long scopeCount;
 
 	/**
-	 *  Number of Attachments
+	 * Number of Attachments
 	 */
 	private int attachmentCount;
 
 	/**
-	 *  Number of FH-Block in list, specifying the tool responsible for this event.
+	 * Number of FH-Block in list, specifying the tool responsible for this
+	 * event.
 	 */
 	private int creatorIndex;
 
 	/**
-	 *  Base for sync value.
+	 * Base for sync value.
 	 */
 	private long syncBaseValue;
 
 	/**
-	 *  Factor for sync value.
+	 * Factor for sync value.
 	 */
 	private double syncFactor;
 
 	/**
 	 * Constructor.
 	 *
-	 * @param sbc The byte channel pointing to the MDF file.
-	 * @param pos The position of the block within the MDF file.
+	 * @param sbc
+	 *            The byte channel pointing to the MDF file.
+	 * @param pos
+	 *            The position of the block within the MDF file.
 	 */
 	private EVBLOCK(SeekableByteChannel sbc, long pos) {
 		super(sbc, pos);
 	}
 
-
-
 	public static String getBLOCK_ID() {
 		return BLOCK_ID;
 	}
-
-
 
 	public long getLnkEvNext() {
 		return lnkEvNext;
 	}
 
-
-
 	public long getLnkEvParent() {
 		return lnkEvParent;
 	}
-
-
 
 	public long getLnkEvRange() {
 		return lnkEvRange;
 	}
 
-
-
 	public long getLnkTxName() {
 		return lnkTxName;
 	}
-
-
 
 	public long getLnkMdComment() {
 		return lnkMdComment;
 	}
 
-
-
 	public long[] getLnkScope() {
 		return lnkScope;
 	}
-
-
 
 	public long[] getLnkAtReference() {
 		return lnkAtReference;
 	}
 
-
-
 	public byte getType() {
 		return type;
 	}
-
-
 
 	public byte getSyncType() {
 		return syncType;
 	}
 
-
-
 	public byte getRangeType() {
 		return rangeType;
 	}
-
-
 
 	public byte getCause() {
 		return cause;
 	}
 
-
-
 	public byte getFlags() {
 		return flags;
 	}
-
-
 
 	public long getScopeCount() {
 		return scopeCount;
 	}
 
-
-
 	public int getAttachmentCount() {
 		return attachmentCount;
 	}
-
-
 
 	public int getCreatorIndex() {
 		return creatorIndex;
 	}
 
-
-
 	public long getSyncBaseValue() {
 		return syncBaseValue;
 	}
-
-
 
 	public double getSyncFactor() {
 		return syncFactor;
 	}
 
-
 	private void setLnkEvNext(long lnkEvNext) {
 		this.lnkEvNext = lnkEvNext;
 	}
-
-
 
 	private void setLnkEvParent(long lnkEvParent) {
 		this.lnkEvParent = lnkEvParent;
 	}
 
-
-
 	private void setLnkEvRange(long lnkEvRange) {
 		this.lnkEvRange = lnkEvRange;
 	}
-
-
 
 	private void setLnkTxName(long lnkTxName) {
 		this.lnkTxName = lnkTxName;
 	}
 
-
-
 	private void setLnkMdComment(long lnkMdComment) {
 		this.lnkMdComment = lnkMdComment;
 	}
-
-
 
 	private void setLnkScope(long[] lnkScope) {
 		this.lnkScope = lnkScope;
 	}
 
-
-
 	private void setLnkAtReference(long[] lnkAtReference) {
 		this.lnkAtReference = lnkAtReference;
 	}
-
-
 
 	private void setType(byte type) {
 		this.type = type;
 	}
 
-
-
 	private void setSyncType(byte syncType) {
 		this.syncType = syncType;
 	}
-
-
 
 	private void setRangeType(byte rangeType) {
 		this.rangeType = rangeType;
 	}
 
-
-
 	private void setCause(byte cause) {
 		this.cause = cause;
 	}
-
-
 
 	private void setFlags(byte flags) {
 		this.flags = flags;
 	}
 
-
-
 	private void setScopeCount(long scopeCount) {
 		this.scopeCount = scopeCount;
 	}
-
-
 
 	private void setAttachmentCount(int attachmentCount) {
 		this.attachmentCount = attachmentCount;
 	}
 
-
-
 	private void setCreatorIndex(int creatorIndex) {
 		this.creatorIndex = creatorIndex;
 	}
-
-
 
 	private void setSyncBaseValue(long syncBaseValue) {
 		this.syncBaseValue = syncBaseValue;
 	}
 
-
-
 	private void setSyncFactor(double syncFactor) {
 		this.syncFactor = syncFactor;
 	}
 
-
-	public double getSyncValue(){
+	public double getSyncValue() {
 		return syncBaseValue * syncFactor;
 	}
 
@@ -392,10 +327,13 @@ class EVBLOCK extends BLOCK {
 	/**
 	 * Reads an EVBLOCK from the channel.
 	 *
-	 * @param channel The channel to read from.
-	 * @param pos The position within the channel.
+	 * @param channel
+	 *            The channel to read from.
+	 * @param pos
+	 *            The position within the channel.
 	 * @return The block data.
-	 * @throws IOException The exception.
+	 * @throws IOException
+	 *             The exception.
 	 */
 	public static EVBLOCK read(SeekableByteChannel channel, long pos) throws IOException {
 		EVBLOCK block = new EVBLOCK(channel, pos);
@@ -422,8 +360,8 @@ class EVBLOCK extends BLOCK {
 		// UINT64: Number of links
 		block.setLinkCount(MDF4Util.readUInt64(bb));
 
-		//Read link section
-		bb = ByteBuffer.allocate((int) (8*block.getLinkCount()));
+		// Read link section
+		bb = ByteBuffer.allocate((int) (8 * block.getLinkCount()));
 		bb.order(ByteOrder.LITTLE_ENDIAN);
 		channel.read(bb);
 		bb.rewind();
@@ -439,12 +377,13 @@ class EVBLOCK extends BLOCK {
 		// LINK: Pointer to name block TXBLOCK
 		block.setLnkTxName(MDF4Util.readLink(bb));
 
-		// LINK: Pointer to comment and additional information (TXBLOCK or MDBLOCK) (can be NIL)
+		// LINK: Pointer to comment and additional information (TXBLOCK or
+		// MDBLOCK) (can be NIL)
 		block.setLnkMdComment(MDF4Util.readLink(bb));
 
 		// Read remaining links
-		long[] remaining = new long[(int) (block.getLinkCount()-5)];
-		for(int i = 0; i < block.getLinkCount()-5; i++){
+		long[] remaining = new long[(int) (block.getLinkCount() - 5)];
+		for (int i = 0; i < block.getLinkCount() - 5; i++) {
 			remaining[i] = MDF4Util.readLink(bb);
 		}
 
@@ -469,7 +408,7 @@ class EVBLOCK extends BLOCK {
 		// UINT8: Flags
 		block.setFlags(MDF4Util.readUInt8(bb));
 
-		//Skip 3 Byte
+		// Skip 3 Byte
 		bb.get(new byte[3]);
 
 		// UINT32: Scope List

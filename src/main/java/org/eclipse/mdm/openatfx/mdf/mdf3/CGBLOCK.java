@@ -13,13 +13,13 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.channels.SeekableByteChannel;
 
-
 /**
  * <p>
- * Channel group block: Description of a channel group, i.e. signals which are always measured jointly
+ * Channel group block: Description of a channel group, i.e. signals which are
+ * always measured jointly
  * </p>
- * This block describes the structure of a channel group. A channel group consists of different channels which are
- * measured jointly at the same rate.
+ * This block describes the structure of a channel group. A channel group
+ * consists of different channels which are measured jointly at the same rate.
  *
  * @author Christian Rechner
  */
@@ -42,7 +42,8 @@ class CGBLOCK extends BLOCK {
 	// UINT16 1 Number of channels
 	private int noOfChannels;
 
-	// UINT16 1 Data record size in bytes (without the record ID), i.e. data size of the channel group for each sample
+	// UINT16 1 Data record size in bytes (without the record ID), i.e. data
+	// size of the channel group for each sample
 	private int dataRecordSize;
 
 	// UINT32 1 Number of records
@@ -54,8 +55,10 @@ class CGBLOCK extends BLOCK {
 	/**
 	 * Constructor.
 	 *
-	 * @param sbc The byte channel pointing to the MDF file.
-	 * @param pos The position of the block within the MDF file.
+	 * @param sbc
+	 *            The byte channel pointing to the MDF file.
+	 * @param pos
+	 *            The position of the block within the MDF file.
 	 */
 	private CGBLOCK(SeekableByteChannel sbc, long pos) {
 		super(sbc, pos);
@@ -160,10 +163,13 @@ class CGBLOCK extends BLOCK {
 	/**
 	 * Reads a CGBLOCK from the channel starting at pos
 	 *
-	 * @param sbc The channel to read from.
-	 * @param pos The position to start reading.
+	 * @param sbc
+	 *            The channel to read from.
+	 * @param pos
+	 *            The position to start reading.
 	 * @return The block data.
-	 * @throws IOException The exception.
+	 * @throws IOException
+	 *             The exception.
 	 */
 	public static CGBLOCK read(SeekableByteChannel sbc, long pos) throws IOException {
 		CGBLOCK block = new CGBLOCK(sbc, pos);
@@ -191,7 +197,8 @@ class CGBLOCK extends BLOCK {
 		sbc.read(bb);
 		bb.rewind();
 
-		// LINK 1 Pointer to next data Channel group block (CGBLOCK) (NIL allowed)
+		// LINK 1 Pointer to next data Channel group block (CGBLOCK) (NIL
+		// allowed)
 		block.setLnkNextCgBlock(Mdf3Util.readLink(bb));
 
 		// LINK 1 Pointer to first channel block (CNBLOCK) (NIL allowed)
@@ -206,14 +213,16 @@ class CGBLOCK extends BLOCK {
 		// UINT16 1 Number of channels
 		block.setNoOfChannels(Mdf3Util.readUInt16(bb));
 
-		// UINT16 1 Data record size in bytes (without the record ID), i.e. data size of the channel group for each
+		// UINT16 1 Data record size in bytes (without the record ID), i.e. data
+		// size of the channel group for each
 		// sample
 		block.setDataRecordSize(Mdf3Util.readUInt16(bb));
 
 		// UINT32 1 Number of records
 		block.setNoOfRecords(Mdf3Util.readUInt32(bb));
 
-		// LINK 1 Pointer to first sample reduction block (SRBLOCK) (NIL allowed)
+		// LINK 1 Pointer to first sample reduction block (SRBLOCK) (NIL
+		// allowed)
 		// Valid since version 3.30. Default value: NIL.
 		if (block.getLength() > 26) {
 			block.setLnkFirstSrBlock(Mdf3Util.readLink(bb));

@@ -29,9 +29,9 @@ import org.omg.CORBA.ORB;
 import de.rechner.openatfx.util.ODSHelper;
 import junit.framework.JUnit4TestAdapter;
 
-
 /**
- * Test case for reading the example MDF4-file <code>ETAS_SimpleSorted.mf4</code>.
+ * Test case for reading the example MDF4-file
+ * <code>ETAS_SimpleSorted.mf4</code>.
  *
  * @author Christian Rechner
  */
@@ -82,7 +82,8 @@ public class Test_ETAS_SimpleSorted {
 
 			InstanceElement ieMea = as.getElementByName("mea").getInstances("ETAS_SimpleSorted.mf4").nextOne();
 			assertEquals("ETAS_SimpleSorted.mf4", ODSHelper.getStringVal(ieMea.getValue("iname")));
-			assertEquals("ASAM MDF 4.0 Example file created by ETAS. Contents: 2 simple channel groups containing ints and floats in little endian format.",
+			assertEquals(
+					"ASAM MDF 4.0 Example file created by ETAS. Contents: 2 simple channel groups containing ints and floats in little endian format.",
 					ODSHelper.getStringVal(ieMea.getValue("desc")));
 			assertEquals("20110909102921", ODSHelper.getDateVal(ieMea.getValue("date_created")));
 			assertEquals("20110909102921", ODSHelper.getDateVal(ieMea.getValue("mea_begin")));

@@ -13,14 +13,14 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.channels.SeekableByteChannel;
 
-
 /**
  * <p>
  * THE META DATA BLOCK <code>MDBLOCK</code>
  * </p>
- * The MDBLOCK contains information encoded as XML string. For example this can be comments for the measured data file,
- * file history information or the identification of a channel. This information is ruled by the parent block and
- * follows specific XML schemas definitions.
+ * The MDBLOCK contains information encoded as XML string. For example this can
+ * be comments for the measured data file, file history information or the
+ * identification of a channel. This information is ruled by the parent block
+ * and follows specific XML schemas definitions.
  *
  * @author Christian Rechner
  */
@@ -38,8 +38,10 @@ class MDBLOCK extends BLOCK {
 	/**
 	 * Constructor.
 	 *
-	 * @param sbc The byte channel pointing to the MDF file.
-	 * @param pos The position of the block within the MDF file.
+	 * @param sbc
+	 *            The byte channel pointing to the MDF file.
+	 * @param pos
+	 *            The position of the block within the MDF file.
 	 */
 	private MDBLOCK(SeekableByteChannel sbc, long pos) {
 		super(sbc, pos);
@@ -66,10 +68,13 @@ class MDBLOCK extends BLOCK {
 	/**
 	 * Reads a HDBLOCK from the channel starting at current channel position.
 	 *
-	 * @param channel The channel to read from.
-	 * @param pos The position within the channel.
+	 * @param channel
+	 *            The channel to read from.
+	 * @param pos
+	 *            The position within the channel.
 	 * @return The block data.
-	 * @throws IOException The exception.
+	 * @throws IOException
+	 *             The exception.
 	 */
 	public static MDBLOCK read(SeekableByteChannel channel, long pos) throws IOException {
 		MDBLOCK block = new MDBLOCK(channel, pos);

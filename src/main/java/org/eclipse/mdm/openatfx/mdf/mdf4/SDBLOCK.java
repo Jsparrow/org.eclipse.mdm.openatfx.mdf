@@ -13,7 +13,6 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.channels.SeekableByteChannel;
 
-
 /**
  * <p>
  * THE SIGNAL DATA BLOCK <code>SDBLOCK</code>
@@ -30,8 +29,10 @@ class SDBLOCK extends BLOCK {
 	/**
 	 * Constructor.
 	 *
-	 * @param sbc The byte channel pointing to the MDF file.
-	 * @param pos The position of the block within the MDF file.
+	 * @param sbc
+	 *            The byte channel pointing to the MDF file.
+	 * @param pos
+	 *            The position of the block within the MDF file.
 	 */
 	private SDBLOCK(SeekableByteChannel sbc, long pos) {
 		super(sbc, pos);
@@ -48,10 +49,13 @@ class SDBLOCK extends BLOCK {
 	/**
 	 * Reads a SDBLOCK from the channel starting at current channel position.
 	 *
-	 * @param channel The channel to read from.
-	 * @param pos The position
+	 * @param channel
+	 *            The channel to read from.
+	 * @param pos
+	 *            The position
 	 * @return The block data.
-	 * @throws IOException The exception.
+	 * @throws IOException
+	 *             The exception.
 	 */
 	public static SDBLOCK read(SeekableByteChannel channel, long pos) throws IOException {
 		SDBLOCK block = new SDBLOCK(channel, pos);

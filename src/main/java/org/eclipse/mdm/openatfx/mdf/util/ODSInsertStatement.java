@@ -38,7 +38,6 @@ import org.asam.ods.T_DCOMPLEX;
 import org.asam.ods.T_ExternalReference;
 import org.asam.ods.T_LONGLONG;
 
-
 /**
  * Helper class to construct ODS batch insert statements.
  *
@@ -61,11 +60,14 @@ public class ODSInsertStatement {
 	private int pos = -1;
 
 	/**
-	 * Creates a new batch insert statement. The current pointer of the statement stands at the first statement, so no
-	 * initial call to 'next' is necessary.
+	 * Creates a new batch insert statement. The current pointer of the
+	 * statement stands at the first statement, so no initial call to 'next' is
+	 * necessary.
 	 *
-	 * @param cache the ODS cache
-	 * @param aeName the name of the application element to insert an instance for
+	 * @param cache
+	 *            the ODS cache
+	 * @param aeName
+	 *            the name of the application element to insert an instance for
 	 */
 	public ODSInsertStatement(ODSModelCache cache, String aeName) {
 		if (cache == null) {
@@ -104,8 +106,10 @@ public class ODSInsertStatement {
 	/**
 	 * Sets a value to the current batch position.
 	 *
-	 * @param aaName The application attribute name.
-	 * @param value The value as <code>org.asam.ods.TS_Value</code>.
+	 * @param aaName
+	 *            The application attribute name.
+	 * @param value
+	 *            The value as <code>org.asam.ods.TS_Value</code>.
 	 */
 	public void setTS_Value(String aaName, TS_Value value) {
 		if (pos < 0) {
@@ -118,7 +122,9 @@ public class ODSInsertStatement {
 	/**
 	 * Sets a value to the current batch position.
 	 *
-	 * @param nv The value including the attribute name as <code>org.asam.ods.NameValue</code>.
+	 * @param nv
+	 *            The value including the attribute name as
+	 *            <code>org.asam.ods.NameValue</code>.
 	 */
 	public void setNameValue(NameValue nv) {
 		setTS_Value(nv.valName, nv.value);
@@ -127,7 +133,9 @@ public class ODSInsertStatement {
 	/**
 	 * Sets a value to the current batch position.
 	 *
-	 * @param nvu The value including the attribute name as <code>org.asam.ods.NameValueUnit</code>.
+	 * @param nvu
+	 *            The value including the attribute name as
+	 *            <code>org.asam.ods.NameValueUnit</code>.
 	 */
 	public void setNameValueUnit(NameValueUnit nvu) {
 		setTS_Value(nvu.valName, nvu.value);
@@ -136,8 +144,10 @@ public class ODSInsertStatement {
 	/**
 	 * Sets a boolean value to the current batch position.
 	 *
-	 * @param aaName The application attribute name.
-	 * @param value The value.
+	 * @param aaName
+	 *            The application attribute name.
+	 * @param value
+	 *            The value.
 	 */
 	public void setBooleanVal(String aaName, boolean value) {
 		setNameValue(ODSHelper.createBooleanNV(aaName, value));
@@ -146,8 +156,10 @@ public class ODSInsertStatement {
 	/**
 	 * Sets a boolean sequence to the current batch position.
 	 *
-	 * @param aaName The application attribute name.
-	 * @param value The value.
+	 * @param aaName
+	 *            The application attribute name.
+	 * @param value
+	 *            The value.
 	 */
 	public void setBooleanSeq(String aaName, boolean[] value) {
 		setNameValue(ODSHelper.createBooleanSeqNV(aaName, value));
@@ -156,8 +168,10 @@ public class ODSInsertStatement {
 	/**
 	 * Sets a byte value to the current batch position.
 	 *
-	 * @param aaName The application attribute name.
-	 * @param value The value.
+	 * @param aaName
+	 *            The application attribute name.
+	 * @param value
+	 *            The value.
 	 */
 	public void setByteVal(String aaName, byte value) {
 		setNameValue(ODSHelper.createByteNV(aaName, value));
@@ -166,8 +180,10 @@ public class ODSInsertStatement {
 	/**
 	 * Sets a byte sequence to the current batch position.
 	 *
-	 * @param aaName The application attribute name.
-	 * @param value The value.
+	 * @param aaName
+	 *            The application attribute name.
+	 * @param value
+	 *            The value.
 	 */
 	public void setByteSeq(String aaName, byte[] value) {
 		setNameValue(ODSHelper.createByteSeqNV(aaName, value));
@@ -176,8 +192,10 @@ public class ODSInsertStatement {
 	/**
 	 * Sets a byteStr value to the current batch position.
 	 *
-	 * @param aaName The application attribute name.
-	 * @param value The value.
+	 * @param aaName
+	 *            The application attribute name.
+	 * @param value
+	 *            The value.
 	 */
 	public void setBytestrVal(String aaName, byte[] value) {
 		setNameValue(ODSHelper.createBytestrNV(aaName, value));
@@ -186,8 +204,10 @@ public class ODSInsertStatement {
 	/**
 	 * Sets a byteStr sequence to the current batch position.
 	 *
-	 * @param aaName The application attribute name.
-	 * @param value The value.
+	 * @param aaName
+	 *            The application attribute name.
+	 * @param value
+	 *            The value.
 	 */
 	public void setBytestrSeq(String aaName, byte[][] value) {
 		setNameValue(ODSHelper.createBytestrSeqNV(aaName, value));
@@ -196,8 +216,10 @@ public class ODSInsertStatement {
 	/**
 	 * Sets a date value to the current batch position.
 	 *
-	 * @param aaName The application attribute name.
-	 * @param value The value.
+	 * @param aaName
+	 *            The application attribute name.
+	 * @param value
+	 *            The value.
 	 */
 	public void setDateVal(String aaName, String value) {
 		setNameValue(ODSHelper.createDateNV(aaName, value));
@@ -206,8 +228,10 @@ public class ODSInsertStatement {
 	/**
 	 * Sets a date sequence to the current batch position.
 	 *
-	 * @param aaName The application attribute name.
-	 * @param value The value.
+	 * @param aaName
+	 *            The application attribute name.
+	 * @param value
+	 *            The value.
 	 */
 	public void setDateSeq(String aaName, String[] value) {
 		setNameValue(ODSHelper.createDateSeqNV(aaName, value));
@@ -216,17 +240,22 @@ public class ODSInsertStatement {
 	/**
 	 * Sets a date sequence to the current batch position.
 	 *
-	 * @param aaName The application attribute name.
-	 * @param value The value.
+	 * @param aaName
+	 *            The application attribute name.
+	 * @param value
+	 *            The value.
 	 */
 	public void setDateSeq(String aaName, Date[] value) {
 		setNameValue(ODSHelper.createDateSeqNV(aaName, value));
 	}
+
 	/**
 	 * Sets a T_DCOMPLEX value to the current batch position.
 	 *
-	 * @param aaName The application attribute name.
-	 * @param value The value.
+	 * @param aaName
+	 *            The application attribute name.
+	 * @param value
+	 *            The value.
 	 */
 	public void setDComplexVal(String aaName, T_DCOMPLEX value) {
 		setNameValue(ODSHelper.createDComplexNV(aaName, value));
@@ -235,8 +264,10 @@ public class ODSInsertStatement {
 	/**
 	 * Sets a T_DCOMPLEX sequence to the current batch position.
 	 *
-	 * @param aaName The application attribute name.
-	 * @param value The value.
+	 * @param aaName
+	 *            The application attribute name.
+	 * @param value
+	 *            The value.
 	 */
 	public void setDComplexSeq(String aaName, T_DCOMPLEX[] value) {
 		setNameValue(ODSHelper.createDComplexSeqNV(aaName, value));
@@ -245,8 +276,10 @@ public class ODSInsertStatement {
 	/**
 	 * Sets a double value to the current batch position.
 	 *
-	 * @param aaName The application attribute name.
-	 * @param value The value.
+	 * @param aaName
+	 *            The application attribute name.
+	 * @param value
+	 *            The value.
 	 */
 	public void setDoubleVal(String aaName, double value) {
 		setNameValue(ODSHelper.createDoubleNV(aaName, value));
@@ -255,8 +288,10 @@ public class ODSInsertStatement {
 	/**
 	 * Sets a double sequence to the current batch position.
 	 *
-	 * @param aaName The application attribute name.
-	 * @param value The value.
+	 * @param aaName
+	 *            The application attribute name.
+	 * @param value
+	 *            The value.
 	 */
 	public void setDoubleSeq(String aaName, double[] value) {
 		setNameValue(ODSHelper.createDoubleSeqNV(aaName, value));
@@ -265,22 +300,25 @@ public class ODSInsertStatement {
 	/**
 	 * Sets a double sequence to the current batch position.
 	 *
-	 * @param aaName The application attribute name.
-	 * @param value The value.
+	 * @param aaName
+	 *            The application attribute name.
+	 * @param value
+	 *            The value.
 	 */
 	public void setDoubleSeq(String aaName, Double[] value) {
 		double[] v = new double[value.length];
-		for(int i = 0; i < v.length; v[i]= value[i++]) {
+		for (int i = 0; i < v.length; v[i] = value[i++]) {
 			setNameValue(ODSHelper.createDoubleSeqNV(aaName, v));
 		}
 	}
 
-
 	/**
 	 * Sets a enum value to the current batch position.
 	 *
-	 * @param aaName The application attribute name.
-	 * @param value The value.
+	 * @param aaName
+	 *            The application attribute name.
+	 * @param value
+	 *            The value.
 	 */
 	public void setEnumVal(String aaName, int value) {
 		setNameValue(ODSHelper.createEnumNV(aaName, value));
@@ -289,8 +327,10 @@ public class ODSInsertStatement {
 	/**
 	 * Sets a enum sequence to the current batch position.
 	 *
-	 * @param aaName The application attribute name.
-	 * @param value The value.
+	 * @param aaName
+	 *            The application attribute name.
+	 * @param value
+	 *            The value.
 	 */
 	public void setEnumSeq(String aaName, int[] value) {
 		setNameValue(ODSHelper.createEnumSeqNV(aaName, value));
@@ -299,8 +339,10 @@ public class ODSInsertStatement {
 	/**
 	 * Sets a T_ExternalReference value to the current batch position.
 	 *
-	 * @param aaName The application attribute name.
-	 * @param value The value.
+	 * @param aaName
+	 *            The application attribute name.
+	 * @param value
+	 *            The value.
 	 */
 	public void setExtRefVal(String aaName, T_ExternalReference value) {
 		setNameValue(ODSHelper.createExtRefNV(aaName, value));
@@ -309,8 +351,10 @@ public class ODSInsertStatement {
 	/**
 	 * Sets a T_ExternalReference sequence to the current batch position.
 	 *
-	 * @param aaName The application attribute name.
-	 * @param value The value.
+	 * @param aaName
+	 *            The application attribute name.
+	 * @param value
+	 *            The value.
 	 */
 	public void setExtRefSeq(String aaName, T_ExternalReference[] value) {
 		setNameValue(ODSHelper.createExtRefSeqNV(aaName, value));
@@ -319,8 +363,10 @@ public class ODSInsertStatement {
 	/**
 	 * Sets a float value to the current batch position.
 	 *
-	 * @param aaName The application attribute name.
-	 * @param value The value.
+	 * @param aaName
+	 *            The application attribute name.
+	 * @param value
+	 *            The value.
 	 */
 	public void setFloatVal(String aaName, float value) {
 		setNameValue(ODSHelper.createFloatNV(aaName, value));
@@ -329,8 +375,10 @@ public class ODSInsertStatement {
 	/**
 	 * Sets a float sequence to the current batch position.
 	 *
-	 * @param aaName The application attribute name.
-	 * @param value The value.
+	 * @param aaName
+	 *            The application attribute name.
+	 * @param value
+	 *            The value.
 	 */
 	public void setFloatSeq(String aaName, float[] value) {
 		setNameValue(ODSHelper.createFloatSeqNV(aaName, value));
@@ -339,20 +387,25 @@ public class ODSInsertStatement {
 	/**
 	 * Sets a float sequence to the current batch position.
 	 *
-	 * @param aaName The application attribute name.
-	 * @param value The value.
+	 * @param aaName
+	 *            The application attribute name.
+	 * @param value
+	 *            The value.
 	 */
 	public void setFloatSeq(String aaName, Float[] value) {
 		float[] v = new float[value.length];
-		for(int i = 0; i < v.length; v[i]= value[i++]) {
+		for (int i = 0; i < v.length; v[i] = value[i++]) {
 			setNameValue(ODSHelper.createFloatSeqNV(aaName, v));
 		}
 	}
+
 	/**
-	 * Sets a long value to the current batch positi		on.
+	 * Sets a long value to the current batch positi on.
 	 *
-	 * @param aaName The application attribute name.
-	 * @param value The value.
+	 * @param aaName
+	 *            The application attribute name.
+	 * @param value
+	 *            The value.
 	 */
 	public void setLongVal(String aaName, int value) {
 		setNameValue(ODSHelper.createLongNV(aaName, value));
@@ -361,8 +414,10 @@ public class ODSInsertStatement {
 	/**
 	 * Sets a long sequence to the current batch position.
 	 *
-	 * @param aaName The application attribute name.
-	 * @param value The value.
+	 * @param aaName
+	 *            The application attribute name.
+	 * @param value
+	 *            The value.
 	 */
 	public void setLongSeq(String aaName, int[] value) {
 		setNameValue(ODSHelper.createLongSeqNV(aaName, value));
@@ -371,20 +426,25 @@ public class ODSInsertStatement {
 	/**
 	 * Sets a long sequence to the current batch position.
 	 *
-	 * @param aaName The application attribute name.
-	 * @param value The value.
+	 * @param aaName
+	 *            The application attribute name.
+	 * @param value
+	 *            The value.
 	 */
 	public void setLongSeq(String aaName, Integer[] value) {
 		int[] v = new int[value.length];
-		for(int i = 0; i < v.length; v[i]= value[i++]) {
+		for (int i = 0; i < v.length; v[i] = value[i++]) {
 			setNameValue(ODSHelper.createLongSeqNV(aaName, v));
 		}
 	}
+
 	/**
 	 * Sets a long long value to the current batch position.
 	 *
-	 * @param aaName The application attribute name.
-	 * @param value The value.
+	 * @param aaName
+	 *            The application attribute name.
+	 * @param value
+	 *            The value.
 	 */
 	public void setLongLongVal(String aaName, T_LONGLONG value) {
 		setNameValue(ODSHelper.createLongLongNV(aaName, value));
@@ -393,8 +453,10 @@ public class ODSInsertStatement {
 	/**
 	 * Sets a long long value to the current batch position.
 	 *
-	 * @param aaName The application attribute name.
-	 * @param value The value.
+	 * @param aaName
+	 *            The application attribute name.
+	 * @param value
+	 *            The value.
 	 */
 	public void setLongLongVal(String aaName, long value) {
 		setNameValue(ODSHelper.createLongLongNV(aaName, value));
@@ -403,8 +465,10 @@ public class ODSInsertStatement {
 	/**
 	 * Sets a long long sequence to the current batch position.
 	 *
-	 * @param aaName The application attribute name.
-	 * @param value The value.
+	 * @param aaName
+	 *            The application attribute name.
+	 * @param value
+	 *            The value.
 	 */
 	public void setLongLongSeq(String aaName, T_LONGLONG[] value) {
 		setNameValue(ODSHelper.createLongLongSeqNV(aaName, value));
@@ -413,8 +477,10 @@ public class ODSInsertStatement {
 	/**
 	 * Sets a long long sequence to the current batch position.
 	 *
-	 * @param aaName The application attribute name.
-	 * @param value The value.
+	 * @param aaName
+	 *            The application attribute name.
+	 * @param value
+	 *            The value.
 	 */
 	public void setLongLongSeq(String aaName, long[] value) {
 		setNameValue(ODSHelper.createLongLongSeqNV(aaName, value));
@@ -423,8 +489,10 @@ public class ODSInsertStatement {
 	/**
 	 * Sets a short value to the current batch position.
 	 *
-	 * @param aaName The application attribute name.
-	 * @param value The value.
+	 * @param aaName
+	 *            The application attribute name.
+	 * @param value
+	 *            The value.
 	 */
 	public void setShortVal(String aaName, short value) {
 		setNameValue(ODSHelper.createShortNV(aaName, value));
@@ -433,12 +501,14 @@ public class ODSInsertStatement {
 	/**
 	 * Sets a short sequence to the current batch position.
 	 *
-	 * @param aaName The application attribute name.
-	 * @param value The value.
+	 * @param aaName
+	 *            The application attribute name.
+	 * @param value
+	 *            The value.
 	 */
 	public void setShortSeq(String aaName, Short[] value) {
 		short[] v = new short[value.length];
-		for(int i = 0; i < v.length; v[i]= value[i++]) {
+		for (int i = 0; i < v.length; v[i] = value[i++]) {
 			setNameValue(ODSHelper.createShortSeqNV(aaName, v));
 		}
 	}
@@ -446,8 +516,10 @@ public class ODSInsertStatement {
 	/**
 	 * Sets a short sequence to the current batch position.
 	 *
-	 * @param aaName The application attribute name.
-	 * @param value The value.
+	 * @param aaName
+	 *            The application attribute name.
+	 * @param value
+	 *            The value.
 	 */
 	public void setShortSeq(String aaName, short[] value) {
 		setNameValue(ODSHelper.createShortSeqNV(aaName, value));
@@ -456,8 +528,10 @@ public class ODSInsertStatement {
 	/**
 	 * Sets a string value to the current batch position.
 	 *
-	 * @param aaName The application attribute name.
-	 * @param value The value.
+	 * @param aaName
+	 *            The application attribute name.
+	 * @param value
+	 *            The value.
 	 */
 	public void setStringVal(String aaName, String value) {
 		setNameValue(ODSHelper.createStringNV(aaName, value));
@@ -466,8 +540,10 @@ public class ODSInsertStatement {
 	/**
 	 * Sets a string sequence to the current batch position.
 	 *
-	 * @param aaName The application attribute name.
-	 * @param value The value.
+	 * @param aaName
+	 *            The application attribute name.
+	 * @param value
+	 *            The value.
 	 */
 	public void setStringSeq(String aaName, String[] value) {
 		setNameValue(ODSHelper.createStringSeqNV(aaName, value));
@@ -476,7 +552,8 @@ public class ODSInsertStatement {
 	/**
 	 * Determines if all values of an attribute are null.
 	 *
-	 * @param attrName The attribute name.
+	 * @param attrName
+	 *            The attribute name.
 	 * @return true, if all values are null (flag=0), otherwise false
 	 */
 	private boolean isAllValuesNull(String attrName) {
@@ -490,11 +567,12 @@ public class ODSInsertStatement {
 	}
 
 	/**
-	 * Execute the batch insert and return the database id in the order of the given statements. A transaction has to be
-	 * active.
+	 * Execute the batch insert and return the database id in the order of the
+	 * given statements. A transaction has to be active.
 	 *
 	 * @return the ids of the created instances
-	 * @throws AoException if something went wrong
+	 * @throws AoException
+	 *             if something went wrong
 	 */
 	public long[] executeBatch() throws AoException {
 		// check if rows to insert are given
@@ -513,8 +591,7 @@ public class ODSInsertStatement {
 			}
 
 			// do not insert if attribute is "id"
-			if (cache.applAttrExists(aeName, attr)
-					&& cache.getApplAttr(aeName, attr).baName.equals("id")) {
+			if (cache.applAttrExists(aeName, attr) && cache.getApplAttr(aeName, attr).baName.equals("id")) {
 				continue;
 			}
 
@@ -836,7 +913,6 @@ public class ODSInsertStatement {
 		ApplElemAccess applElemAccess = cache.getApplElemAccess();
 		AIDNameValueSeqUnitId[] ar = list.toArray(new AIDNameValueSeqUnitId[list.size()]);
 
-
 		long start = System.currentTimeMillis();
 		ElemId[] elemIds = applElemAccess.insertInstances(ar);
 		long[] ids = new long[elemIds.length];
@@ -850,10 +926,12 @@ public class ODSInsertStatement {
 	}
 
 	/**
-	 * Execute the insert and return the created id. This call is only possible if one row is provided to insert.
+	 * Execute the insert and return the created id. This call is only possible
+	 * if one row is provided to insert.
 	 *
 	 * @return the id of the created instance
-	 * @throws AoException if something went wrong
+	 * @throws AoException
+	 *             if something went wrong
 	 */
 	public long execute() throws AoException {
 		if (size() < 1) {

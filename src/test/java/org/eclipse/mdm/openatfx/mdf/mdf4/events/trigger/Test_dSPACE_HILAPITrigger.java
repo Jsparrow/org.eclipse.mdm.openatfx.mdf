@@ -27,9 +27,9 @@ import org.omg.CORBA.ORB;
 import de.rechner.openatfx.util.ODSHelper;
 import junit.framework.JUnit4TestAdapter;
 
-
 /**
- * Test case for reading the example MDF4-file <code>dSPACE_HILAPITrigger.mf4</code>.
+ * Test case for reading the example MDF4-file
+ * <code>dSPACE_HILAPITrigger.mf4</code>.
  *
  * @author Christian Rechner
  */
@@ -78,16 +78,15 @@ public class Test_dSPACE_HILAPITrigger {
 			InstanceElement ieEv = as.getElementByName("ev").getInstanceById(ODSHelper.asODSLongLong(1L));
 			assertEquals("negedge(StairsOut, 37)", ODSHelper.getStringVal(ieEv.getValue("iname")));
 			assertEquals("StairsOut", ODSHelper.getStringVal(ieEv.getValue("desc")));
-			assertEquals(0.0, ODSHelper.getDoubleVal(ieEv.getValue("pre_trigger_interval")),0);
-			assertEquals(0.0, ODSHelper.getDoubleVal(ieEv.getValue("post_trigger_interval")),0);
-			assertEquals(0.0, ODSHelper.getDoubleVal(ieEv.getValue("timeout")),0);
+			assertEquals(0.0, ODSHelper.getDoubleVal(ieEv.getValue("pre_trigger_interval")), 0);
+			assertEquals(0.0, ODSHelper.getDoubleVal(ieEv.getValue("post_trigger_interval")), 0);
+			assertEquals(0.0, ODSHelper.getDoubleVal(ieEv.getValue("timeout")), 0);
 			assertEquals(0, ODSHelper.getShortVal(ieEv.getValue("timeout_triggered")));
 			assertEquals("negedge(StairsOut, 37)", ODSHelper.getStringVal(ieEv.getValue("syntax")));
 		} catch (AoException e) {
 			fail(e.reason);
 		}
 	}
-
 
 	public static junit.framework.Test suite() {
 		return new JUnit4TestAdapter(Test_dSPACE_HILAPITrigger.class);

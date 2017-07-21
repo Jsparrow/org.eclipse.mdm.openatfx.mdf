@@ -13,7 +13,6 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.channels.SeekableByteChannel;
 
-
 /**
  * <p>
  * THE REDUCTION DATA BLOCK <code>RDBLOCK</code>
@@ -28,8 +27,10 @@ class RDBLOCK extends BLOCK {
 	/**
 	 * Constructor.
 	 *
-	 * @param sbc The byte channel pointing to the MDF file.
-	 * @param pos The position of the block within the MDF file.
+	 * @param sbc
+	 *            The byte channel pointing to the MDF file.
+	 * @param pos
+	 *            The position of the block within the MDF file.
 	 */
 	private RDBLOCK(SeekableByteChannel sbc, long pos) {
 		super(sbc, pos);
@@ -46,10 +47,13 @@ class RDBLOCK extends BLOCK {
 	/**
 	 * Reads a DTBLOCK from the channel starting at current channel position.
 	 *
-	 * @param channel The channel to read from.
-	 * @param pos The position
+	 * @param channel
+	 *            The channel to read from.
+	 * @param pos
+	 *            The position
 	 * @return The block data.
-	 * @throws IOException The exception.
+	 * @throws IOException
+	 *             The exception.
 	 */
 	public static RDBLOCK read(SeekableByteChannel channel, long pos) throws IOException {
 		RDBLOCK block = new RDBLOCK(channel, pos);

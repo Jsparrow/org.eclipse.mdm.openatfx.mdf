@@ -43,9 +43,9 @@ import org.omg.PortableServer.POAPackage.WrongPolicy;
 import de.rechner.openatfx.AoServiceFactory;
 import de.rechner.openatfx.IFileHandler;
 
-
 /**
- * Main class for opening / converting MDF4 files with the ASAM ODS OO-API abstraction layer.
+ * Main class for opening / converting MDF4 files with the ASAM ODS OO-API
+ * abstraction layer.
  *
  * @author Christian Rechner
  */
@@ -56,11 +56,14 @@ public class MDFConverter {
 	private static final String ATFX_TEMPLATE = "model.atfx";
 
 	/**
-	 * Creates a new AoFactory that may be used to open new MDF4 files on the fly.
+	 * Creates a new AoFactory that may be used to open new MDF4 files on the
+	 * fly.
 	 *
-	 * @param orb The ORB.
+	 * @param orb
+	 *            The ORB.
 	 * @return The AoFactory instance.
-	 * @throws AoException Error creating factory.
+	 * @throws AoException
+	 *             Error creating factory.
 	 */
 	public AoFactory newAoFactory(ORB orb) throws AoException {
 		try {
@@ -91,13 +94,19 @@ public class MDFConverter {
 
 	/**
 	 * Writes the ATFX header file for given ATFX.<br>
-	 * The file will get the same file name as the MDF file with suffix '.atfx'.<br>
+	 * The file will get the same file name as the MDF file with suffix
+	 * '.atfx'.<br>
 	 * If the file already exists
 	 *
-	 * @param orb The ORB.
-	 * @param mdfPath The source file, may point to a MDF3 or MDF4 file.
-	 * @param properties A Map containing key value pairs to be set in the AoTest instance. (can be null)
-	 * @throws ConvertException If an error occurs during the Conversion.
+	 * @param orb
+	 *            The ORB.
+	 * @param mdfPath
+	 *            The source file, may point to a MDF3 or MDF4 file.
+	 * @param properties
+	 *            A Map containing key value pairs to be set in the AoTest
+	 *            instance. (can be null)
+	 * @throws ConvertException
+	 *             If an error occurs during the Conversion.
 	 */
 	public void writeATFXHeader(ORB orb, Path mdfPath, Properties properties) throws ConvertException {
 		if (orb == null) {
@@ -131,11 +140,13 @@ public class MDFConverter {
 			String version = readMDFVersion(sbc);
 			if (version.startsWith("3")) {
 				org.eclipse.mdm.openatfx.mdf.mdf3.AoSessionWriter writer = new org.eclipse.mdm.openatfx.mdf.mdf3.AoSessionWriter();
-				org.eclipse.mdm.openatfx.mdf.mdf3.IDBLOCK idBlock = org.eclipse.mdm.openatfx.mdf.mdf3.IDBLOCK.read(mdfPath, sbc);
+				org.eclipse.mdm.openatfx.mdf.mdf3.IDBLOCK idBlock = org.eclipse.mdm.openatfx.mdf.mdf3.IDBLOCK
+						.read(mdfPath, sbc);
 				writer.writeTst(modelCache, idBlock, properties);
 			} else if (version.startsWith("4")) {
 				org.eclipse.mdm.openatfx.mdf.mdf4.AoSessionWriter writer = new org.eclipse.mdm.openatfx.mdf.mdf4.AoSessionWriter();
-				org.eclipse.mdm.openatfx.mdf.mdf4.IDBLOCK idBlock = org.eclipse.mdm.openatfx.mdf.mdf4.IDBLOCK.read(mdfPath, sbc);
+				org.eclipse.mdm.openatfx.mdf.mdf4.IDBLOCK idBlock = org.eclipse.mdm.openatfx.mdf.mdf4.IDBLOCK
+						.read(mdfPath, sbc);
 				writer.writeTst(modelCache, idBlock, properties);
 			}
 
@@ -170,25 +181,35 @@ public class MDFConverter {
 
 	/**
 	 * Writes the ATFX header file for given ATFX.<br>
-	 * The file will get the same file name as the MDF file with suffix '.atfx'.<br>
+	 * The file will get the same file name as the MDF file with suffix
+	 * '.atfx'.<br>
 	 * If the file already exists
 	 *
-	 * @param orb The ORB.
-	 * @param mdfPath The source file, may point to a MDF3 or MDF4 file.
-	 * @throws ConvertException If an error occurs during the Conversion.
+	 * @param orb
+	 *            The ORB.
+	 * @param mdfPath
+	 *            The source file, may point to a MDF3 or MDF4 file.
+	 * @throws ConvertException
+	 *             If an error occurs during the Conversion.
 	 */
 	public void writeATFXHeader(ORB orb, Path mdfPath) throws ConvertException {
 		writeATFXHeader(orb, mdfPath, null);
 	}
 
 	/**
-	 * Opens an MDF file and gives full access to all its contents via the ASAM ODS OO-API interface.
+	 * Opens an MDF file and gives full access to all its contents via the ASAM
+	 * ODS OO-API interface.
 	 *
-	 * @param orb The ORB.
-	 * @param mdfPath The source file, may point to a MDF3 or MDF4 file.
-	 * @param properties A Map containing key value pairs to be set in the AoTest instance.
+	 * @param orb
+	 *            The ORB.
+	 * @param mdfPath
+	 *            The source file, may point to a MDF3 or MDF4 file.
+	 * @param properties
+	 *            A Map containing key value pairs to be set in the AoTest
+	 *            instance.
 	 * @return The ASAM ODS session object.
-	 * @throws ConvertException Error opening the session.
+	 * @throws ConvertException
+	 *             Error opening the session.
 	 */
 	public AoSession getAoSessionForMDF(ORB orb, Path mdfPath, Properties properties) throws ConvertException {
 		if (orb == null) {
@@ -215,11 +236,13 @@ public class MDFConverter {
 			String version = readMDFVersion(sbc);
 			if (version.startsWith("3")) {
 				org.eclipse.mdm.openatfx.mdf.mdf3.AoSessionWriter writer = new org.eclipse.mdm.openatfx.mdf.mdf3.AoSessionWriter();
-				org.eclipse.mdm.openatfx.mdf.mdf3.IDBLOCK idBlock = org.eclipse.mdm.openatfx.mdf.mdf3.IDBLOCK.read(mdfPath, sbc);
+				org.eclipse.mdm.openatfx.mdf.mdf3.IDBLOCK idBlock = org.eclipse.mdm.openatfx.mdf.mdf3.IDBLOCK
+						.read(mdfPath, sbc);
 				writer.writeTst(modelCache, idBlock, properties);
 			} else if (version.startsWith("4")) {
 				org.eclipse.mdm.openatfx.mdf.mdf4.AoSessionWriter writer = new org.eclipse.mdm.openatfx.mdf.mdf4.AoSessionWriter();
-				org.eclipse.mdm.openatfx.mdf.mdf4.IDBLOCK idBlock = org.eclipse.mdm.openatfx.mdf.mdf4.IDBLOCK.read(mdfPath, sbc);
+				org.eclipse.mdm.openatfx.mdf.mdf4.IDBLOCK idBlock = org.eclipse.mdm.openatfx.mdf.mdf4.IDBLOCK
+						.read(mdfPath, sbc);
 				writer.writeTst(modelCache, idBlock, properties);
 			}
 
@@ -244,12 +267,16 @@ public class MDFConverter {
 	}
 
 	/**
-	 * Opens an MDF file and gives full access to all its contents via the ASAM ODS OO-API interface.
+	 * Opens an MDF file and gives full access to all its contents via the ASAM
+	 * ODS OO-API interface.
 	 *
-	 * @param orb The ORB.
-	 * @param mdfPath The source file, may point to a MDF3 or MDF4 file.
+	 * @param orb
+	 *            The ORB.
+	 * @param mdfPath
+	 *            The source file, may point to a MDF3 or MDF4 file.
 	 * @return The ASAM ODS session object.
-	 * @throws ConvertException Error opening the session.
+	 * @throws ConvertException
+	 *             Error opening the session.
 	 */
 	public AoSession getAoSessionForMDF(ORB orb, Path mdfPath) throws ConvertException {
 		return getAoSessionForMDF(orb, mdfPath, null);
@@ -258,9 +285,11 @@ public class MDFConverter {
 	/**
 	 * Reads the MDF version string from the byte channel.
 	 *
-	 * @param sbc The byte channel.
+	 * @param sbc
+	 *            The byte channel.
 	 * @return The MDF version string.
-	 * @throws IOException Error reading from channel.
+	 * @throws IOException
+	 *             Error reading from channel.
 	 */
 	private static String readMDFVersion(SeekableByteChannel sbc) throws IOException {
 		// read block
@@ -287,8 +316,10 @@ public class MDFConverter {
 	/**
 	 * Copies the ATFX template file from the classpath to the target file.
 	 *
-	 * @param targetAtfxFile The target file.
-	 * @throws IOException Error copying file.
+	 * @param targetAtfxFile
+	 *            The target file.
+	 * @throws IOException
+	 *             Error copying file.
 	 */
 	private void copyATFXfromTemplate(File targetAtfxFile) throws IOException {
 		BufferedInputStream bis = null;

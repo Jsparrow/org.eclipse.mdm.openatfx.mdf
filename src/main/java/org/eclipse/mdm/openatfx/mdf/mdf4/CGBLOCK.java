@@ -14,15 +14,16 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.channels.SeekableByteChannel;
 
-
 /**
  * <p>
  * THE CHANNEL GROUP BLOCK <code>CGBLOCK</code>
  * </p>
- * The CGBLOCK contains a collection of channels which are stored in one record, i.e. which have equal sampling. The
- * only exception is a channel group for variable length signal data (VLSD), called "VLSD channel group". It has no
- * channel collection and can only occur in an unsorted data group. It describes signal values of variable length which
- * are stored as variable length records in a normal DTBLOCK.
+ * The CGBLOCK contains a collection of channels which are stored in one record,
+ * i.e. which have equal sampling. The only exception is a channel group for
+ * variable length signal data (VLSD), called "VLSD channel group". It has no
+ * channel collection and can only occur in an unsorted data group. It describes
+ * signal values of variable length which are stored as variable length records
+ * in a normal DTBLOCK.
  *
  * @author Christian Rechner
  */
@@ -36,30 +37,36 @@ class CGBLOCK extends BLOCK {
 	// LINK
 	private long lnkCgNext;
 
-	// Pointer to first channel block (CNBLOCK) (can be NIL, must be NIL for VLSD CGBLOCK, i.e. if "VLSD channel group")
+	// Pointer to first channel block (CNBLOCK) (can be NIL, must be NIL for
+	// VLSD CGBLOCK, i.e. if "VLSD channel group")
 	// flag (bit 0) is set)
 	// LINK
 	private long lnkCnFirst;
 
-	// Pointer to acquisition name (TXBLOCK) (can be NIL, must be NIL for VLSD CGBLOCK)
+	// Pointer to acquisition name (TXBLOCK) (can be NIL, must be NIL for VLSD
+	// CGBLOCK)
 	// LINK
 	private long lnkTxAcqName;
 
-	// Pointer to acquisition source (SIBLOCK) (can be NIL, must be NIL for VLSD CGBLOCK)
+	// Pointer to acquisition source (SIBLOCK) (can be NIL, must be NIL for VLSD
+	// CGBLOCK)
 	// LINK
 	private long lnkSiAcqSource;
 
-	// Pointer to first sample reduction block (SRBLOCK) (can be NIL, must be NIL for VLSD CGBLOCK)
+	// Pointer to first sample reduction block (SRBLOCK) (can be NIL, must be
+	// NIL for VLSD CGBLOCK)
 	// LINK
 	private long lnkSrFirst;
 
-	// Pointer to comment and additional information (TXBLOCK or MDBLOCK) (can be NIL, must be NIL for VLSD CGBLOCK)
+	// Pointer to comment and additional information (TXBLOCK or MDBLOCK) (can
+	// be NIL, must be NIL for VLSD CGBLOCK)
 	// LINK
 	private long lnkMdComment;
 
 	/** Data section */
 
-	// Record ID, value must be less than maximum unsigned integer value allowed by dg_rec_id_size in parent DGBLOCK.
+	// Record ID, value must be less than maximum unsigned integer value allowed
+	// by dg_rec_id_size in parent DGBLOCK.
 	// UINT64
 	private long recordId;
 
@@ -76,35 +83,45 @@ class CGBLOCK extends BLOCK {
 	// UINT16
 	private int flags;
 
-	// Value of character to be used as path separator, 0 if no path separator specified.
+	// Value of character to be used as path separator, 0 if no path separator
+	// specified.
 	// UINT16
 	private int pathSeparator;
 
 	// Normal CGBLOCK:
-	// Number of data Bytes (after record ID) used for signal values in record, i.e. size of plain data for each
+	// Number of data Bytes (after record ID) used for signal values in record,
+	// i.e. size of plain data for each
 	// recorded sample of this channel group.
 	// VLSD CGBLOCK:
-	// Low part of a UINT64 value that specifies the total size in Bytes of all variable length signal values for the
+	// Low part of a UINT64 value that specifies the total size in Bytes of all
+	// variable length signal values for the
 	// recorded samples of this channel group.
 	// UINT32
 	private long dataBytes;
 
 	// Normal CGBLOCK:
-	// Number of additional Bytes for record used for invalidation bits. Can be zero if no invalidation bits are used at
-	// all. Invalidation bits may only occur in the specified number of Bytes after the data Bytes, not within the data
+	// Number of additional Bytes for record used for invalidation bits. Can be
+	// zero if no invalidation bits are used at
+	// all. Invalidation bits may only occur in the specified number of Bytes
+	// after the data Bytes, not within the data
 	// Bytes that contain the signal values.
 	// VLSD CGBLOCK:
-	// High part of UINT64 value that specifies the total size in Bytes of all variable length signal values for the
-	// recorded samples of this channel group, i.e. the total size in Bytes can be calculated by cg_data_bytes +
+	// High part of UINT64 value that specifies the total size in Bytes of all
+	// variable length signal values for the
+	// recorded samples of this channel group, i.e. the total size in Bytes can
+	// be calculated by cg_data_bytes +
 	// (cg_inval_bytes << 32)
-	// Note: this value does not include the Bytes used to specify the length of each VLSD value!
+	// Note: this value does not include the Bytes used to specify the length of
+	// each VLSD value!
 	private long invalBytes;
 
 	/**
 	 * Constructor.
 	 *
-	 * @param sbc The byte channel pointing to the MDF file.
-	 * @param pos The position of the block within the MDF file.
+	 * @param sbc
+	 *            The byte channel pointing to the MDF file.
+	 * @param pos
+	 *            The position of the block within the MDF file.
 	 */
 	private CGBLOCK(SeekableByteChannel sbc, long pos) {
 		super(sbc, pos);
@@ -146,7 +163,7 @@ class CGBLOCK extends BLOCK {
 		return flags;
 	}
 
-	public boolean isBusEventChannel(){
+	public boolean isBusEventChannel() {
 		return BigInteger.valueOf(flags).testBit(1);
 	}
 
@@ -264,22 +281,24 @@ class CGBLOCK extends BLOCK {
 		return null;
 	}
 
-
 	@Override
 	public String toString() {
 		return "CGBLOCK [lnkCgNext=" + lnkCgNext + ", lnkCnFirst=" + lnkCnFirst + ", lnkTxAcqName=" + lnkTxAcqName
-				+ ", lnkSiAcqSource=" + lnkSiAcqSource + ", lnkSrFirst=" + lnkSrFirst + ", lnkMdComment="
-				+ lnkMdComment + ", recordId=" + recordId + ", cycleCount=" + cycleCount + ", flags=" + flags
-				+ ", pathSeparator=" + pathSeparator + ", dataBytes=" + dataBytes + ", invalBytes=" + invalBytes + "]";
+				+ ", lnkSiAcqSource=" + lnkSiAcqSource + ", lnkSrFirst=" + lnkSrFirst + ", lnkMdComment=" + lnkMdComment
+				+ ", recordId=" + recordId + ", cycleCount=" + cycleCount + ", flags=" + flags + ", pathSeparator="
+				+ pathSeparator + ", dataBytes=" + dataBytes + ", invalBytes=" + invalBytes + "]";
 	}
 
 	/**
 	 * Reads a CGBLOCK from the channel starting at current channel position.
 	 *
-	 * @param channel The channel to read from.
-	 * @param pos The position within the channel.
+	 * @param channel
+	 *            The channel to read from.
+	 * @param pos
+	 *            The position within the channel.
 	 * @return The block data.
-	 * @throws IOException The exception.
+	 * @throws IOException
+	 *             The exception.
 	 */
 	public static CGBLOCK read(SeekableByteChannel channel, long pos) throws IOException {
 		CGBLOCK block = new CGBLOCK(channel, pos);
@@ -312,16 +331,20 @@ class CGBLOCK extends BLOCK {
 		// LINK: Pointer to first channel block (CNBLOCK) (can be NIL)
 		block.setLnkCnFirst(MDF4Util.readLink(bb));
 
-		// LINK: Pointer to acquisition name (TXBLOCK) (can be NIL, must be NIL for VLSD CGBLOCK)
+		// LINK: Pointer to acquisition name (TXBLOCK) (can be NIL, must be NIL
+		// for VLSD CGBLOCK)
 		block.setLnkTxAcqName(MDF4Util.readLink(bb));
 
-		// LINK: Pointer to acquisition source (SIBLOCK) (can be NIL, must be NIL for VLSD CGBLOCK)
+		// LINK: Pointer to acquisition source (SIBLOCK) (can be NIL, must be
+		// NIL for VLSD CGBLOCK)
 		block.setLnkSiAcqSource(MDF4Util.readLink(bb));
 
-		// LINK: Pointer to first sample reduction block (SRBLOCK) (can be NIL, must be NIL for VLSD CGBLOCK)
+		// LINK: Pointer to first sample reduction block (SRBLOCK) (can be NIL,
+		// must be NIL for VLSD CGBLOCK)
 		block.setLnkSrFirst(MDF4Util.readLink(bb));
 
-		// LINK: Pointer to comment and additional information (TXBLOCK or MDBLOCK) (can be NIL, must be NIL for VLSD
+		// LINK: Pointer to comment and additional information (TXBLOCK or
+		// MDBLOCK) (can be NIL, must be NIL for VLSD
 		// CGBLOCK)
 		block.setLnkMdComment(MDF4Util.readLink(bb));
 
@@ -334,16 +357,19 @@ class CGBLOCK extends BLOCK {
 		// UINT16: Flags
 		block.setFlags(MDF4Util.readUInt16(bb));
 
-		// UINT16: Value of character to be used as path separator, 0 if no path separator specified.
+		// UINT16: Value of character to be used as path separator, 0 if no path
+		// separator specified.
 		block.setPathSeparator(MDF4Util.readUInt16(bb));
 
 		// BYTE 4 Reserved.
 		bb.get(new byte[4]);
 
-		// UINT32: Number of data Bytes (after record ID) used for signal values in record.
+		// UINT32: Number of data Bytes (after record ID) used for signal values
+		// in record.
 		block.setDataBytes(MDF4Util.readUInt32(bb));
 
-		// UINT32: Number of additional Bytes for record used for invalidation bits.
+		// UINT32: Number of additional Bytes for record used for invalidation
+		// bits.
 		block.setInvalBytes(MDF4Util.readUInt32(bb));
 
 		return block;

@@ -26,7 +26,6 @@ import org.omg.CORBA.ORB;
 
 import junit.framework.JUnit4TestAdapter;
 
-
 /**
  * Test case for <code>de.rechner.openatfx.AoFactoryImpl</code>.
  *
@@ -43,7 +42,8 @@ public class AoFactoryImplTest {
 	}
 
 	/**
-	 * Test method for {@link de.rechner.openatfx_mdf.atfx.AoFactoryImpl#getInterfaceVersion()}.
+	 * Test method for
+	 * {@link de.rechner.openatfx_mdf.atfx.AoFactoryImpl#getInterfaceVersion()}.
 	 */
 	@Test
 	public void testGetInterfaceVersion() {
@@ -55,7 +55,8 @@ public class AoFactoryImplTest {
 	}
 
 	/**
-	 * Test method for {@link de.rechner.openatfx_mdf.atfx.AoFactoryImpl#getType()}.
+	 * Test method for
+	 * {@link de.rechner.openatfx_mdf.atfx.AoFactoryImpl#getType()}.
 	 */
 	@Test
 	public void testGetType() {
@@ -67,7 +68,8 @@ public class AoFactoryImplTest {
 	}
 
 	/**
-	 * Test method for {@link de.rechner.openatfx_mdf.atfx.AoFactoryImpl#getName()}.
+	 * Test method for
+	 * {@link de.rechner.openatfx_mdf.atfx.AoFactoryImpl#getName()}.
 	 */
 	@Test
 	public void testGetName() {
@@ -79,7 +81,8 @@ public class AoFactoryImplTest {
 	}
 
 	/**
-	 * Test method for {@link de.rechner.openatfx_mdf.atfx.AoFactoryImpl#getDescription()}.
+	 * Test method for
+	 * {@link de.rechner.openatfx_mdf.atfx.AoFactoryImpl#getDescription()}.
 	 */
 	@Test
 	public void testGetDescription() {
@@ -91,12 +94,14 @@ public class AoFactoryImplTest {
 	}
 
 	/**
-	 * Test method for {@link de.rechner.openatfx_mdf.atfx.AoFactoryImpl#newSession(java.lang.String)}.
+	 * Test method for
+	 * {@link de.rechner.openatfx_mdf.atfx.AoFactoryImpl#newSession(java.lang.String)}.
 	 */
 	@Test
 	public void testNewSession() {
 		try {
-			URL url = AoFactoryImplTest.class.getResource("/org/eclipse/mdm/openatfx/mdf/mdf4/simple/ETAS_SimpleSorted.mf4");
+			URL url = AoFactoryImplTest.class
+					.getResource("/org/eclipse/mdm/openatfx/mdf/mdf4/simple/ETAS_SimpleSorted.mf4");
 			AoSession aoSession = aoFactory.newSession("FILENAME=" + new File(url.getFile()));
 			assertEquals("asam32", aoSession.getType());
 			aoSession.close();
@@ -106,13 +111,15 @@ public class AoFactoryImplTest {
 	}
 
 	/**
-	 * Test method for {@link de.rechner.openatfx_mdf.atfx.AoFactoryImpl#newSessionNameValue(org.asam.ods.NameValue[])}
+	 * Test method for
+	 * {@link de.rechner.openatfx_mdf.atfx.AoFactoryImpl#newSessionNameValue(org.asam.ods.NameValue[])}
 	 * .
 	 */
 	@Test
 	public void testNewSessionNameValue() {
 		try {
-			URL url = AoFactoryImplTest.class.getResource("/org/eclipse/mdm/openatfx/mdf/mdf4/simple/ETAS_SimpleSorted.mf4");
+			URL url = AoFactoryImplTest.class
+					.getResource("/org/eclipse/mdm/openatfx/mdf/mdf4/simple/ETAS_SimpleSorted.mf4");
 			NameValue[] auth = new NameValue[1];
 			auth[0] = new NameValue();
 			auth[0].valName = "FILENAME";

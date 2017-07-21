@@ -13,7 +13,6 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.channels.SeekableByteChannel;
 
-
 /**
  * <p>
  * THE SAMPLE REDUCTION BLOCK <code>SRBLOCK<code>
@@ -63,8 +62,10 @@ class SRBLOCK extends BLOCK {
 	/**
 	 * Constructor.
 	 *
-	 * @param sbc The byte channel pointing to the MDF file.
-	 * @param pos The position of the block within the MDF file.
+	 * @param sbc
+	 *            The byte channel pointing to the MDF file.
+	 * @param pos
+	 *            The position of the block within the MDF file.
 	 */
 	private SRBLOCK(SeekableByteChannel sbc, long pos) {
 		super(sbc, pos);
@@ -74,26 +75,21 @@ class SRBLOCK extends BLOCK {
 		return lnkSrNext;
 	}
 
-
 	public long getLnkRdData() {
 		return lnkRdData;
 	}
-
 
 	public long getCycleCount() {
 		return cycleCount;
 	}
 
-
 	public double getInterval() {
 		return interval;
 	}
 
-
 	public byte getSyncType() {
 		return syncType;
 	}
-
 
 	public byte getFlags() {
 		return flags;
@@ -123,16 +119,12 @@ class SRBLOCK extends BLOCK {
 		this.flags = flags;
 	}
 
-
-
 	public SRBLOCK getSrNextBlock() throws IOException {
 		if (lnkSrNext > 0) {
 			return SRBLOCK.read(sbc, lnkSrNext);
 		}
 		return null;
 	}
-
-
 
 	@Override
 	public String toString() {
@@ -143,10 +135,13 @@ class SRBLOCK extends BLOCK {
 	/**
 	 * Reads a SRBLOCK from the channel starting at current channel position.
 	 *
-	 * @param channel The channel to read from.
-	 * @param pos The position within the channel.
+	 * @param channel
+	 *            The channel to read from.
+	 * @param pos
+	 *            The position within the channel.
 	 * @return The block data.
-	 * @throws IOException The exception.
+	 * @throws IOException
+	 *             The exception.
 	 */
 	public static SRBLOCK read(SeekableByteChannel channel, long pos) throws IOException {
 		SRBLOCK block = new SRBLOCK(channel, pos);

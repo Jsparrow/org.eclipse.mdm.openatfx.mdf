@@ -48,7 +48,6 @@ import org.eclipse.mdm.openatfx.mdf.util.ODSHelper;
 import org.eclipse.mdm.openatfx.mdf.util.ODSInsertStatement;
 import org.eclipse.mdm.openatfx.mdf.util.ODSModelCache;
 
-
 /**
  * Main class for writing the MDF3 file content into an ATFX file
  *
@@ -66,28 +65,35 @@ public class AoSessionWriter {
 	/** helper class for lookup tables */
 	private final LookupTableHelper lookupTableHelper;
 
-	//Properties
+	// Properties
 	// replace channel name characters '[' with '{' and ']' with '}'
 	private boolean replaceSquareBrackets; // default = false
-	// whether to use the file name as AoMeasurement name, if false, property value of 'result_name' is used
-	private boolean useFileNameAsResultName=true; // default = true
-	// the name of the created AoMeasurement (only used if use_file_name_as_result_name=false)
+	// whether to use the file name as AoMeasurement name, if false, property
+	// value of 'result_name' is used
+	private boolean useFileNameAsResultName = true; // default = true
+	// the name of the created AoMeasurement (only used if
+	// use_file_name_as_result_name=false)
 	private String resultName = "Messdaten"; // default = "Messdaten"
-	// the name suffix of the created AoMeasurement, e.g. if suffix='_123' then 'test.mf4' will be converted to 'test_123.mf4'
-	private String resultSuffix=""; // default = null
+	// the name suffix of the created AoMeasurement, e.g. if suffix='_123' then
+	// 'test.mf4' will be converted to 'test_123.mf4'
+	private String resultSuffix = ""; // default = null
 	// the mimetype of the created AoMeasurement
-	private String resultMimeType = "application/x-asam.aomeasurement.timeseries"; // default = "application/x-asam.aomeasurement.timeseries"
-	// whether to add a reference to the original file to the AoMeasurement instance
+	private String resultMimeType = "application/x-asam.aomeasurement.timeseries"; // default
+																					// =
+																					// "application/x-asam.aomeasurement.timeseries"
+	// whether to add a reference to the original file to the AoMeasurement
+	// instance
 	private boolean addMDF3FileAsResultAttachment; // default = false
 	// stop parsing after hd block.
-	private boolean readOnlyHeader= false;
+	private boolean readOnlyHeader = false;
 	// skip empty channels
 	private boolean skipEmptyChannels = false;
 	// skip channels with an unsupporter donversion formula
 	private boolean skipUnsupportedFormula = false;
 	// skip channels with DT_BYTESTR
 	// remove this once it is save to import channels with byte stream data
-	@Deprecated private boolean skipByteStreamChannels = false;
+	@Deprecated
+	private boolean skipByteStreamChannels = false;
 
 	/**
 	 * Constructor.
@@ -118,41 +124,55 @@ public class AoSessionWriter {
 			throw new IOException("Unable to obtain file name!");
 		}
 
-		if(props!= null){
+		if (props != null) {
 			// replace channel name characters '[' with '{' and ']' with '}'
-			if(props.containsKey("replace_square_brackets")){
-				replaceSquareBrackets = Boolean.valueOf(props.getProperty("replace_square_brackets")) ; // default = false
+			if (props.containsKey("replace_square_brackets")) {
+				replaceSquareBrackets = Boolean.valueOf(props.getProperty("replace_square_brackets")); // default
+																										// =
+																										// false
 			}
-			// whether to use the file name as AoMeasurement name, if false, property value of 'result_name' is used
-			if(props.containsKey("use_file_name_as_result_name")){
-				useFileNameAsResultName = Boolean.valueOf(props.getProperty("use_file_name_as_result_name")); // default = true
+			// whether to use the file name as AoMeasurement name, if false,
+			// property value of 'result_name' is used
+			if (props.containsKey("use_file_name_as_result_name")) {
+				useFileNameAsResultName = Boolean.valueOf(props.getProperty("use_file_name_as_result_name")); // default
+																												// =
+																												// true
 			}
-			// the name of the created AoMeasurement (only used if use_file_name_as_result_name=false)
-			if(props.containsKey("result_name")){
-				resultName = props.getProperty("result_name"); // default = "Messdaten"
+			// the name of the created AoMeasurement (only used if
+			// use_file_name_as_result_name=false)
+			if (props.containsKey("result_name")) {
+				resultName = props.getProperty("result_name"); // default =
+																// "Messdaten"
 			}
-			// the name suffix of the created AoMeasurement, e.g. if suffix='_123' then 'test.mf4' will be converted to 'test_123.mf4'
-			if(props.containsKey("result_suffix")){
-				resultSuffix = props.getProperty("result_suffix"); // default = null
+			// the name suffix of the created AoMeasurement, e.g. if
+			// suffix='_123' then 'test.mf4' will be converted to 'test_123.mf4'
+			if (props.containsKey("result_suffix")) {
+				resultSuffix = props.getProperty("result_suffix"); // default =
+																	// null
 			}
 			// the mimetype of the created AoMeasurement
-			if(props.containsKey("result_mimetype")){
-				resultMimeType = props.getProperty("result_mimetype"); // default = "application/x-asam.aomeasurement.timeseries"
+			if (props.containsKey("result_mimetype")) {
+				resultMimeType = props.getProperty("result_mimetype"); // default
+																		// =
+																		// "application/x-asam.aomeasurement.timeseries"
 			}
-			// whether to add a reference to the original file to the AoMeasurement instance
-			if(props.containsKey("attach_source_files")){
-				addMDF3FileAsResultAttachment = Boolean.valueOf(props.getProperty("attach_source_files")); // default = false
+			// whether to add a reference to the original file to the
+			// AoMeasurement instance
+			if (props.containsKey("attach_source_files")) {
+				addMDF3FileAsResultAttachment = Boolean.valueOf(props.getProperty("attach_source_files")); // default
+																											// =
+																											// false
 			}
-			if(props.containsKey("read_only_header")){
+			if (props.containsKey("read_only_header")) {
 				readOnlyHeader = Boolean.valueOf(props.getProperty("read_only_header"));
 			}
-			if(props.containsKey("skip_empty_channels")) {
+			if (props.containsKey("skip_empty_channels")) {
 				skipEmptyChannels = Boolean.valueOf(props.getProperty("skip_empty_channels"));
 			}
-			if(props.containsKey("skip_unsupported_formula")) {
+			if (props.containsKey("skip_unsupported_formula")) {
 				skipUnsupportedFormula = Boolean.valueOf(props.getProperty("skip_unsupported_formula"));
 			}
-			if(props.containsKey("skip_byte_stream_channels")) {
+			if (props.containsKey("skip_byte_stream_channels")) {
 				skipByteStreamChannels = Boolean.valueOf(props.getProperty("skip_byte_stream_channels"));
 			}
 		}
@@ -169,8 +189,8 @@ public class AoSessionWriter {
 		ins.setLongLongVal("env", ieEnv.getId());
 		long iidTst = ins.execute();
 
-		//write properties
-		if(props!=null){
+		// write properties
+		if (props != null) {
 			MDF4Util.writeProperites(ins, props);
 		}
 
@@ -199,17 +219,18 @@ public class AoSessionWriter {
 			throw new IOException("Unable to obtain file name!");
 		}
 
-		// create "AoMeasurement" instance and write descriptive data to instance attributes
+		// create "AoMeasurement" instance and write descriptive data to
+		// instance attributes
 		ODSInsertStatement ins = new ODSInsertStatement(modelCache, "mea");
 
-		if(useFileNameAsResultName){
+		if (useFileNameAsResultName) {
 			ins.setStringVal("iname", FileUtil.getResultName(fileName.toString(), resultSuffix));
-		}else{
+		} else {
 			ins.setStringVal("iname", resultName + resultSuffix);
 		}
 		ins.setStringVal("mt", resultMimeType);
 
-		if(addMDF3FileAsResultAttachment){
+		if (addMDF3FileAsResultAttachment) {
 			ins.setExtRefVal("attachment", new T_ExternalReference("original MDF-File", "", fileName.toString()));
 		}
 
@@ -245,8 +266,9 @@ public class AoSessionWriter {
 		ins.setStringVal("meaObject", hdBlock.getMeaObject().trim());
 
 		long meaIid = ins.execute();
-		if(!readOnlyHeader){
-			// remember channel names to avoid duplicates (key=channelName,value=number of)
+		if (!readOnlyHeader) {
+			// remember channel names to avoid duplicates
+			// (key=channelName,value=number of)
 			Map<String, Integer> meqNames = new HashMap<String, Integer>();
 
 			// write 'AoSubMatrix' instances
@@ -282,7 +304,7 @@ public class AoSessionWriter {
 			if (dgBlock.getNoChannelGroups() > 1) {
 				throw new IOException(
 						"Currently only 'sorted' MDF3 files are supported, found 'unsorted' data! [DGBLOCK=" + dgBlock
-						+ "]");
+								+ "]");
 			}
 
 			// if sorted, only one channel group block is available
@@ -297,7 +319,8 @@ public class AoSessionWriter {
 				ins.setStringVal("iname", "sm_" + countFormat.format(grpNo));
 				ins.setLongLongVal("mea", iidMea);
 				ins.setLongVal("rows", (int) cgBlock.getNoOfRecords());
-				// TODO: parse name: DATA_SysOpmHvES.SysOpmHvES_wElMinDrv_C_VW\ETKC:1\SingleShotGroup
+				// TODO: parse name:
+				// DATA_SysOpmHvES.SysOpmHvES_wElMinDrv_C_VW\ETKC:1\SingleShotGroup
 				TXBLOCK channelGroupComment = cgBlock.getChannelGroupComment();
 				if (channelGroupComment != null) {
 					ins.setStringVal("desc", channelGroupComment.getText());
@@ -316,19 +339,26 @@ public class AoSessionWriter {
 	/**
 	 * Write the instances of 'AoLocalColumn'.
 	 *
-	 * @param modelCache The application model cache.
-	 * @param iidMea The instance id of 'AoMeasurement'.
-	 * @param iidSm The instance idof 'AoSubMatrix'.
-	 * @param dgBlock The MDF data group block.
-	 * @param cgBlock The MDF channel group block.
+	 * @param modelCache
+	 *            The application model cache.
+	 * @param iidMea
+	 *            The instance id of 'AoMeasurement'.
+	 * @param iidSm
+	 *            The instance idof 'AoSubMatrix'.
+	 * @param dgBlock
+	 *            The MDF data group block.
+	 * @param cgBlock
+	 *            The MDF channel group block.
 	 * @param meqNames
 	 * @param meqTime
-	 * @throws AoException Error writing to session.
-	 * @throws IOException Error reading from MDF file.
+	 * @throws AoException
+	 *             Error writing to session.
+	 * @throws IOException
+	 *             Error reading from MDF file.
 	 */
 	private void writeLc(ODSModelCache modelCache, long iidMea, long iidSm, IDBLOCK idBlock, DGBLOCK dgBlock,
-			CGBLOCK cgBlock, Map<String, Integer> meqNames, Map<String, Long> meqInstances) throws AoException,
-	IOException {
+			CGBLOCK cgBlock, Map<String, Integer> meqNames, Map<String, Long> meqInstances)
+			throws AoException, IOException {
 		ApplicationElement aeMeq = modelCache.getApplicationElement("meq");
 		ApplicationElement aeLc = modelCache.getApplicationElement("lc");
 		ApplicationElement aeMea = modelCache.getApplicationElement("mea");
@@ -356,7 +386,8 @@ public class AoSessionWriter {
 				meqName = meqName.replaceAll("\\]", "}");
 			}
 
-			// check for duplicate signal names and add suffix (except time channel)
+			// check for duplicate signal names and add suffix (except time
+			// channel)
 			if (cnBlock.getChannelType() == 0) {
 				Integer noChannels = meqNames.get(meqName);
 				if (noChannels == null) {
@@ -371,17 +402,19 @@ public class AoSessionWriter {
 
 			// sequence representation
 			CCBLOCK ccBlock = cnBlock.getCcBlock();
-			if(ccBlock != null && ccBlock.getFormulaIdent() == 10 && skipUnsupportedFormula) {
-				LOG.info("Channel '" + meqName + "' with unsupported formula (10 MCD2 Text Formular) skipped: " + ccBlock);
+			if (ccBlock != null && ccBlock.getFormulaIdent() == 10 && skipUnsupportedFormula) {
+				LOG.info("Channel '" + meqName + "' with unsupported formula (10 MCD2 Text Formular) skipped: "
+						+ ccBlock);
 				// jump to next channel
 				cnBlock = cnBlock.getNextCnBlock();
 				continue;
-			} else if(skipByteStreamChannels && 8 == cnBlock.getSignalDataType()) {
-				// remove this block once it is save to import channels with byte stream data
+			} else if (skipByteStreamChannels && 8 == cnBlock.getSignalDataType()) {
+				// remove this block once it is save to import channels with
+				// byte stream data
 				LOG.info("Channel '" + meqName + "' with byte stream data skipped: " + ccBlock);
 				cnBlock = cnBlock.getNextCnBlock();
 				continue;
-			} else if(8 == cnBlock.getSignalDataType() && cnBlock.getLnkCdBlock() != 0) {
+			} else if (8 == cnBlock.getSignalDataType() && cnBlock.getLnkCdBlock() != 0) {
 				LOG.info("Channel '" + meqName + "' with composed byte stream data skipped: " + ccBlock);
 				cnBlock = cnBlock.getNextCnBlock();
 				continue;
@@ -434,7 +467,8 @@ public class AoSessionWriter {
 			ODSInsertStatement ins = new ODSInsertStatement(modelCache, "lc");
 			ins.setStringVal("iname", meqName);
 			ins.setLongLongVal("sm", iidSm);
-			// sequence_representation: string channel cannot be referenced in ASAM ODS: read and write external
+			// sequence_representation: string channel cannot be referenced in
+			// ASAM ODS: read and write external
 			if (cnBlock.getSignalDataType() == 7) {
 				String[] stringDataValues = readStringDataValues(dgBlock, cgBlock, cnBlock);
 				ins.setEnumVal("srp", 0);
@@ -448,9 +482,9 @@ public class AoSessionWriter {
 			ins.setShortVal("idp", idp);
 			// global flag
 			ins.setShortVal("glb", (short) 15);
-			
+
 			// generation parameters or values (for implicit_constant ONLY)
-			if(seqRep == 1) {
+			if (seqRep == 1) {
 				// implicit constant
 				ins.setDoubleSeq("val", new double[] { genParams[0] });
 				ins.setEnumVal("rdt", DataType.DT_DOUBLE.value());
@@ -478,7 +512,8 @@ public class AoSessionWriter {
 			long iidLc = ins.execute();
 
 			// create 'AoExternalComponent' instance
-			if (cnBlock.getSignalDataType() != 7 && seqRep != 1 /* skip implicit_constant */) {
+			if (cnBlock.getSignalDataType() != 7
+					&& seqRep != 1 /* skip implicit_constant */) {
 				writeEc(modelCache, iidLc, idBlock, dgBlock, cgBlock, cnBlock);
 			}
 
@@ -486,26 +521,31 @@ public class AoSessionWriter {
 			InstanceElement ieMeq = aeMeq.getInstanceById(ODSHelper.asODSLongLong(iidMeq));
 			writeUnit(ieMeq, ccBlock);
 
-			// special handling for formula 11 'ASAM-MCD2 Text Table, (COMPU_VTAB)': create lookup table
+			// special handling for formula 11 'ASAM-MCD2 Text Table,
+			// (COMPU_VTAB)': create lookup table
 			InstanceElement ieMea = aeMea.getInstanceById(ODSHelper.asODSLongLong(iidMea));
 			InstanceElement ieLc = aeLc.getInstanceById(ODSHelper.asODSLongLong(iidLc));
 			if (ccBlock != null && ccBlock.getFormulaIdent() == 11) {
 				double[] keys = ccBlock.getKeysForTextTable();
 				String[] values = ccBlock.getValuesForTextTable();
-				//this.lookupTableHelper.createMCD2TextTableMeasurement(modelCache, ieMea, ieLc, keys, values);
+				// this.lookupTableHelper.createMCD2TextTableMeasurement(modelCache,
+				// ieMea, ieLc, keys, values);
 				long iidLookup = lookupTableHelper.createValueToTextTable(modelCache, ieMea, ieLc, keys, values, null);
 				InstanceElement ieSmLookup = aeSm.getInstanceById(ODSHelper.asODSLongLong(iidLookup));
 				ieLc.createRelation(relLcSm, ieSmLookup);
 			}
-			// special handling for formula 12 'ASAM-MCD2 Text Range Table (COMPU_VTAB_RANGE)': create lookup table
+			// special handling for formula 12 'ASAM-MCD2 Text Range Table
+			// (COMPU_VTAB_RANGE)': create lookup table
 			else if (ccBlock != null && ccBlock.getFormulaIdent() == 12) {
 				double[] keysMin = ccBlock.getLowerRangeKeysForTextRangeTable();
 				double[] keysMax = ccBlock.getUpperRangeKeysForTextRangeTable();
 				String[] values = ccBlock.getValuesForTextRangeTable();
 				String defaultValue = ccBlock.getDefaultTextForTextRangeTable();
-				//this.lookupTableHelper.createMCD2TextRangeTableMeasurement(modelCache, ieMea, ieLc, keysMin, keysMax,
+				// this.lookupTableHelper.createMCD2TextRangeTableMeasurement(modelCache,
+				// ieMea, ieLc, keysMin, keysMax,
 				// values, defaultValue);
-				long iidLookup =lookupTableHelper.createValueRangeToTextTable(modelCache, ieMea, ieLc, keysMin, keysMax, values, defaultValue);
+				long iidLookup = lookupTableHelper.createValueRangeToTextTable(modelCache, ieMea, ieLc, keysMin,
+						keysMax, values, defaultValue);
 				InstanceElement ieSmLookup = aeSm.getInstanceById(ODSHelper.asODSLongLong(iidLookup));
 				ieLc.createRelation(relLcSm, ieSmLookup);
 			}
@@ -608,8 +648,10 @@ public class AoSessionWriter {
 	}
 
 	/**
-	 * Returns the target ASAM ODS external component type specification enum value for a MDF3 channel description.<br/>
-	 * The data type is determined by the signal data type and the number of bits.<br/>
+	 * Returns the target ASAM ODS external component type specification enum
+	 * value for a MDF3 channel description.<br/>
+	 * The data type is determined by the signal data type and the number of
+	 * bits.<br/>
 	 *
 	 * @param cnBlock
 	 *            The MDF3 CNBLOCK.
@@ -781,25 +823,37 @@ public class AoSessionWriter {
 		} else if (typeSpec == 26) { // dt_string_utf8_beo
 			ret = 1; // DT_STRING
 		}
-		// dt_bit_int [27], dt_bit_int_beo [28], dt_bit_uint [29], dt_bit_uint_beo [30]
+		// dt_bit_int [27], dt_bit_int_beo [28], dt_bit_uint [29],
+		// dt_bit_uint_beo [30]
 		else if (typeSpec == 27 || typeSpec == 28 || typeSpec == 29 || typeSpec == 30) {
 			int dt = cnBlock.getSignalDataType();
 			int nb = cnBlock.getNumberOfBits();
-			if ((dt == 0 || dt == 9 || dt == 13) && nb >= 1 && nb <= 8) { // unsigned byte
+			if ((dt == 0 || dt == 9 || dt == 13) && nb >= 1 && nb <= 8) { // unsigned
+																			// byte
 				ret = 5; // DT_BYTE
-			} else if ((dt == 1 || dt == 10 || dt == 14) && nb >= 1 && nb <= 8) { // signed byte
+			} else if ((dt == 1 || dt == 10 || dt == 14) && nb >= 1 && nb <= 8) { // signed
+																					// byte
 				ret = 5; // DT_BYTE
-			} else if ((dt == 0 || dt == 9 || dt == 13) && nb >= 9 && nb <= 16) { // unsigned short
+			} else if ((dt == 0 || dt == 9 || dt == 13) && nb >= 9 && nb <= 16) { // unsigned
+																					// short
 				ret = 6; // DT_LONG
-			} else if ((dt == 1 || dt == 10 || dt == 14) && nb >= 9 && nb <= 16) { // signed short
+			} else if ((dt == 1 || dt == 10 || dt == 14) && nb >= 9 && nb <= 16) { // signed
+																					// short
 				ret = 2; // DT_SHORT
-			} else if ((dt == 0 || dt == 9 || dt == 13) && nb >= 17 && nb <= 32) { // unsigned int
+			} else if ((dt == 0 || dt == 9 || dt == 13) && nb >= 17 && nb <= 32) { // unsigned
+																					// int
 				ret = 8; // DT_LONGLONG
 			} else if ((dt == 1 || dt == 10 || dt == 14) && nb >= 17 && nb <= 32) { // int
 				ret = 6; // DT_LONG
-			} else if ((dt == 0 || dt == 9 || dt == 13) && nb >= 33) { // unsigned int >32 bit
+			} else if ((dt == 0 || dt == 9 || dt == 13) && nb >= 33) { // unsigned
+																		// int
+																		// >32
+																		// bit
 				ret = 8; // DT_LONGLONG
-			} else if ((dt == 1 || dt == 10 || dt == 14) && nb >= 33) { // signed int >32 bit
+			} else if ((dt == 1 || dt == 10 || dt == 14) && nb >= 33) { // signed
+																		// int
+																		// >32
+																		// bit
 				ret = 8; // DT_LONGLONG
 			}
 		}
@@ -824,8 +878,10 @@ public class AoSessionWriter {
 	}
 
 	/**
-	 * Returns the target ASAM ODS measurement quantity data type for a MDF3 channel description.<br/>
-	 * The data type is determined by the formula, the signal data type and the number of bits.
+	 * Returns the target ASAM ODS measurement quantity data type for a MDF3
+	 * channel description.<br/>
+	 * The data type is determined by the formula, the signal data type and the
+	 * number of bits.
 	 *
 	 * @param expandDataType
 	 *            Indicates whether to expand data type or not.
@@ -849,7 +905,7 @@ public class AoSessionWriter {
 		// STRING
 		if (dt == 7) {
 			return 1; // DT_STRING
-		} else if(dt == 8) {
+		} else if (dt == 8) {
 			return 11; // DT_BYTESTR
 		}
 
@@ -858,10 +914,11 @@ public class AoSessionWriter {
 		// 7 = exponential function
 		// 8 = logarithmic function
 		else if (formula == 0 || formula == 1 || formula == 6 || formula == 7 || formula == 8) {
-			if(nb == 0 && dt == 0) {
+			if (nb == 0 && dt == 0) {
 				return 8; // DT_LONGLONG
 			} else if (nb == 1) {
-				// 1 bit should be DT_BOOLEAN, but most of tools do not support this
+				// 1 bit should be DT_BOOLEAN, but most of tools do not support
+				// this
 				return 5; // DT_BYTE
 			} else if (nb >= 2 && nb <= 32) {
 				return 3; // DT_FLOAT
@@ -881,17 +938,25 @@ public class AoSessionWriter {
 				return expandDataType ? 3 : 5; // [DT_FLOAT] DT_BYTE
 			} else if ((dt == 1 || dt == 10 || dt == 14) && nb >= 1 && nb <= 8) { // dt_sbyte
 				return expandDataType ? 3 : 2; // [DT_FLOAT] DT_SHORT
-			} else if ((dt == 0 || dt == 9 || dt == 13) && nb >= 9 && nb <= 16) { // dt_ushort, dt_ushort_beo
+			} else if ((dt == 0 || dt == 9 || dt == 13) && nb >= 9 && nb <= 16) { // dt_ushort,
+																					// dt_ushort_beo
 				return expandDataType ? 3 : 6; // [DT_FLOAT] DT_LONG
-			} else if ((dt == 1 || dt == 10 || dt == 14) && nb >= 9 && nb <= 16) { // dt_short, dt_short_beo
+			} else if ((dt == 1 || dt == 10 || dt == 14) && nb >= 9 && nb <= 16) { // dt_short,
+																					// dt_short_beo
 				return expandDataType ? 3 : 2; // [DT_FLOAT] DT_SHORT
-			} else if ((dt == 0 || dt == 9 || dt == 13) && nb >= 17 && nb <= 32) { // dt_ulong, dt_ulong_beo
+			} else if ((dt == 0 || dt == 9 || dt == 13) && nb >= 17 && nb <= 32) { // dt_ulong,
+																					// dt_ulong_beo
 				return expandDataType ? 7 : 8; // [DT_DOUBLE] DT_LONGLONG
-			} else if ((dt == 1 || dt == 10 || dt == 14) && nb >= 17 && nb <= 32) { // dt_long, dt_long_beo
+			} else if ((dt == 1 || dt == 10 || dt == 14) && nb >= 17 && nb <= 32) { // dt_long,
+																					// dt_long_beo
 				return expandDataType ? 3 : 6; // [DT_FLOAT] DT_LONG
-			} else if ((dt == 0 || dt == 9 || dt == 13) && nb >= 33) { // unsigned int >32 bit
+			} else if ((dt == 0 || dt == 9 || dt == 13) && nb >= 33) { // unsigned
+																		// int
+																		// >32
+																		// bit
 				return expandDataType ? 7 : 8; // [DT_DOUBLE] DT_LONGLONG
-			} else if ((dt == 1 || dt == 10 || dt == 14) && nb >= 33 && nb <= 64) { // dt_longlong, dt_longlong_beo
+			} else if ((dt == 1 || dt == 10 || dt == 14) && nb >= 33 && nb <= 64) { // dt_longlong,
+																					// dt_longlong_beo
 				return expandDataType ? 7 : 8; // [DT_DOUBLE] DT_LONGLONG
 			} else if ((dt == 2 || dt == 3 || dt == 11 || dt == 12 || dt == 15 || dt == 16) && nb == 32) { // ieeefloat4,
 				// ieeefloat4_beo
@@ -906,7 +971,8 @@ public class AoSessionWriter {
 	}
 
 	/**
-	 * Returns the target ASAM ODS sequence representation for the external component description.<br/>
+	 * Returns the target ASAM ODS sequence representation for the external
+	 * component description.<br/>
 	 * List of MDF3 formula types:
 	 * <ul>
 	 * <li>0 = parametric, linear</li>
@@ -937,9 +1003,11 @@ public class AoSessionWriter {
 		// 'parametric, linear' => 'raw_linear_external'
 		if (formula == 0) {
 			double[] genParams = ccBlock.getValuePairsForFormula();
-			if(genParams != null && genParams.length == 2 && Double.compare(genParams[1], 0) == 0) {
-				// this is a special case with a given offset and a scaling factor of '0'
-				// -> therefore sequence representation has to be implicit constant
+			if (genParams != null && genParams.length == 2 && Double.compare(genParams[1], 0) == 0) {
+				// this is a special case with a given offset and a scaling
+				// factor of '0'
+				// -> therefore sequence representation has to be implicit
+				// constant
 				return 1;
 			} else {
 				return 8;
@@ -963,8 +1031,10 @@ public class AoSessionWriter {
 		}
 		// 'ASAM-MCD2 Text Range Table (COMPU_VTAB_RANGE)'
 		else if (formula == 12) {
-			// 'ASAM-MCD2 Text Range Table (COMPU_VTAB_RANGE) with formula' => 'raw_linear_external'
-			// CANape specific feature: default value contains macro for linear formula
+			// 'ASAM-MCD2 Text Range Table (COMPU_VTAB_RANGE) with formula' =>
+			// 'raw_linear_external'
+			// CANape specific feature: default value contains macro for linear
+			// formula
 			if (ccBlock.getDefaultTextForTextRangeTable() != null
 					&& ccBlock.getDefaultTextForTextRangeTable().startsWith("{LINEAR_CONV")) {
 				return 8;
@@ -999,7 +1069,7 @@ public class AoSessionWriter {
 		// 'parametric, linear'
 		if (formula == 0) {
 			double[] genParams = ccBlock.getValuePairsForFormula();
-			if(Double.compare(genParams[1], 0D) == 0) {
+			if (Double.compare(genParams[1], 0D) == 0) {
 				// scaling factor is '0', reduce to offset (implicit_constant)
 				return new double[] { genParams[0] };
 			} else {
@@ -1020,8 +1090,10 @@ public class AoSessionWriter {
 			return genParams;
 		}
 
-		// 'ASAM-MCD2 Text Range Table (COMPU_VTAB_RANGE) with formula' => 'raw_linear_external'
-		// CANape specific feature: default value contains macro for linear formula
+		// 'ASAM-MCD2 Text Range Table (COMPU_VTAB_RANGE) with formula' =>
+		// 'raw_linear_external'
+		// CANape specific feature: default value contains macro for linear
+		// formula
 		// example: {LINEAR_CONV "0.3*{X}-30"}
 		else if (formula == 12 && ccBlock.getDefaultTextForTextRangeTable() != null
 				&& ccBlock.getDefaultTextForTextRangeTable().startsWith("{LINEAR_CONV")) {
@@ -1045,8 +1117,9 @@ public class AoSessionWriter {
 	 **************************************************************************/
 
 	/**
-	 * MDF3 files created by the G.i.N. CLExport tools may contain the correct measurement date/time only within the
-	 * comment text. The predefined date fields in this case are filled with a dummy value.
+	 * MDF3 files created by the G.i.N. CLExport tools may contain the correct
+	 * measurement date/time only within the comment text. The predefined date
+	 * fields in this case are filled with a dummy value.
 	 *
 	 * @param ieMea
 	 *            The target AoMeasurement instance.
@@ -1069,7 +1142,8 @@ public class AoSessionWriter {
 			return;
 		}
 
-		// 'Data date/time: 28.08.2015 17:00:40': REPRESENTS THE END-TIME OF A MEASUREMENT!
+		// 'Data date/time: 28.08.2015 17:00:40': REPRESENTS THE END-TIME OF A
+		// MEASUREMENT!
 		Pattern pattern = Pattern.compile("^.*Data date/time:\\s*(.*)$", Pattern.MULTILINE);
 		Matcher matcher = pattern.matcher(fileComment.getText());
 		if (matcher.find()) {

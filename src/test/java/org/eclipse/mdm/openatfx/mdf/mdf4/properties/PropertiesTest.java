@@ -29,7 +29,6 @@ import org.omg.CORBA.ORB;
 import de.rechner.openatfx.util.ODSHelper;
 import junit.framework.JUnit4TestAdapter;
 
-
 /**
  * Test case for writing additional Properties to the MDF-File.
  *
@@ -47,12 +46,12 @@ public class PropertiesTest {
 		orb = ORB.init(new String[0], System.getProperties());
 		Path path = Paths.get(ClassLoader.getSystemResource(mdfFile).toURI());
 		MDFConverter reader = new MDFConverter();
-		//set Properties
+		// set Properties
 		Properties prop = new Properties();
 		prop.put("String1", "str1");
 		prop.put("Double", Double.valueOf(1.0));
-		prop.put("Integer",Integer.valueOf(2));
-		prop.put("Long", Long.valueOf(Integer.MAX_VALUE +1L));
+		prop.put("Integer", Integer.valueOf(2));
+		prop.put("Long", Long.valueOf(Integer.MAX_VALUE + 1L));
 		prop.put("String2", "str2");
 		aoSession = reader.getAoSessionForMDF(orb, path, prop);
 	}
@@ -80,9 +79,9 @@ public class PropertiesTest {
 
 			assertEquals("str1", ODSHelper.getStringVal(ieTst.getValue("String1")));
 			assertEquals("str2", ODSHelper.getStringVal(ieTst.getValue("String2")));
-			assertEquals(1.0, ODSHelper.getDoubleVal(ieTst.getValue("Double")),0);
+			assertEquals(1.0, ODSHelper.getDoubleVal(ieTst.getValue("Double")), 0);
 			assertEquals(2, ODSHelper.getLongVal(ieTst.getValue("Integer")));
-			assertEquals(Integer.MAX_VALUE +1L, ODSHelper.getLongLongVal(ieTst.getValue("Long")));
+			assertEquals(Integer.MAX_VALUE + 1L, ODSHelper.getLongLongVal(ieTst.getValue("Long")));
 		} catch (AoException e) {
 			fail(e.reason);
 		}

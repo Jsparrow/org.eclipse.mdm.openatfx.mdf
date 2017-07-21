@@ -21,7 +21,6 @@ import org.omg.CORBA.ORB;
 import de.rechner.openatfx.util.ODSHelper;
 import junit.framework.JUnit4TestAdapter;
 
-
 /**
  * Test case for reading the example MDF4-file <code>Vector_CANape.MF4</code>.
  *
@@ -74,7 +73,8 @@ public class Test_Vector_CANape {
 
 			InstanceElement ieMea = as.getElementByName("mea").getInstances("Vector_CANape.MF4").nextOne();
 			assertEquals("Vector_CANape.MF4", ODSHelper.getStringVal(ieMea.getValue("iname")));
-			assertEquals("Simple MF4 file created by Vector CANape 10.0\n\nThis file shows 2 channel groups, each containing a time master channel and some value channels.",
+			assertEquals(
+					"Simple MF4 file created by Vector CANape 10.0\n\nThis file shows 2 channel groups, each containing a time master channel and some value channels.",
 					ODSHelper.getStringVal(ieMea.getValue("desc")));
 			assertEquals("20110824175319", ODSHelper.getDateVal(ieMea.getValue("date_created")));
 			assertEquals("20110824175319", ODSHelper.getDateVal(ieMea.getValue("mea_begin")));

@@ -10,7 +10,6 @@ package org.eclipse.mdm.openatfx.mdf.mdf3;
 
 import java.nio.channels.SeekableByteChannel;
 
-
 /**
  * Base class for all blocks.
  *
@@ -32,8 +31,10 @@ abstract class BLOCK {
 	/**
 	 * Constructor.
 	 *
-	 * @param sbc The byte channel pointing to the MDF file.
-	 * @param pos The position of the block within the MDF file.
+	 * @param sbc
+	 *            The byte channel pointing to the MDF file.
+	 * @param pos
+	 *            The position of the block within the MDF file.
 	 */
 	protected BLOCK(SeekableByteChannel sbc, long pos) {
 		this.sbc = sbc;

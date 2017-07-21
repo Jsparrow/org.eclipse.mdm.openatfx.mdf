@@ -13,17 +13,19 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.channels.SeekableByteChannel;
 
-
 /**
  * <p>
  * THE CHANNEL HIERARCHY BLOCK <code>CHBLOCK</code>
  * </p>
- * The CHBLOCKs describe a logical ordering of the channels in a tree-like structure. This only serves to structure the
- * channels and is totally independent to the data group and channel group structuring. A channel even may not be
- * referenced at all or more than one time.<br/>
- * Each CHBLOCK can be seen as a node in a tree which has a number of channels as leafs and which has a reference to its
- * next sibling and its first child node (both CHBLOCKs). The reference to a channel is always a triple link to the
- * CNBLOCK of the channel and its parent CGBLOCK and DGBLOCK. Each CHBLOCK can have a name.
+ * The CHBLOCKs describe a logical ordering of the channels in a tree-like
+ * structure. This only serves to structure the channels and is totally
+ * independent to the data group and channel group structuring. A channel even
+ * may not be referenced at all or more than one time.<br/>
+ * Each CHBLOCK can be seen as a node in a tree which has a number of channels
+ * as leafs and which has a reference to its next sibling and its first child
+ * node (both CHBLOCKs). The reference to a channel is always a triple link to
+ * the CNBLOCK of the channel and its parent CGBLOCK and DGBLOCK. Each CHBLOCK
+ * can have a name.
  *
  * @author Christian Rechner
  */
@@ -34,8 +36,10 @@ class CHBLOCK extends BLOCK {
 	/**
 	 * Constructor.
 	 *
-	 * @param sbc The byte channel pointing to the MDF file.
-	 * @param pos The position of the block within the MDF file.
+	 * @param sbc
+	 *            The byte channel pointing to the MDF file.
+	 * @param pos
+	 *            The position of the block within the MDF file.
 	 */
 	private CHBLOCK(SeekableByteChannel sbc, long pos) {
 		super(sbc, pos);
@@ -44,10 +48,13 @@ class CHBLOCK extends BLOCK {
 	/**
 	 * Reads a CHBLOCK from the channel starting at current channel position.
 	 *
-	 * @param channel The channel to read from.
-	 * @param pos The position
+	 * @param channel
+	 *            The channel to read from.
+	 * @param pos
+	 *            The position
 	 * @return The block data.
-	 * @throws IOException The exception.
+	 * @throws IOException
+	 *             The exception.
 	 */
 	public static CHBLOCK read(SeekableByteChannel channel, long pos) throws IOException {
 		CHBLOCK block = new CHBLOCK(channel, pos);

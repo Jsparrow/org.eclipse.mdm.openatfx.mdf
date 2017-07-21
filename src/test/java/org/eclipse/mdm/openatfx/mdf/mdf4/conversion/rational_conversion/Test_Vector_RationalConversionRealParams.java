@@ -27,9 +27,9 @@ import org.omg.CORBA.ORB;
 import de.rechner.openatfx.util.ODSHelper;
 import junit.framework.JUnit4TestAdapter;
 
-
 /**
- * Test case for reading the example MDF4-file <code>Vector_RationalConversionRealParams.mf4</code>.
+ * Test case for reading the example MDF4-file
+ * <code>Vector_RationalConversionRealParams.mf4</code>.
  *
  * @author Christian Rechner
  */
@@ -71,21 +71,21 @@ public class Test_Vector_RationalConversionRealParams {
 		}
 	}
 
-	/* @Test
-    public void testReadMeq() {
-        try {
-            ApplicationStructure as = aoSession.getApplicationStructure();
-            InstanceElement ieMeq = as.getElementByName("tst").getInstances("*").nextOne();
-            assertEquals("MDF     ", ODSHelper.getStringVal(ieTst.getValue("mdf_file_id")));
-            assertEquals("4.10    ", ODSHelper.getStringVal(ieTst.getValue("mdf_version_str")));
-            assertEquals(410, ODSHelper.getLongVal(ieTst.getValue("mdf_version")));
-            assertEquals("MDF4Lib", ODSHelper.getStringVal(ieTst.getValue("mdf_program")));
-            assertEquals(0, ODSHelper.getLongVal(ieTst.getValue("mdf_unfin_flags")));
-            assertEquals(0, ODSHelper.getLongVal(ieTst.getValue("mdf_custom_unfin_flags")));
-        } catch (AoException e) {
-            fail(e.reason);
-        }
-    }*/
+	/*
+	 * @Test public void testReadMeq() { try { ApplicationStructure as =
+	 * aoSession.getApplicationStructure(); InstanceElement ieMeq =
+	 * as.getElementByName("tst").getInstances("*").nextOne();
+	 * assertEquals("MDF     ",
+	 * ODSHelper.getStringVal(ieTst.getValue("mdf_file_id")));
+	 * assertEquals("4.10    ",
+	 * ODSHelper.getStringVal(ieTst.getValue("mdf_version_str")));
+	 * assertEquals(410, ODSHelper.getLongVal(ieTst.getValue("mdf_version")));
+	 * assertEquals("MDF4Lib",
+	 * ODSHelper.getStringVal(ieTst.getValue("mdf_program"))); assertEquals(0,
+	 * ODSHelper.getLongVal(ieTst.getValue("mdf_unfin_flags"))); assertEquals(0,
+	 * ODSHelper.getLongVal(ieTst.getValue("mdf_custom_unfin_flags"))); } catch
+	 * (AoException e) { fail(e.reason); } }
+	 */
 
 	public static junit.framework.Test suite() {
 		return new JUnit4TestAdapter(Test_Vector_RationalConversionRealParams.class);

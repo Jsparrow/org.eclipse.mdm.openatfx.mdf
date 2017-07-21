@@ -14,13 +14,13 @@ import java.nio.ByteOrder;
 import java.nio.channels.SeekableByteChannel;
 import java.util.Arrays;
 
-
 /**
  * <p>
  * Channel conversion block: Description of a conversion formula for a channel
  * </p>
- * The data records are used to store implementation values. The CCBLOCK serves to specify a conversion formula that can
- * be used to convert these values into physical values with physical units.
+ * The data records are used to store implementation values. The CCBLOCK serves
+ * to specify a conversion formula that can be used to convert these values into
+ * physical values with physical units.
  *
  * @author Christian Rechner
  */
@@ -56,12 +56,15 @@ class CCBLOCK extends BLOCK {
 	// 65535 = 1:1 conversion formula (Int = Phys)
 	private int formulaIdent;
 
-	// UINT16 1 Number of value pairs for conversion formulas 1, 2, 11 and 12 or number of
+	// UINT16 1 Number of value pairs for conversion formulas 1, 2, 11 and 12 or
+	// number of
 	// parameters
 	private int noOfValuePairsForFormula;
 
-	// ... Parameter (for type 0,6,7,8,9) or table (for type 1, 2, 11, or 12) or text (for type
-	// 10), depending on the conversion formula identifier. See formula-specific block
+	// ... Parameter (for type 0,6,7,8,9) or table (for type 1, 2, 11, or 12) or
+	// text (for type
+	// 10), depending on the conversion formula identifier. See formula-specific
+	// block
 	// supplement.
 	private double[] valuePairsForFormula; // formula = 0,6,7,8,9
 
@@ -76,8 +79,10 @@ class CCBLOCK extends BLOCK {
 	/**
 	 * Constructor.
 	 *
-	 * @param sbc The byte channel pointing to the MDF file.
-	 * @param pos The position of the block within the MDF file.
+	 * @param sbc
+	 *            The byte channel pointing to the MDF file.
+	 * @param pos
+	 *            The position of the block within the MDF file.
 	 */
 	private CCBLOCK(SeekableByteChannel sbc, long pos) {
 		super(sbc, pos);
@@ -206,10 +211,13 @@ class CCBLOCK extends BLOCK {
 	/**
 	 * Reads a CCBLOCK from the channel starting at pos
 	 *
-	 * @param sbc The channel to read from.
-	 * @param pos The position to start reading.
+	 * @param sbc
+	 *            The channel to read from.
+	 * @param pos
+	 *            The position to start reading.
 	 * @return The block data.
-	 * @throws IOException The exception.
+	 * @throws IOException
+	 *             The exception.
 	 */
 	public static CCBLOCK read(SeekableByteChannel sbc, long pos) throws IOException {
 		CCBLOCK block = new CCBLOCK(sbc, pos);
@@ -258,7 +266,8 @@ class CCBLOCK extends BLOCK {
 		// 65535 = 1:1 conversion formula (Int = Phys)
 		block.setFormulaIdent(Mdf3Util.readUInt16(bb));
 
-		// UINT16 1 Number of value pairs for conversion formulas 1, 2, 11 and 12 or number of parameters
+		// UINT16 1 Number of value pairs for conversion formulas 1, 2, 11 and
+		// 12 or number of parameters
 		block.setNoOfValuePairsForFormula(Mdf3Util.readUInt16(bb));
 
 		int formula = block.getFormulaIdent();

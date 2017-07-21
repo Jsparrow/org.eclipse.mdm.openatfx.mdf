@@ -21,7 +21,6 @@ import org.omg.CosNaming.NamingContextExtHelper;
 import org.omg.CosNaming.NamingContextPackage.CannotProceed;
 import org.omg.CosNaming.NamingContextPackage.NotFound;
 
-
 public class AoFactoryMain {
 
 	private static final Log LOG = LogFactory.getLog(AoFactoryMain.class);

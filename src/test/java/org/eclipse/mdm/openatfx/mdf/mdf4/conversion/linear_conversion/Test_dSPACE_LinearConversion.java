@@ -28,9 +28,9 @@ import org.omg.CORBA.ORB;
 import de.rechner.openatfx.util.ODSHelper;
 import junit.framework.JUnit4TestAdapter;
 
-
 /**
- * Test case for reading the example MDF4-file <code>dSPACE_LinearConversion.mf4</code>.
+ * Test case for reading the example MDF4-file
+ * <code>dSPACE_LinearConversion.mf4</code>.
  *
  * @author Christian Rechner
  */
@@ -82,7 +82,8 @@ public class Test_dSPACE_LinearConversion {
 			assertEquals(9, ieTst.listAttributes("*", AttrType.INSTATTR_ONLY).length);
 			assertEquals("Thilo Maeck", ODSHelper.getStringVal(ieTst.getValue("User")));
 			assertEquals("20121107101610", ODSHelper.getDateVal(ieTst.getValue("DateTime")));
-			assertEquals("Created by ControlDesk Next Generation's Measurement Data API", ODSHelper.getStringVal(ieTst.getValue("Origin")));
+			assertEquals("Created by ControlDesk Next Generation's Measurement Data API",
+					ODSHelper.getStringVal(ieTst.getValue("Origin")));
 			assertEquals("", ODSHelper.getStringVal(ieTst.getValue("StartCondition")));
 			assertEquals("", ODSHelper.getStringVal(ieTst.getValue("StopCondition")));
 			assertEquals("0", ODSHelper.getStringVal(ieTst.getValue("XAxisOffset")));

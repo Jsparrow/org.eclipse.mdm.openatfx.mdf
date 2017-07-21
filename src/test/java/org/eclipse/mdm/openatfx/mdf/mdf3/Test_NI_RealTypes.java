@@ -29,7 +29,6 @@ import org.omg.CORBA.ORB;
 import de.rechner.openatfx.util.ODSHelper;
 import junit.framework.JUnit4TestAdapter;
 
-
 /**
  * Test case for reading the example MDF4-file <code>NI_RealTypes.mdf</code>.
  *
@@ -73,38 +72,47 @@ public class Test_NI_RealTypes {
 		}
 	}
 
-	/*@Test
-	public void testReadHDBlock() {
-		try {
-			ApplicationStructure as = aoSession.getApplicationStructure();
-			InstanceElementIterator iter = as.getElementByName("mea").getInstances("*");
-			assertEquals(1, iter.getCount());
-
-			InstanceElement ieMea = as.getElementByName("mea").getInstances("NI_RealTypes.mdf").nextOne();
-			assertEquals("NI_RealTypes.mdf", ODSHelper.getStringVal(ieMea.getValue("iname")));
-			assertEquals("Datensatz mit numerischen X/Y-, Waveform- und Textkanälen in mehreren Kanalgruppen",
-					ODSHelper.getStringVal(ieMea.getValue("desc")));
-			assertEquals("20150922182537", ODSHelper.getDateVal(ieMea.getValue("date_created")));
-			assertEquals("20150922182537", ODSHelper.getDateVal(ieMea.getValue("mea_begin")));
-			assertEquals("", ODSHelper.getDateVal(ieMea.getValue("mea_end")));
-			assertEquals(0, ODSHelper.getLongLongVal(ieMea.getValue("start_time_ns")));
-			assertEquals(0, ODSHelper.getShortVal(ieMea.getValue("local_time")));
-			assertEquals(0, ODSHelper.getShortVal(ieMea.getValue("time_offsets_valid")));
-			assertEquals(0, ODSHelper.getShortVal(ieMea.getValue("tz_offset_min")));
-			assertEquals(0, ODSHelper.getShortVal(ieMea.getValue("dst_offset_min")));
-			assertEquals(0, ODSHelper.getEnumVal(ieMea.getValue("time_quality_class")));
-			assertEquals(0, ODSHelper.getShortVal(ieMea.getValue("start_angle_valid")));
-			assertEquals(0, ODSHelper.getShortVal(ieMea.getValue("start_distance_valid")));
-			assertEquals(0, ODSHelper.getDoubleVal(ieMea.getValue("start_angle_rad")), 0.0000001);
-			assertEquals(0, ODSHelper.getDoubleVal(ieMea.getValue("start_distance_m")), 0.0000001);
-
-			assertEquals(4, ieMea.listAttributes("*", AttrType.INSTATTR_ONLY).length);
-
-			assertEquals("National Instruments", ODSHelper.getStringVal(ieMea.getValue("author")));
-		} catch (AoException e) {
-			fail(e.reason);
-		}
-	}*/
+	/*
+	 * @Test public void testReadHDBlock() { try { ApplicationStructure as =
+	 * aoSession.getApplicationStructure(); InstanceElementIterator iter =
+	 * as.getElementByName("mea").getInstances("*"); assertEquals(1,
+	 * iter.getCount());
+	 * 
+	 * InstanceElement ieMea =
+	 * as.getElementByName("mea").getInstances("NI_RealTypes.mdf").nextOne();
+	 * assertEquals("NI_RealTypes.mdf",
+	 * ODSHelper.getStringVal(ieMea.getValue("iname")));
+	 * assertEquals("Datensatz mit numerischen X/Y-, Waveform- und Textkanälen in mehreren Kanalgruppen"
+	 * , ODSHelper.getStringVal(ieMea.getValue("desc")));
+	 * assertEquals("20150922182537",
+	 * ODSHelper.getDateVal(ieMea.getValue("date_created")));
+	 * assertEquals("20150922182537",
+	 * ODSHelper.getDateVal(ieMea.getValue("mea_begin"))); assertEquals("",
+	 * ODSHelper.getDateVal(ieMea.getValue("mea_end"))); assertEquals(0,
+	 * ODSHelper.getLongLongVal(ieMea.getValue("start_time_ns")));
+	 * assertEquals(0, ODSHelper.getShortVal(ieMea.getValue("local_time")));
+	 * assertEquals(0,
+	 * ODSHelper.getShortVal(ieMea.getValue("time_offsets_valid")));
+	 * assertEquals(0, ODSHelper.getShortVal(ieMea.getValue("tz_offset_min")));
+	 * assertEquals(0, ODSHelper.getShortVal(ieMea.getValue("dst_offset_min")));
+	 * assertEquals(0,
+	 * ODSHelper.getEnumVal(ieMea.getValue("time_quality_class")));
+	 * assertEquals(0,
+	 * ODSHelper.getShortVal(ieMea.getValue("start_angle_valid")));
+	 * assertEquals(0,
+	 * ODSHelper.getShortVal(ieMea.getValue("start_distance_valid")));
+	 * assertEquals(0,
+	 * ODSHelper.getDoubleVal(ieMea.getValue("start_angle_rad")), 0.0000001);
+	 * assertEquals(0,
+	 * ODSHelper.getDoubleVal(ieMea.getValue("start_distance_m")), 0.0000001);
+	 * 
+	 * assertEquals(4, ieMea.listAttributes("*",
+	 * AttrType.INSTATTR_ONLY).length);
+	 * 
+	 * assertEquals("National Instruments",
+	 * ODSHelper.getStringVal(ieMea.getValue("author"))); } catch (AoException
+	 * e) { fail(e.reason); } }
+	 */
 
 	@Test
 	public void testReadFHBlock() {

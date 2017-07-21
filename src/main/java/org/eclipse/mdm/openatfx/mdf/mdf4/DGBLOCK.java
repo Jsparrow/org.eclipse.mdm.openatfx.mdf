@@ -13,15 +13,16 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.channels.SeekableByteChannel;
 
-
 /**
  * <p>
  * THE DATA GROUP BLOCK <code>DGBLOCK<code>
  * </p>
- * The DGBLOCK gathers information and links related to its data block. Thus the branch in the tree of MDF blocks that
- * is opened by the DGBLOCK contains all information necessary to understand and decode the data block referenced by the
- * DGBLOCK. The DGBLOCK can contain several channel groups. In this case the data group (and thus the MDF file) is
- * "unsorted". If there is only one channel group in the DGBLOCK, the data group is "sorted".
+ * The DGBLOCK gathers information and links related to its data block. Thus the
+ * branch in the tree of MDF blocks that is opened by the DGBLOCK contains all
+ * information necessary to understand and decode the data block referenced by
+ * the DGBLOCK. The DGBLOCK can contain several channel groups. In this case the
+ * data group (and thus the MDF file) is "unsorted". If there is only one
+ * channel group in the DGBLOCK, the data group is "sorted".
  *
  * @author Christian Rechner
  */
@@ -39,12 +40,14 @@ class DGBLOCK extends BLOCK {
 	// LINK
 	private long lnkCgFirst;
 
-	// Pointer to data block (DTBLOCK or DZBLOCK for this block type) or data list block (DLBLOCK of data blocks or its
+	// Pointer to data block (DTBLOCK or DZBLOCK for this block type) or data
+	// list block (DLBLOCK of data blocks or its
 	// HLBLOCK) (can be NIL)
 	// LINK
 	private long lnkData;
 
-	// Pointer to comment and additional information (TXBLOCK or MDBLOCK) (can be NIL)
+	// Pointer to comment and additional information (TXBLOCK or MDBLOCK) (can
+	// be NIL)
 	// LINK
 	private long lnkMdComment;
 
@@ -62,8 +65,10 @@ class DGBLOCK extends BLOCK {
 	/**
 	 * Constructor.
 	 *
-	 * @param sbc The byte channel pointing to the MDF file.
-	 * @param pos The position of the block within the MDF file.
+	 * @param sbc
+	 *            The byte channel pointing to the MDF file.
+	 * @param pos
+	 *            The position of the block within the MDF file.
 	 */
 	private DGBLOCK(SeekableByteChannel sbc, long pos) {
 		super(sbc, pos);
@@ -170,6 +175,7 @@ class DGBLOCK extends BLOCK {
 		}
 		return null;
 	}
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -182,10 +188,13 @@ class DGBLOCK extends BLOCK {
 	/**
 	 * Reads a DGBLOCK from the channel starting at current channel position.
 	 *
-	 * @param channel The channel to read from.
-	 * @param pos The position within the channel.
+	 * @param channel
+	 *            The channel to read from.
+	 * @param pos
+	 *            The position within the channel.
 	 * @return The block data.
-	 * @throws IOException The exception.
+	 * @throws IOException
+	 *             The exception.
 	 */
 	public static DGBLOCK read(SeekableByteChannel channel, long pos) throws IOException {
 		DGBLOCK block = new DGBLOCK(channel, pos);
@@ -218,11 +227,13 @@ class DGBLOCK extends BLOCK {
 		// LINK: Pointer to first channel group block (CGBLOCK) (can be NIL)
 		block.setLnkCgFirst(MDF4Util.readLink(bb));
 
-		// LINK: Pointer to data block (DTBLOCK or DZBLOCK for this block type) or data list block (DLBLOCK of data
+		// LINK: Pointer to data block (DTBLOCK or DZBLOCK for this block type)
+		// or data list block (DLBLOCK of data
 		// blocks or its HLBLOCK) (can be NIL)
 		block.setLnkData(MDF4Util.readLink(bb));
 
-		// LINK: Pointer to comment and additional information (TXBLOCK or MDBLOCK) (can be NIL)
+		// LINK: Pointer to comment and additional information (TXBLOCK or
+		// MDBLOCK) (can be NIL)
 		block.setLnkMdComment(MDF4Util.readLink(bb));
 
 		// UINT8: Number of Bytes used for record IDs in the data block.

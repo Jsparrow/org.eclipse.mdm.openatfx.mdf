@@ -31,9 +31,9 @@ import org.omg.CORBA.ORB;
 import de.rechner.openatfx.util.ODSHelper;
 import junit.framework.JUnit4TestAdapter;
 
-
 /**
- * Test case for reading the example MDF4-file <code>dSPACE_Value2TextConversion.mf4</code>.
+ * Test case for reading the example MDF4-file
+ * <code>dSPACE_Value2TextConversion.mf4</code>.
  *
  * @author Christian Rechner
  */
@@ -43,7 +43,7 @@ public class Test_dSPACE_Value2TextConversion {
 
 	private static ORB orb;
 	private static AoSession aoSession;
-	private static ODSModelCache modelCache ;
+	private static ODSModelCache modelCache;
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
@@ -86,29 +86,31 @@ public class Test_dSPACE_Value2TextConversion {
 
 			ApplicationRelation relMeaSm = modelCache.getApplicationRelation("mea", "sm", "sms");
 			InstanceElement ieSm = ieMea.getRelatedInstances(relMeaSm, "*").nextOne();
-			assertEquals("application/x-asam.aosubmatrix.lookup.value_range_to_text", ODSHelper.getStringVal(ieSm.getValue("mt")));
+			assertEquals("application/x-asam.aosubmatrix.lookup.value_range_to_text",
+					ODSHelper.getStringVal(ieSm.getValue("mt")));
 			assertEquals(2, ODSHelper.getLongVal(ieSm.getValue("rows")));
 
 			ApplicationRelation relSmLc = modelCache.getApplicationRelation("sm", "lc", "lcs");
 
-			InstanceElementIterator iter =ieSm.getRelatedInstances(relSmLc, "*");
+			InstanceElementIterator iter = ieSm.getRelatedInstances(relSmLc, "*");
 			assertEquals(2, iter.getCount());
 
 			ApplicationRelation relLcMeq = modelCache.getApplicationRelation("lc", "meq", "meq");
 
-			for(int i = 0; i < 2; i++){
+			for (int i = 0; i < 2; i++) {
 				InstanceElement ieLc = iter.nextOne();
 				String mimeType = ODSHelper.getStringVal(ieLc.getValue("mt"));
-				assertTrue(mimeType.equals("application/x-asam.aolocalcolumn.lookup.key") ||
-						mimeType.equals("application/x-asam.aolocalcolumn.lookup.value"));
+				assertTrue(mimeType.equals("application/x-asam.aolocalcolumn.lookup.key")
+						|| mimeType.equals("application/x-asam.aolocalcolumn.lookup.value"));
 
 				InstanceElement ieMeq = ieLc.getRelatedInstances(relLcMeq, "*").nextOne();
 				mimeType = ODSHelper.getStringVal(ieMeq.getValue("mt"));
-				assertTrue(mimeType.equals("application/x-asam.aomeasurementquantity.lookup.key") ||
-						mimeType.equals("application/x-asam.aomeasurementquantity.lookup.value"));
-				assertTrue(ODSHelper.getEnumVal(ieMeq.getValue("dt"))==1 || ODSHelper.getEnumVal(ieMeq.getValue("dt"))==7);
+				assertTrue(mimeType.equals("application/x-asam.aomeasurementquantity.lookup.key")
+						|| mimeType.equals("application/x-asam.aomeasurementquantity.lookup.value"));
+				assertTrue(ODSHelper.getEnumVal(ieMeq.getValue("dt")) == 1
+						|| ODSHelper.getEnumVal(ieMeq.getValue("dt")) == 7);
 
-				if(ODSHelper.getEnumVal(ieMeq.getValue("dt"))==1){
+				if (ODSHelper.getEnumVal(ieMeq.getValue("dt")) == 1) {
 					String[] values = ODSHelper.getStringSeq(ieLc.getValue("val"));
 					assertEquals("off", values[0]);
 					assertEquals("on", values[1]);
@@ -131,7 +133,6 @@ public class Test_dSPACE_Value2TextConversion {
 			fail(e.reason);
 		}
 	}
-
 
 	public static junit.framework.Test suite() {
 		return new JUnit4TestAdapter(Test_dSPACE_Value2TextConversion.class);

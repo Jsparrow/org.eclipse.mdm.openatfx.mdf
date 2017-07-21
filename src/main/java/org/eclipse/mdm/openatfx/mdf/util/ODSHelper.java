@@ -23,7 +23,6 @@ import org.asam.ods.T_DCOMPLEX;
 import org.asam.ods.T_ExternalReference;
 import org.asam.ods.T_LONGLONG;
 
-
 /**
  * Helper class with ODS specific functions.
  *
@@ -31,7 +30,8 @@ import org.asam.ods.T_LONGLONG;
  */
 public abstract class ODSHelper {
 
-	// prepare dateformats to avoid instantiation a single object every time parsing a date.
+	// prepare dateformats to avoid instantiation a single object every time
+	// parsing a date.
 	private static Map<Integer, DateFormat> ODS_DATEFORMATS = new HashMap<Integer, DateFormat>();
 	static {
 		ODS_DATEFORMATS.put(4, new SimpleDateFormat("yyyy"));
@@ -46,7 +46,8 @@ public abstract class ODSHelper {
 	/**
 	 * Return an ODS date from a <code>java.util.Date</code>.
 	 *
-	 * @param date the <code>java.util.Date</code> to convert
+	 * @param date
+	 *            the <code>java.util.Date</code> to convert
 	 * @return the date in ODS date-format (YYYYMMDDhhmmss)
 	 */
 	public static synchronized String asODSDate(Date date) {
@@ -59,9 +60,11 @@ public abstract class ODSHelper {
 	/**
 	 * Returns the java date from an ODS date.
 	 *
-	 * @param odsDate the ODS date string
+	 * @param odsDate
+	 *            the ODS date string
 	 * @return the java <code>java.util.Date</code> object, null if empty date
-	 * @throws IllegalArgumentException unable to parse
+	 * @throws IllegalArgumentException
+	 *             unable to parse
 	 */
 	public static synchronized Date asJDate(String odsDate) {
 		try {
@@ -81,7 +84,8 @@ public abstract class ODSHelper {
 	/**
 	 * Returns a Java long from ODS T_LONGLONG.
 	 *
-	 * @param ll ODS T_LONGLONG value
+	 * @param ll
+	 *            ODS T_LONGLONG value
 	 * @return Java long with the same value as ll
 	 */
 	public static long asJLong(T_LONGLONG ll) {
@@ -97,7 +101,8 @@ public abstract class ODSHelper {
 	/**
 	 * Returns an array of Java long from ODS T_LONGLONG.
 	 *
-	 * @param ll array of ODS T_LONGLONG values
+	 * @param ll
+	 *            array of ODS T_LONGLONG values
 	 * @return array of Java long values
 	 */
 	public static long[] asJLong(T_LONGLONG[] ll) {
@@ -111,7 +116,8 @@ public abstract class ODSHelper {
 	/**
 	 * Return ODS T_LONGLONG from Java long.
 	 *
-	 * @param v Java long value
+	 * @param v
+	 *            Java long value
 	 * @return ODS T_LONGLONG with the same value as v
 	 */
 	public static T_LONGLONG asODSLongLong(long v) {
@@ -121,7 +127,8 @@ public abstract class ODSHelper {
 	/**
 	 * Returns an array of ODS T_LONGLONG from Java longs.
 	 *
-	 * @param v array of Java long values
+	 * @param v
+	 *            array of Java long values
 	 * @return array of ODS T_LONGLONG values
 	 */
 	public static T_LONGLONG[] asODSLongLong(long[] v) {
@@ -177,7 +184,7 @@ public abstract class ODSHelper {
 		nv.valName = valName;
 		nv.value = new TS_Value();
 		nv.value.u = new TS_Union();
-		if (value == null ) {
+		if (value == null) {
 			nv.value.flag = 0;
 			nv.value.u.stringVal("");
 		} else {
@@ -564,7 +571,7 @@ public abstract class ODSHelper {
 
 	public static NameValue createDateSeqNV(String attrName, Date values[]) {
 		String[] valuesstr = new String[values.length];
-		for(int i = 0; i < values.length; i++){
+		for (int i = 0; i < values.length; i++) {
 			valuesstr[i] = ODSHelper.asODSDate(values[i]);
 		}
 		return createDateSeqNV(attrName, valuesstr);
@@ -575,7 +582,6 @@ public abstract class ODSHelper {
 		union.dateSeq(values);
 		return createNVU(attrName, union);
 	}
-
 
 	public static NameValue createExtRefSeqNV(String attrName, T_ExternalReference values[]) {
 		TS_Union union = new TS_Union();
