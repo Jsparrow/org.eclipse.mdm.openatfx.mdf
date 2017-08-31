@@ -39,7 +39,9 @@ test {
 task downloadOpenATFX(type: Download) {
     acceptAnyCertificate true
     overwrite false
-    src 'https://sourceforge.net/projects/openatfx/files/openatfx-0.6.4-jars.zip/download'
+    // use mirror subdomain of 'https://sourceforge.net/projects/openatfx/files/openatfx-0.6.4-jars.zip/download'
+    // because gradle has problems establishing a ssl connection with sourceforge directly
+    src 'https://10gbps-io.dl.sourceforge.net/project/openatfx/openatfx-0.6.4-jars.zip'
     dest new File(buildDir, 'openatfx-0.6.4-jars.zip')
     outputs.file dest
 }
