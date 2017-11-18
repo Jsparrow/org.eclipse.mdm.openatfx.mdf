@@ -1132,7 +1132,8 @@ public class AoSessionWriter {
 				ins.setLongVal("on", totalindex);
 				ins.setStringVal("fl", mdfFilePath.toString());
 
-				ins.setEnumVal("vt", getValueType(cnBlock));
+				int vt = getValueType(cnBlock);
+				ins.setEnumVal("vt", vt);
 				ins.setLongLongVal("so", currblock + 24L);
 
 				// TODO Strings, write number of Bytes? Spec4/61
@@ -1163,8 +1164,11 @@ public class AoSessionWriter {
 				} else {
 
 				}
+
+				// type spec is of type: dt_bit_* => write bit offset (bo) and bit count (bc)
+				boolean writeBitProps = vt > 26 && vt < 33;
 				short bitOffset = cnBlock.getBitOffset();
-				if (bitOffset != 0 && cnBlock.getBitCount() % 8 != 0) {
+				if ((bitOffset != 0 || cnBlock.getBitCount() % 8 != 0) && writeBitProps) {
 					ins.setShortVal("bo", bitOffset);
 					ins.setShortVal("bc", (short) cnBlock.getBitCount());
 				}
@@ -1669,8 +1673,10 @@ public class AoSessionWriter {
 	 * @return The ASAM ODS data type.
 	 * @throws IOException
 	 *             Unable to determine data type.
+	 * @throws AoException in case of errors
 	 */
-	private static int getDataType(boolean expandDataType, CNBLOCK cnBlock, CCBLOCK ccBlock) throws IOException {
+	private static int getDataType(boolean expandDataType, CNBLOCK cnBlock, CCBLOCK ccBlock)
+			throws IOException, AoException {
 		// CCBLOCK may be null, assume 1:1
 		int formula = 0;
 		if (ccBlock != null) {
@@ -1739,10 +1745,12 @@ public class AoSessionWriter {
 				// ieeefloat8_beo
 				return 7; // DT_DOUBLE
 			}
-		} else if (formula == 7 || formula == 8 || formula == 10) { // X to text
+		} else if (formula == 9 || formula == 10) { // X to text
 			return 1; // DT_STRING
-		} else if (formula == 4 || formula == 5 || formula == 6 || formula == 9) {
+		} else if (formula == 4 || formula == 5 || formula == 6) {
 			return 7; // DT_DOUBLE
+		} else if (formula == 7 || formula == 8) {
+			return getRawDataTypeForValueType(getValueType(cnBlock), cnBlock);
 		}
 
 		throw new IOException("Unsupported MDF4 datatype: " + cnBlock + "\n " + ccBlock);
