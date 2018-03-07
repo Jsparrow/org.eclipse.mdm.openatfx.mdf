@@ -1,0 +1,38 @@
+# Notices for the mdmbl tool openatfx-mdf , openMDM(R) Eclipse Working Groupo
+
+This content is produced and maintained by the Eclipse mdmbl project.
+
+ * Project home: https://projects.eclipse.org/projects/technology.mdmbl
+
+## Trademarks
+
+Eclipse mdmbl are
+trademarks of the Eclipse Foundation. Eclipse, and the Eclipse Logo are
+registered trademarks of the Eclipse Foundation.
+
+## Declared Project Licenses
+
+This program and the accompanying materials are made available under the terms
+of the Eclipse Public License v. 1.0 which is available at
+http://www.eclipse.org/legal/epl-v10.html.
+
+SPDX-License-Identifier: EPL-1.0
+
+## Source Code
+
+The project maintains the following source code repositories:
+
+org.eclipse.mdm.openatfx.mdf.git - This application allows accessing the content of an MDF3/MDF4 file via an ASAM ODS Session.
+
+## Third-party Content
+
+no
+
+## Cryptography
+
+Content may contain encryption software. The country in which you are currently
+may have restrictions on the import, possession, and use, and/or re-export to
+another country, of encryption software. BEFORE using any encryption software,
+please check the country's laws, regulations and policies concerning the import,
+possession, or use, and re-export of encryption software, to see if this is
+permitted.
