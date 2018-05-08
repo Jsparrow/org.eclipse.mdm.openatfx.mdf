@@ -6,9 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  */
 
-plugins {
-    id "de.undercouch.download" version "3.2.0"
-}
+plugins { id "de.undercouch.download" version "3.2.0" }
 
 import de.undercouch.gradle.tasks.download.Download
 
@@ -20,41 +18,42 @@ apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'maven'
 
-repositories {
-    mavenCentral()
-}
+repositories { mavenCentral() }
 
 dependencies {
-    // openATFX
-    compile fileTree(dir: 'build/openatfx-0.6.4/lib', include: '*.jar')
+	// openATFX
+	compile fileTree(dir: 'build/openatfx-0.6.4/lib', include: '*.jar')
 
-    // testing
-    testCompile 'junit:junit:4.12'
+	// testing
+	testCompile 'junit:junit:4.12'
 }
 
-test {
-    jvmArgs '-Dorg.slf4j.simpleLogger.defaultLogLevel=debug'
-}
+test { jvmArgs '-Dorg.slf4j.simpleLogger.defaultLogLevel=debug' }
 
 task downloadOpenATFX(type: Download) {
-    acceptAnyCertificate true
-    overwrite false
-    // use mirror subdomain of 'https://sourceforge.net/projects/openatfx/files/openatfx-0.6.4-jars.zip/download'
-    // because gradle has problems establishing a ssl connection with sourceforge directly
-    src 'https://10gbps-io.dl.sourceforge.net/project/openatfx/openatfx-0.6.4-jars.zip'
-    dest new File(buildDir, 'openatfx-0.6.4-jars.zip')
-    outputs.file dest
+	acceptAnyCertificate true
+	overwrite false
+	// use mirror subdomain of 'https://sourceforge.net/projects/openatfx/files/openatfx-0.6.4-jars.zip/download'
+	// because gradle has problems establishing a ssl connection with sourceforge directly
+	src 'https://10gbps-io.dl.sourceforge.net/project/openatfx/openatfx-0.6.4-jars.zip'
+	dest new File(buildDir, 'openatfx-0.6.4-jars.zip')
+	outputs.file dest
 }
 
 task unzipOpenATFX(dependsOn: downloadOpenATFX, type: Copy) {
-    from zipTree(downloadOpenATFX.dest)
-    into buildDir
-    outputs.dir new File(buildDir, 'openatfx-0.6.4')
+	from zipTree(downloadOpenATFX.dest)
+	into buildDir
+	outputs.dir new File(buildDir, 'openatfx-0.6.4')
 }
 
 compileJava.dependsOn unzipOpenATFX
 
 tasks.withType(JavaCompile) {
-    sourceCompatibility = '1.7'
-    targetCompatibility = '1.7'
+	sourceCompatibility = '1.7'
+	targetCompatibility = '1.7'
+}
+
+jar {
+	metaInf { from 'NOTICE.txt' }
+	metaInf { from 'LICENSE.txt' }
 }
