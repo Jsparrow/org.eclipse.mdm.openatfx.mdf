@@ -13,6 +13,7 @@ import static org.junit.Assert.fail;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Properties;
 
 import org.asam.ods.AoException;
 import org.asam.ods.AoSession;
@@ -45,7 +46,9 @@ public class Test_dSPACE_IntegerTypes {
 		orb = ORB.init(new String[0], System.getProperties());
 		Path path = Paths.get(ClassLoader.getSystemResource(mdfFile).toURI());
 		MDFConverter reader = new MDFConverter();
-		aoSession = reader.getAoSessionForMDF(orb, path);
+		Properties properties = new Properties();
+		properties.put("skip_uint64_data_channels", "true");
+		aoSession = reader.getAoSessionForMDF(orb, path, properties);
 	}
 
 	@AfterClass

@@ -12,7 +12,7 @@ import de.undercouch.gradle.tasks.download.Download
 
 description = 'OpenATFX MDF driver'
 group = 'org.eclipse.mdm'
-version = '1.1.5'
+version = '1.1.6'
 
 apply plugin: 'java'
 apply plugin: 'eclipse'

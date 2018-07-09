@@ -93,6 +93,8 @@ public class AoSessionWriter {
 	private boolean skipEmptyChannels = false;
 	// skip channels with an unsupporter donversion formula
 	private boolean skipUnsupportedFormula = false;
+	// skip channels with unsigned 64 bit data
+	private boolean skipUINT64Channels = false;
 	// skip channels with DT_BYTESTR
 	// remove this once it is save to import channels with byte stream data
 	@Deprecated
@@ -176,6 +178,9 @@ public class AoSessionWriter {
 			}
 			if (props.containsKey("skip_unsupported_formula")) {
 				skipUnsupportedFormula = Boolean.valueOf(props.getProperty("skip_unsupported_formula"));
+			}
+			if (props.containsKey("skip_uint64_data_channels")) {
+				skipUINT64Channels = Boolean.valueOf(props.getProperty("skip_uint64_data_channels"));
 			}
 			if (props.containsKey("skip_byte_stream_channels")) {
 				skipByteStreamChannels = Boolean.valueOf(props.getProperty("skip_byte_stream_channels"));
@@ -423,6 +428,22 @@ public class AoSessionWriter {
 				LOG.info("Channel '" + meqName + "' with composed byte stream data skipped: " + ccBlock);
 				cnBlock = cnBlock.getNextCnBlock();
 				continue;
+			} else if (64 == cnBlock.getNumberOfBits() && (0 /* LEO */ == cnBlock.getSignalDataType()
+					|| 9 /* BEO */ == cnBlock.getSignalDataType())) {
+				// UNSIGNED 64 bit: if cnBlock represents a time channel (channel_type == 1)
+				// => it is considered save to interpret data as signed 64 bit
+				// => otherwise either fail or skip
+				if (1 != cnBlock.getChannelType()) {
+					// this is a data channel with 64 bit unsigned data; it is not possible to represent such data
+					// => either throw an error or skip channel
+					if (skipUINT64Channels) {
+						LOG.info("Channel '" + meqName + "' with unsigned 64 bit data skipped: " + cnBlock);
+						cnBlock = cnBlock.getNextCnBlock();
+						continue;
+					} else {
+						throw new IOException("unable to write unsigned 64 bit data channel");
+					}
+				}
 			}
 
 			int seqRep = getSeqRep(ccBlock, meqName);
@@ -683,6 +704,8 @@ public class AoSessionWriter {
 				return 21;
 			} else if (nb == 32 && bitOffset == 0) { // 32 bit: dt_ulong
 				return 23;
+			} else if (nb == 64 && bitOffset == 0) { // 64 bit: dt_longlong
+				return 4;
 			} else { // variable bit length: dt_bit_uint
 				return 29;
 			}
@@ -732,6 +755,8 @@ public class AoSessionWriter {
 				return 22;
 			} else if (nb == 32 && bitOffset == 0) { // 32 bit: dt_ulong_beo
 				return 24;
+			} else if (nb == 64 && bitOffset == 0) { // 32 bit: dt_longlong_beo
+				return 9;
 			} else { // variable bit length: dt_bit_uint_beo
 				return 30;
 			}
