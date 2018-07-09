@@ -24,6 +24,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.UUID;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -51,6 +52,7 @@ import org.eclipse.mdm.openatfx.mdf.util.ODSModelCache;
 public class AoSessionWriter {
 
 	private static final Log LOG = LogFactory.getLog(AoSessionWriter.class);
+	private static final int FLAGS_BUFFER_SIZE = 1_000_000;
 
 	/** The number format having 5 digits used for count formatting */
 	private final NumberFormat countFormat;
@@ -88,6 +90,9 @@ public class AoSessionWriter {
 	// remove this once it is save to import channels with byte stream data
 	@Deprecated
 	private boolean skipByteStreamChannels = false;
+
+	private boolean writeFlagsFile = true;
+	private Path flagFile = null;
 
 	private boolean readOnlyHeader = false;
 	private Path customRatConfPath;
@@ -173,6 +178,9 @@ public class AoSessionWriter {
 				if (props.containsKey("skip_byte_stream_channels")) {
 					skipByteStreamChannels = Boolean.valueOf(props.getProperty("skip_byte_stream_channels"));
 				}
+				if (props.containsKey("write_flags_file")) {
+					writeFlagsFile = Boolean.valueOf(props.getProperty("write_flags_file"));
+				}
 			}
 
 			ODSInsertStatement ins = new ODSInsertStatement(modelCache, "tst");
@@ -207,7 +215,15 @@ public class AoSessionWriter {
 				try {
 					Files.delete(customRatConfPath);
 				} catch (IOException e2) {
-					LOG.warn("failed to delete file with manually calculated values: '" + customRatConfPath + "'");
+					LOG.warn("failed to delete file with manually calculated values: '" + customRatConfPath + "'", e2);
+				}
+			}
+
+			if (flagFile != null && Files.exists(flagFile)) {
+				try {
+					Files.delete(flagFile);
+				} catch (IOException e2) {
+					LOG.warn("failed to delete file with exported flags: '" + flagFile + "'", e2);
 				}
 			}
 
@@ -475,10 +491,6 @@ public class AoSessionWriter {
 				if (cgBlock.isBusEventChannel()) {
 					throw new IOException("Bus event data currently not supported! [DGBLOCK=" + dgBlock + "]");
 				}
-				// check invalidation bits (not yet supported)
-				if (cgBlock.getInvalBytes() != 0) {
-					throw new IOException("Invalidation bits currently not supported! [DGBLOCK=" + dgBlock + "]");
-				}
 
 				// create SubMatrix instance
 				ODSInsertStatement ins = new ODSInsertStatement(modelCache, "sm");
@@ -572,6 +584,16 @@ public class AoSessionWriter {
 		CNBLOCK cnBlock = cgBlock.getCnFirstBlock();
 		while (cnBlock != null) {
 
+			if ((cnBlock.getFlags() & 0x02) != 0 && cnBlock.getInvalBitPos() > 0) {
+				if (writeFlagsFile) {
+					// NOTE: flags are exported within writeEc()!
+					LOG.debug("channel with invalid values found, "
+							+ "export flags into separate file [CNBLOCK=" + cnBlock + "]");
+				} else {
+					LOG.debug("skipping channel with invalid values [CNBLOCK=" + cnBlock + "]");
+					continue;
+				}
+			}
 			// check invalidation bits (not yet supported)
 			if (cnBlock.getLnkComposition() != 0) {
 				LOG.warn("Composition of channels not supported! [CNBLOCK=" + cnBlock + "]");
@@ -645,8 +667,9 @@ public class AoSessionWriter {
 			}
 
 			// create 'AoExternalComponent' instance (if not a string data type
-			// (6-9) or VLSD-Channel (Type ==1))
-			if (!(cnBlock.getDataType() >= 6 && cnBlock.getDataType() <= 9 || cnBlock.getChannelType() == 1)) {
+			// (6-9) or VLSD-Channel (Type ==1) or virtual master channel (Type == 3))
+			if (!(cnBlock.getDataType() >= 6 && cnBlock.getDataType() <= 9
+					|| cnBlock.getChannelType() == 1 || cnBlock.getChannelType() == 3)) {
 				writeEc(modelCache, iidLc, idBlock, dgBlock, cgBlock, cnBlock, ccBlock, dgBlock.getLnkData(), 0);
 			}
 
@@ -697,7 +720,7 @@ public class AoSessionWriter {
 	 */
 	long createMeasurementQuantity(ODSModelCache modelCache, CNBLOCK cnBlock, CCBLOCK ccBlock, String meqName,
 			long iidMea, String mimeType, Map<String, Long> untInstances) throws IOException, AoException {
-		int seqRep = getSeqRep(ccBlock);
+		int seqRep = getSeqRep(cnBlock, ccBlock);
 		double[] genParams = getGenerationParameters(ccBlock);
 
 		ODSInsertStatement ins = new ODSInsertStatement(modelCache, "meq");
@@ -785,7 +808,7 @@ public class AoSessionWriter {
 	 */
 	long createLocalColumn(ODSModelCache modelCache, DGBLOCK dgBlock, CGBLOCK cgBlock, CNBLOCK cnBlock, CCBLOCK ccBlock,
 			String lcName, long iidSm, long iidMeq, long[] iidPrevSm, String mimeType) throws IOException, AoException {
-		int seqRep = getSeqRep(ccBlock);
+		int seqRep = getSeqRep(cnBlock, ccBlock);
 		double[] genParams = getGenerationParameters(ccBlock);
 		ODSInsertStatement ins = new ODSInsertStatement(modelCache, "lc");
 		ins.setStringVal("iname", lcName);
@@ -1129,12 +1152,13 @@ public class AoSessionWriter {
 					throw new IOException("mdfFilePath must not be null");
 				}
 
+				long startOffset = currblock + 24L;
 				ins.setLongVal("on", totalindex);
 				ins.setStringVal("fl", mdfFilePath.toString());
 
 				int vt = getValueType(cnBlock);
 				ins.setEnumVal("vt", vt);
-				ins.setLongLongVal("so", currblock + 24L);
+				ins.setLongLongVal("so", startOffset);
 
 				// TODO Strings, write number of Bytes? Spec4/61
 				ins.setLongVal("vb", 1); // one value per block
@@ -1157,13 +1181,19 @@ public class AoSessionWriter {
 				ins.setLongVal("vo", (int) valueOffset);
 
 				// get Cycle count from Block size.
+				int cycleCount = -1;
 				if (BLOCK.getBlockType(idBlock.sbc, currblock).equals(DTBLOCK.BLOCK_ID)) {
-					ins.setLongVal("cl", (int) ((DTBLOCK.read(idBlock.sbc, currblock).getLength() - 24) / bytesize));
+					cycleCount = (int) ((DTBLOCK.read(idBlock.sbc, currblock).getLength() - 24) / bytesize);
+					ins.setLongVal("cl", cycleCount);
 				} else if (BLOCK.getBlockType(idBlock.sbc, currblock).equals(RDBLOCK.BLOCK_ID)) {
-					ins.setLongVal("cl", (int) ((RDBLOCK.read(idBlock.sbc, currblock).getLength() - 24) / bytesize));
+					cycleCount = (int) ((RDBLOCK.read(idBlock.sbc, currblock).getLength() - 24) / bytesize);
+					ins.setLongVal("cl", cycleCount);
 				} else {
 
 				}
+
+				// export flags
+				exportFlags(ins, idBlock, dgBlock, cgBlock, cnBlock, startOffset, cycleCount);
 
 				// type spec is of type: dt_bit_* => write bit offset (bo) and bit count (bc)
 				boolean writeBitProps = vt > 26 && vt < 33;
@@ -1172,6 +1202,8 @@ public class AoSessionWriter {
 					ins.setShortVal("bo", bitOffset);
 					ins.setShortVal("bc", (short) cnBlock.getBitCount());
 				}
+
+				// bind to local column and write instance
 				ins.setLongLongVal("lc", iidLc);
 				ins.execute();
 
@@ -1389,12 +1421,16 @@ public class AoSessionWriter {
 	 * @return The ASAM ODS sequence representation enum value.
 	 * @throws ConvertException
 	 */
-	private static int getSeqRep(CCBLOCK ccBlock) throws AoException {
+	private static int getSeqRep(CNBLOCK cnBlock, CCBLOCK ccBlock) throws AoException {
 		// CCBLOCK may be null, assume explicit with external Component
 		if (ccBlock == null) {
 			return 7;
 		}
 
+		if (cnBlock.getChannelType() == 3) {
+			// virtual master channel -> implicit_linear
+			return 2;
+		}
 		int formula = ccBlock.getType();
 		// '1:1 conversion formula' => external_component
 		if (formula == 0) {
@@ -1553,6 +1589,11 @@ public class AoSessionWriter {
 	 *             unable to obtain raw datatype
 	 */
 	private static int getRawDataTypeForValueType(int typeSpec, CNBLOCK cnBlock) throws AoException {
+		if (cnBlock.getChannelType() == 3) {
+			// virtual master channel (implicit linear), calculated with generation parameters
+			return 7;
+		}
+
 		int ret = 0;
 		if (typeSpec == 0) { // dt_boolean
 			ret = 4; // DT_BOOLEAN
@@ -1682,6 +1723,12 @@ public class AoSessionWriter {
 		if (ccBlock != null) {
 			formula = ccBlock.getType();
 		}
+
+		if (cnBlock.getChannelType() == 3) {
+			// virtual master channel (implicit linear), calculated with generation parameters
+			return 7;
+		}
+
 		int dt = cnBlock.getDataType();
 		int nb = (int) cnBlock.getBitCount();
 
@@ -2069,8 +2116,93 @@ public class AoSessionWriter {
 			ins.setLongVal("vo", 0);
 			ins.setStringVal("fl", customRatConfPath.getFileName().toString());
 			ins.setLongLongVal("lc", iidLc);
+
+			// export flags
+			exportFlags(ins, idBlock, dgBlock, cgBlock, cnBlock, startOffset, count);
+
 			ins.execute();
 		}
+	}
+
+	/**
+	 * Exports ODS compliant flags into a separate file.
+	 *
+	 * @param ins  flag file an start offset will be added, not null
+	 * @param idBlock  the {@link IDBLOCK}, not null
+	 * @param dgBlock  the {@link DGBLOCK}, not null
+	 * @param cgBlock  the {@link CGBLOCK}, not null
+	 * @param cnBlock  the {@link CNBLOCK}, not null
+	 * @param startOffset  start of the next record
+	 * @param count  how many records to read
+	 * @throws IOException  in case of errors
+	 */
+	private void exportFlags(ODSInsertStatement ins, IDBLOCK idBlock, DGBLOCK dgBlock, CGBLOCK cgBlock, CNBLOCK cnBlock,
+			long startOffset, long count) throws IOException {
+		if ((cnBlock.getFlags() & 0x02) == 0 || cnBlock.getInvalBitPos() < 1 || count < 1) {
+			// either invalidation bit not set or deactivated or no values available -> nothing to do
+			return;
+		}
+
+		try (SeekableByteChannel flagsChannel = loadFlagsFileChannel(idBlock)) {
+			ins.setStringVal("ffl", flagFile.getFileName().toString());
+			ins.setLongLongVal("fso", flagsChannel.position());
+
+			int dt = cnBlock.getDataType();
+			ByteOrder byteOrder = dt == 1 || dt == 3 || dt == 5 ? ByteOrder.BIG_ENDIAN : ByteOrder.LITTLE_ENDIAN;
+			ByteBuffer flagsBuffer = ByteBuffer.allocate(FLAGS_BUFFER_SIZE);
+			ByteBuffer bb = ByteBuffer.allocate(1);
+			flagsBuffer.order(byteOrder);
+			bb.order(byteOrder);
+
+			long recordSize = dgBlock.getRecIdSize() + cgBlock.getDataBytes() + cgBlock.getInvalBytes();
+			long flabBytesOffset = dgBlock.getRecIdSize() + cgBlock.getDataBytes() + (cnBlock.getInvalBitPos() >> 3);
+			int bitOffset = ((int) cnBlock.getInvalBitPos()) & 0x07;
+			for (int i = 0; i < count; i++) {
+				// read current flag byte
+				bb.rewind();
+				idBlock.sbc.position(startOffset + recordSize * i + flabBytesOffset);
+				idBlock.sbc.read(bb);
+				bb.rewind();
+
+				// convert flag bit to ODS flag and add to write buffer
+				flagsBuffer.putShort((bb.get() & (1 << bitOffset)) != 0 ? 0 : (short) 15);
+
+				// write flags if buffer is full
+				if (flagsBuffer.position() % FLAGS_BUFFER_SIZE == 0) {
+					flagsBuffer.rewind();
+					flagsChannel.write(flagsBuffer);
+					flagsBuffer.rewind();
+				}
+			}
+
+			// write remaining flag bytes
+			if (flagsBuffer.position() > 0) {
+				int pos = flagsBuffer.position();
+				flagsBuffer.rewind();
+				flagsBuffer.limit(pos);
+				flagsChannel.write(flagsBuffer);
+			}
+		}
+	}
+
+	/**
+	 * Creates a {@link SeekableByteChannel} for the flags file.
+	 *
+	 * @param idBlock  used to resolve target flags file, not null
+	 * @return  the {@link SeekableByteChannel}, not null
+	 * @throws IOException  if unable to create a flags file
+	 */
+	private SeekableByteChannel loadFlagsFileChannel(IDBLOCK idBlock) throws IOException {
+		if (flagFile == null) {
+			flagFile = idBlock.getMdfFilePath().resolveSibling("flags.bin");
+			while (Files.exists(flagFile)) {
+				flagFile = flagFile.resolveSibling("flags_" + UUID.randomUUID().toString().split("-")[0] + ".bin");
+			}
+
+			Files.createFile(flagFile);
+		}
+
+		return Files.newByteChannel(flagFile, StandardOpenOption.APPEND);
 	}
 
 }

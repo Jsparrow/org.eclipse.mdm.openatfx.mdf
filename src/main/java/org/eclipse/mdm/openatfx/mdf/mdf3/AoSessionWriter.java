@@ -10,8 +10,11 @@ package org.eclipse.mdm.openatfx.mdf.mdf3;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.nio.channels.SeekableByteChannel;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -94,6 +97,8 @@ public class AoSessionWriter {
 	// remove this once it is save to import channels with byte stream data
 	@Deprecated
 	private boolean skipByteStreamChannels = false;
+
+	private Path customRatConfPath;
 
 	/**
 	 * Constructor.
@@ -435,7 +440,7 @@ public class AoSessionWriter {
 				ins.setStringVal("desc", cnBlock.getSignalDescription().trim());
 				boolean expandDataType = genParams != null && genParams.length > 0 && seqRep != 0 && seqRep != 7;
 				DataType dt = DataType.from_int(getDataType(expandDataType, cnBlock, ccBlock));
-				ins.setEnumVal("dt", seqRep == 1 ? DataType.DT_DOUBLE.value() : dt.value());
+				ins.setEnumVal("dt", seqRep == 1 || isRatConv2ExtComp(ccBlock) ? DataType.DT_DOUBLE.value() : dt.value());
 				if (ccBlock != null && ccBlock.isKnownPhysValue()) {
 					ins.setDoubleVal("min", ccBlock.getMinPhysValue());
 					ins.setDoubleVal("max", ccBlock.getMaxPhysValue());
@@ -494,7 +499,7 @@ public class AoSessionWriter {
 				// raw_datatype
 				int valueType = getValueType(cnBlock);
 				int rawDataType = getRawDataTypeForValueType(valueType, cnBlock);
-				ins.setEnumVal("rdt", rawDataType);
+				ins.setEnumVal("rdt", isRatConv2ExtComp(ccBlock) ? DataType.DT_DOUBLE.value() : rawDataType);
 			}
 			// axistype
 			int axistype = cnBlock.getChannelType() == 0 ? 1 : 0;
@@ -514,7 +519,7 @@ public class AoSessionWriter {
 			// create 'AoExternalComponent' instance
 			if (cnBlock.getSignalDataType() != 7
 					&& seqRep != 1 /* skip implicit_constant */) {
-				writeEc(modelCache, iidLc, idBlock, dgBlock, cgBlock, cnBlock);
+				writeEc(modelCache, iidLc, idBlock, dgBlock, cgBlock, cnBlock, ccBlock);
 			}
 
 			// create 'AoUnit' instance if not yet existing
@@ -622,29 +627,35 @@ public class AoSessionWriter {
 	 *             Error reading from MDF file.
 	 */
 	private void writeEc(ODSModelCache modelCache, long iidLc, IDBLOCK idBlock, DGBLOCK dgBlock, CGBLOCK cgBlock,
-			CNBLOCK cnBlock) throws AoException, IOException {
-		ODSInsertStatement ins = new ODSInsertStatement(modelCache, "ec");
-		ins.setStringVal("iname", "ec_" + countFormat.format(1));
-		Path mdfFilePath = idBlock.getMdfFilePath().getFileName();
-		if (mdfFilePath == null) {
-			throw new IOException("mdfFilePath must not be null");
+			CNBLOCK cnBlock, CCBLOCK ccBlock) throws AoException, IOException {
+		if (isRatConv2ExtComp(ccBlock)) {
+			// NOTE: once CCBLOCK is no longer required, it should be removed
+			// from this method's signature!
+			createCustomRatConvEC(modelCache, iidLc, idBlock, dgBlock, cgBlock, cnBlock, ccBlock);
+		} else {
+			ODSInsertStatement ins = new ODSInsertStatement(modelCache, "ec");
+			ins.setStringVal("iname", "ec_" + countFormat.format(1));
+			Path mdfFilePath = idBlock.getMdfFilePath().getFileName();
+			if (mdfFilePath == null) {
+				throw new IOException("mdfFilePath must not be null");
+			}
+			ins.setStringVal("fl", mdfFilePath.toString());
+			ins.setEnumVal("vt", getValueType(cnBlock));
+			ins.setLongLongVal("so", dgBlock.getLnkDataRecords());
+			ins.setLongVal("cl", (int) cgBlock.getNoOfRecords());
+			ins.setLongVal("vb", 1);
+			int recordIdOffset = dgBlock.getNoRecordIds() > 0 ? 1 : 0;
+			ins.setLongVal("bs", cgBlock.getDataRecordSize() + recordIdOffset);
+			int valOffset = recordIdOffset + cnBlock.getByteOffset() + cnBlock.getNumberOfFirstBits() / 8;
+			ins.setLongVal("vo", valOffset);
+			short bitOffset = (short) (cnBlock.getNumberOfFirstBits() % 8);
+			if (bitOffset != 0 || cnBlock.getNumberOfBits() % 8 != 0 || cnBlock.getNumberOfBits() == 24) {
+				ins.setShortVal("bo", bitOffset);
+				ins.setShortVal("bc", (short) cnBlock.getNumberOfBits());
+			}
+			ins.setLongLongVal("lc", iidLc);
+			ins.execute();
 		}
-		ins.setStringVal("fl", mdfFilePath.toString());
-		ins.setEnumVal("vt", getValueType(cnBlock));
-		ins.setLongLongVal("so", dgBlock.getLnkDataRecords());
-		ins.setLongVal("cl", (int) cgBlock.getNoOfRecords());
-		ins.setLongVal("vb", 1);
-		int recordIdOffset = dgBlock.getNoRecordIds() > 0 ? 1 : 0;
-		ins.setLongVal("bs", cgBlock.getDataRecordSize() + recordIdOffset);
-		int valOffset = recordIdOffset + cnBlock.getByteOffset() + cnBlock.getNumberOfFirstBits() / 8;
-		ins.setLongVal("vo", valOffset);
-		short bitOffset = (short) (cnBlock.getNumberOfFirstBits() % 8);
-		if (bitOffset != 0 || cnBlock.getNumberOfBits() % 8 != 0 || cnBlock.getNumberOfBits() == 24) {
-			ins.setShortVal("bo", bitOffset);
-			ins.setShortVal("bc", (short) cnBlock.getNumberOfBits());
-		}
-		ins.setLongLongVal("lc", iidLc);
-		ins.execute();
 	}
 
 	/**
@@ -991,9 +1002,10 @@ public class AoSessionWriter {
 	 * </ul>
 	 *
 	 * @return The ASAM ODS sequence representation enum value.
+	 * @throws AoException
 	 * @throws ConvertException
 	 */
-	private static int getSeqRep(CCBLOCK ccBlock, String meqName) throws IOException {
+	private static int getSeqRep(CCBLOCK ccBlock, String meqName) throws AoException, IOException {
 		// CCBLOCK may be null, assume explicit
 		if (ccBlock == null) {
 			return 7;
@@ -1023,7 +1035,16 @@ public class AoSessionWriter {
 		}
 		// 'ASAP2 Rational conversion formula' => 'external_component'
 		else if (formula == 9) {
-			return 7;
+			if (isRatConv2RawLinExt(ccBlock)) {
+				// redirect => 'raw_linear_external'
+				return 8;
+			} else if (isRatConv2ExtComp(ccBlock)) {
+				// manual calculation => 'external_component'
+				return 7;
+			} else {
+				throw new AoException(ErrorCode.AO_IMPLEMENTATION_PROBLEM, SeverityFlag.ERROR, 0,
+						"unable write channel with rational conversion for ccBlock: " + ccBlock);
+			}
 		}
 		// 'ASAM-MCD2 Text Table, (COMPU_VTAB)' => 'external_component'
 		else if (formula == 11) {
@@ -1056,9 +1077,10 @@ public class AoSessionWriter {
 	 * Returns the generation parameters
 	 *
 	 * @return The ASAM ODS sequence representation enum value.
+	 * @throws AoException
 	 * @throws IOException
 	 */
-	private static double[] getGenerationParameters(CCBLOCK ccBlock) throws IOException {
+	private static double[] getGenerationParameters(CCBLOCK ccBlock) throws AoException, IOException {
 		// CCBLOCK may be null, assume explicit
 		if (ccBlock == null) {
 			return new double[0];
@@ -1090,6 +1112,19 @@ public class AoSessionWriter {
 			return genParams;
 		}
 
+		else if (formula == 9) {
+			double[] genParams = ccBlock.getValuePairsForFormula();
+			if (isRatConv2RawLinExt(ccBlock)) {
+				// sequence rep.: 'raw_linear_external'
+				return new double[] { genParams[2], genParams[1] };
+			} else if (isRatConv2ExtComp(ccBlock)) {
+				// sequence rep.: 'external_component'
+				return new double[0];
+			} else {
+				throw new AoException(ErrorCode.AO_IMPLEMENTATION_PROBLEM, SeverityFlag.ERROR, 0,
+						"unable write channel with rational conversion for ccBlock: " + ccBlock);
+			}
+		}
 		// 'ASAM-MCD2 Text Range Table (COMPU_VTAB_RANGE) with formula' =>
 		// 'raw_linear_external'
 		// CANape specific feature: default value contains macro for linear
@@ -1190,6 +1225,242 @@ public class AoSessionWriter {
 		}
 
 		return list.toArray(new String[0]);
+	}
+
+	/**
+	 * Checks whether channel with rational conversion may be stored as a
+	 * 'raw_linear_external'.
+	 * <p>
+	 * NOTE: This is a workaround to provide channels with formula == 9 with a
+	 * reduced set of generation parameters. Such channel values are described
+	 * with a rational conversion, which can not be described in ODS. To do so
+	 * the generation parameters p1, p3 and p4 must be ZERO and p5 must be ONE.
+	 * <p>
+	 * <b>ATTENTION: THIS IS JUST A WORKAROUND UND HAS TO BE REMOVED AS SOON AS
+	 * IT IS POSSIBLE TO DESCRIBE SUCH CHANNELS IN ODS!</b>
+	 *
+	 * @param ccBlock
+	 *            the conversion block
+	 * @return true if the values must be calculated and stored in an external
+	 *         file
+	 */
+	@Deprecated
+	private static boolean isRatConv2RawLinExt(CCBLOCK ccBlock) {
+		if (ccBlock == null) {
+			return false;
+		} else if (ccBlock.getFormulaIdent() == 9) {
+			// rational conversion
+			double[] genParams = ccBlock.getValuePairsForFormula();
+			if (genParams == null || genParams.length != 6) {
+				return false;
+			} else {
+				boolean p1Zero = Double.compare(genParams[0], 0D) == 0;
+				boolean p4Zero = Double.compare(genParams[3], 0D) == 0;
+				boolean p5Zero = Double.compare(genParams[4], 0D) == 0;
+				boolean p6One = Double.compare(genParams[5], 1D) == 0;
+				return p1Zero && p4Zero && p5Zero && p6One;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Checks whether channel with rational conversion may be stored as a
+	 * 'external_component'.
+	 * <p>
+	 * NOTE: This is a workaround to provide channels with formula == 9. Such
+	 * channel values are described with a rational conversion, which can not be
+	 * described in ODS. Therefore the whole value sequence is calculated and
+	 * referenced as an 'external_component'.
+	 * <p>
+	 * <b>ATTENTION: THIS IS JUST A WORKAROUND UND HAS TO BE REMOVED AS SOON AS
+	 * IT IS POSSIBLE TO DESCRIBE SUCH CHANNELS IN ODS!</b>
+	 *
+	 * @param ccBlock
+	 *            the conversion block
+	 * @return true if the values must be calculated and stored in an external
+	 *         file
+	 */
+	@Deprecated
+	private static boolean isRatConv2ExtComp(CCBLOCK ccBlock) {
+		if (ccBlock == null) {
+			return false;
+		} else if (ccBlock.getFormulaIdent() == 9) {
+			// rational conversion
+			double[] genParams = ccBlock.getValuePairsForFormula();
+			if (genParams == null || genParams.length != 6) {
+				return false;
+			} else {
+				boolean p1Zero = Double.compare(genParams[0], 0D) != 0;
+				boolean p4Zero = Double.compare(genParams[3], 0D) != 0;
+				boolean p5Zero = Double.compare(genParams[4], 0D) != 0;
+				boolean p6One = Double.compare(genParams[5], 1D) != 0;
+				return p1Zero || p4Zero || p5Zero || p6One;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Write the instances of 'AoExternalComponent'.
+	 * <p>
+	 * One instance is written for all calculated vaues.
+	 * <p>
+	 * NOTE: This is a workaround to provide channels with formula == 2. Such
+	 * channel values are described with a rational conversion, which can not be
+	 * described in ODS. Therefore the whole value sequence is calculated and
+	 * referenced as an 'external_component'.
+	 * <p>
+	 * <b>ATTENTION: THIS IS JUST A WORKAROUND UND HAS TO BE REMOVED AS SOON AS
+	 * IT IS POSSIBLE TO DESCRIBE SUCH CHANNELS IN ODS!</b>
+	 *
+	 * @param modelCache
+	 *            The application model cache.
+	 * @param iidLc
+	 *            The instance id of the 'AoLocalColumn' instance.
+	 * @param idBlock
+	 *            The IDBLOCK.
+	 * @param dgBlock
+	 *            The DGBLOCK.
+	 * @param cgBlock
+	 *            The CGBLOCK.
+	 * @param cnBlock
+	 *            The CNBLOCK.
+	 * @param ccBlock
+	 *            The CCBLOCK.
+	 * @throws AoException
+	 *             Error writing to session.
+	 * @throws IOException
+	 *             Error reading from MDF file.
+	 */
+	@Deprecated
+	private void createCustomRatConvEC(ODSModelCache modelCache, long iidLc, IDBLOCK idBlock, DGBLOCK dgBlock,
+			CGBLOCK cgBlock, CNBLOCK cnBlock, CCBLOCK ccBlock) throws AoException, IOException {
+
+		if (customRatConfPath == null) {
+			customRatConfPath = idBlock.getMdfFilePath().resolveSibling("rational_conversion.calc");
+			if (!Files.exists(customRatConfPath)) {
+				Files.createFile(customRatConfPath);
+			}
+		}
+
+		short bo = (short) (cnBlock.getNumberOfFirstBits() % 8);
+		short bc = bo != 0 && cnBlock.getNumberOfBits() % 8 != 0 ? (short) cnBlock.getNumberOfBits() : 0;
+		if (bo != 0 || bc != 0 || cnBlock.getNumberOfBits() % 8 != 0) {
+			throw new AoException(ErrorCode.AO_BAD_PARAMETER, SeverityFlag.ERROR, 0, "bit count '" + bc
+				+ "' and bit offset '" + bo + "' is not supported for custom ration conversion");
+		}
+
+		try (SeekableByteChannel channel = Files.newByteChannel(customRatConfPath, StandardOpenOption.APPEND)) {
+			ByteBuffer writeBuffer = ByteBuffer.wrap(new byte[8]);
+			writeBuffer.order(ByteOrder.LITTLE_ENDIAN);
+			long startOffset = channel.position();
+			long count = 0;
+
+			int recordIdOffset = dgBlock.getNoRecordIds() > 0 ? 1 : 0;
+			long vo = recordIdOffset + cnBlock.getByteOffset() + cnBlock.getNumberOfFirstBits() / 8;
+			long bs = cgBlock.getDataRecordSize() + recordIdOffset;
+			long so = dgBlock.getLnkDataRecords();
+			double[] p = ccBlock.getValuePairsForFormula();
+
+			int bits = (int) cnBlock.getNumberOfBits();
+			int dt = cnBlock.getSignalDataType();
+			boolean isInteger = dt == 0 || dt == 1 || dt == 9 || dt == 10 || dt == 13 || dt == 14;
+			boolean isReal = dt == 2 || dt == 3 || dt == 11 || dt == 12 || dt == 15 || dt == 16;
+			boolean isUnsigned = dt == 0 || dt == 9 || dt == 13;
+			ByteOrder byteOrder;
+			if (dt < 4) {
+				byteOrder = idBlock.getIdByteOrder() == 0 ? ByteOrder.LITTLE_ENDIAN : ByteOrder.BIG_ENDIAN;
+			} else {
+				if (dt > 8 && dt < 13) {
+					byteOrder = ByteOrder.BIG_ENDIAN;
+				} else if (dt > 12 && dt < 17) {
+					byteOrder = ByteOrder.LITTLE_ENDIAN;
+				} else {
+					throw new AoException(ErrorCode.AO_BAD_PARAMETER, SeverityFlag.ERROR, 0,
+							"unable to determine byte order for CN block with rational conversion :" + cnBlock);
+				}
+			}
+			for (long i = 0; i < cgBlock.getNoOfRecords(); i++) {
+				idBlock.sbc.position(so + i * bs + vo);
+				ByteBuffer byteBuffer = ByteBuffer.allocate(bits / 8);
+				byteBuffer.order(byteOrder);
+				idBlock.sbc.read(byteBuffer);
+				byteBuffer.rewind();
+
+				double internal = 0;
+				if (isInteger) {
+					if (bits == 8) {
+						// isUnsigned ? short : byte
+						internal = isUnsigned ? byteBuffer.get() & 0xFF : byteBuffer.get();
+					} else if (bits == 16) {
+						// isUnsigned ? int : short
+						internal = isUnsigned ? byteBuffer.getShort() & 0xFFFF : byteBuffer.getShort();
+					} else if (bits == 32) {
+						// isUnsigned ? long : int
+						internal = isUnsigned ? byteBuffer.getInt() & 0xFFFFFFFF : byteBuffer.getInt();
+					} else if (bits == 64) {
+						if (isUnsigned) {
+							throw new AoException(ErrorCode.AO_BAD_PARAMETER, SeverityFlag.ERROR, 0,
+									"reading unsigned 64 bit integeres is not implemented");
+						}
+						// to support unsigned 64 bit, BigInteger has to be
+						// used -> performance costs
+						internal = byteBuffer.getLong();
+					} else {
+						String unsigned = isUnsigned ? "unsigned" : "signed";
+						throw new AoException(ErrorCode.AO_BAD_PARAMETER, SeverityFlag.ERROR, 0,
+								"customized reading of '" + bits + "' bit '" + unsigned
+										+ "' intergers is not implemented");
+					}
+				} else if (isReal) {
+					if (bits == 32) {
+						// ieee754 floating point
+						internal = byteBuffer.getFloat();
+					} else if (bits == 64) {
+						// ieee754 floating point
+						internal = byteBuffer.getDouble();
+					} else {
+						String unsigned = isUnsigned ? "unsigned" : "signed";
+						throw new AoException(ErrorCode.AO_BAD_PARAMETER, SeverityFlag.ERROR, 0,
+								"customized reading of '" + bits + "' bit '" + unsigned
+										+ "' real is not implemented");
+					}
+				} else {
+					throw new AoException(ErrorCode.AO_BAD_PARAMETER, SeverityFlag.ERROR, 0,
+							"given value is neither an integer nor a real number");
+				}
+				double phys = (p[0] * Math.pow(internal, 2) + p[1] * internal + p[2])
+						/ (p[3] * Math.pow(internal, 2) + p[4] * internal + p[5]);
+
+				writeBuffer.putDouble(phys);
+				writeBuffer.rewind();
+				channel.write(writeBuffer);
+				writeBuffer.rewind();
+				count++;
+			}
+
+			if (count < 0 || count != (int) count || count * 8 > Integer.MAX_VALUE) {
+				throw new AoException(ErrorCode.AO_IMPLEMENTATION_PROBLEM, SeverityFlag.ERROR, 0,
+						"value count exceeded max supported block size supported by ODS");
+			}
+
+			// values have been calculated and written to an external file
+			ODSInsertStatement ins = new ODSInsertStatement(modelCache, "ec");
+			ins.setStringVal("iname", "ec_custom_rat_conv");
+			ins.setLongVal("cl", (int) count);
+			ins.setEnumVal("vt", 6); // ieeefloat8 (little endian; 11 would be
+										// big endian)
+			ins.setLongLongVal("so", startOffset);
+			ins.setLongVal("bs", (int) count * 8);
+			ins.setLongVal("vb", (int) count);
+			ins.setLongVal("vo", 0);
+			ins.setStringVal("fl", customRatConfPath.getFileName().toString());
+			ins.setLongLongVal("lc", iidLc);
+			ins.execute();
+		}
 	}
 
 }

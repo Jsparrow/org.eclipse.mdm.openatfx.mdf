@@ -926,6 +926,14 @@
 				<name>bo</name>
 				<base_attribute>ao_bit_offset</base_attribute>
 			</application_attribute>
+			<application_attribute>
+				<name>ffl</name>
+				<base_attribute>flags_filename_url</base_attribute>
+			</application_attribute>
+			<application_attribute>
+				<name>fso</name>
+				<base_attribute>flags_start_offset</base_attribute>
+			</application_attribute>
 			<relation_attribute>
 				<name>lc</name>
 				<ref_to>lc</ref_to>
