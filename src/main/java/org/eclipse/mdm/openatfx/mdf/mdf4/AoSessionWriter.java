@@ -98,6 +98,9 @@ public class AoSessionWriter {
 	private boolean readOnlyHeader = false;
 	private Path customRatConfPath;
 
+	// skip empty channels
+    private boolean skipEmptyChannels = false;
+
 	/**
 	 * Constructor.
 	 */
@@ -185,6 +188,9 @@ public class AoSessionWriter {
 				if (props.containsKey("write_flags_file")) {
 					writeFlagsFile = Boolean.valueOf(props.getProperty("write_flags_file"));
 				}
+				if (props.containsKey("skip_empty_channels")) {
+	                skipEmptyChannels = Boolean.valueOf(props.getProperty("skip_empty_channels"));
+	            }
 			}
 
 			ODSInsertStatement ins = new ODSInsertStatement(modelCache, "tst");
@@ -483,13 +489,15 @@ public class AoSessionWriter {
 
 			// if sorted, only one channel group block is available
 			CGBLOCK cgBlock = dgBlock.getCgFirstBlock();
+
 			if (cgBlock != null && cgBlock.getLnkCgNext() > 0) {
 				throw new IOException(
 						"Only 'sorted' MDF4 files are supported, found 'unsorted' data! [DGBLOCK=" + dgBlock + "]");
 			}
 
 			// skip channel groups having no channels (or optionally no values)
-			if (cgBlock != null) {
+			boolean skipNoValues = skipEmptyChannels && cgBlock.getCycleCount() < 1;
+			if (cgBlock != null && !skipNoValues) {
 
 				// check flags (not yet supported)
 				if (cgBlock.isBusEventChannel()) {
