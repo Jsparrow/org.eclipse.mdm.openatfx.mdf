@@ -1,22 +1,32 @@
-# Notices for the mdmbl tool openatfx-mdf , openMDM(R) Eclipse Working Groupo
+# Notices for the mdmbl tool openatfx-mdf , openMDM(R) Eclipse Working Group
 
-This content is produced and maintained by the Eclipse mdmbl project.
+This content is produced and maintained by the Eclipse MDM|BL project,
+it is a project of the openMDM(R) Eclipse Working Group.
 
- * Project home: https://projects.eclipse.org/projects/technology.mdmbl
+* Project home: https://projects.eclipse.org/projects/technology.mdmbl
 
 ## Trademarks
 
-Eclipse mdmbl are
-trademarks of the Eclipse Foundation. Eclipse, and the Eclipse Logo are
-registered trademarks of the Eclipse Foundation.
+Eclipse MDM|BL, MDM|BL and Eclipse openMDM(R) logo are registered trademarks
+of the Eclipse Foundation.
+
+## Copyright
+
+All content is the property of the following respective authors or their employers.
+For more information regarding authorship of content, please consult the listed
+source code repository logs.
+
+Copyright (c) 2016 Audi AG
+Copyright (c) 2016-2018 Gigatronik Ingolstadt GmbH
+Copyright (c) 2016-2018 Peak Solution GmbH
 
 ## Declared Project Licenses
 
-This program and the accompanying materials are made available under the terms
-of the Eclipse Public License v. 1.0 which is available at
-http://www.eclipse.org/legal/epl-v10.html.
+This program and the accompanying materials are made available under the
+terms of the Eclipse Public License v. 2.0 which is available at
+http://www.eclipse.org/legal/epl-2.0.
 
-SPDX-License-Identifier: EPL-1.0
+SPDX-License-Identifier: EPL-2.0
 
 ## Source Code
 
