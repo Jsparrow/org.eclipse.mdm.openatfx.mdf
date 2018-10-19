@@ -36,7 +36,8 @@ org.eclipse.mdm.openatfx.mdf.git - This application allows accessing the content
 
 ## Third-party Content
 
-no
+Gradle Wrapper (4.4)
+    * License: Apache License, 2.0 
 
 ## Cryptography
 
