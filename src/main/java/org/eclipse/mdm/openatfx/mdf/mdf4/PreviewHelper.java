@@ -47,7 +47,7 @@ class PreviewHelper {
 	// The smIids in use.
 	private Long[] smIids;
 
-	private Map<String, Long> meqInstances = new HashMap<String, Long>();
+	private Map<String, Long> meqInstances = new HashMap<>();
 
 	private int generationCount = 0;
 
@@ -69,21 +69,22 @@ class PreviewHelper {
 	 */
 	private synchronized void createMeasurementIfNeeded(InstanceElement ieMea) throws AoException {
 		// create 'AoMeasurement' instance (if not yet existing)
-		if (previewMeaiid == Long.MIN_VALUE) {
-			// lookup parent 'AoTest' instance
-			InstanceElementIterator iter = ieMea.getRelatedInstancesByRelationship(Relationship.FATHER, "*");
-			InstanceElement ieTst = iter.nextOne();
-			iter.destroy();
-			String meaName = ieMea.getName() + "_previews";
-			ODSInsertStatement ins = new ODSInsertStatement(cache, "mea");
-			ins.setStringVal("iname", meaName);
-			ins.setStringVal("mt", "application/x-asam.aomeasurement.mdf_preview");
-			ins.setNameValueUnit(ieMea.getValue("date_created"));
-			ins.setNameValueUnit(ieMea.getValue("mea_begin"));
-			ins.setNameValueUnit(ieMea.getValue("mea_end"));
-			ins.setLongLongVal("tst", ODSHelper.asJLong(ieTst.getId()));
-			previewMeaiid = ins.execute();
+		if (previewMeaiid != Long.MIN_VALUE) {
+			return;
 		}
+		// lookup parent 'AoTest' instance
+		InstanceElementIterator iter = ieMea.getRelatedInstancesByRelationship(Relationship.FATHER, "*");
+		InstanceElement ieTst = iter.nextOne();
+		iter.destroy();
+		String meaName = ieMea.getName() + "_previews";
+		ODSInsertStatement ins = new ODSInsertStatement(cache, "mea");
+		ins.setStringVal("iname", meaName);
+		ins.setStringVal("mt", "application/x-asam.aomeasurement.mdf_preview");
+		ins.setNameValueUnit(ieMea.getValue("date_created"));
+		ins.setNameValueUnit(ieMea.getValue("mea_begin"));
+		ins.setNameValueUnit(ieMea.getValue("mea_end"));
+		ins.setLongLongVal("tst", ODSHelper.asJLong(ieTst.getId()));
+		previewMeaiid = ins.execute();
 	}
 
 	/**
@@ -123,7 +124,7 @@ class PreviewHelper {
 		String[] nameExtensions = { "average", "maximum", "minimum" };
 		for (int reductionNo = 0; reductionNo < srBlocks.length; reductionNo++) {
 			for (int i = 0; i < 3; i++) {
-				String extendedName = channelName + "_" + nameExtensions[i];
+				String extendedName = new StringBuilder().append(channelName).append("_").append(nameExtensions[i]).toString();
 				// create MeasurmentQuantity if needed
 				Long iidMeq = meqInstances.get(extendedName);
 				if (iidMeq == null) {
@@ -166,8 +167,8 @@ class PreviewHelper {
 		createMeasurementIfNeeded(ieMea);
 
 		// create AoSubMatrix instance
-		LinkedList<SRBLOCK> srBlocks = new LinkedList<SRBLOCK>();
-		LinkedList<Long> iids = new LinkedList<Long>();
+		LinkedList<SRBLOCK> srBlocks = new LinkedList<>();
+		LinkedList<Long> iids = new LinkedList<>();
 		while (srBlock != null) {
 			ODSInsertStatement ins = new ODSInsertStatement(cache, "sm");
 			ins.setStringVal("iname", getPrevName(srBlock));
@@ -197,7 +198,7 @@ class PreviewHelper {
 	 * @return The name.
 	 */
 	private String getPrevName(SRBLOCK srBlock) {
-		String ret = "reduction_group" + generationCount + "_";
+		String ret = new StringBuilder().append("reduction_group").append(generationCount).append("_").toString();
 		ret += String.valueOf(srBlock.getInterval());
 		switch (srBlock.getSyncType()) {
 		case 1:

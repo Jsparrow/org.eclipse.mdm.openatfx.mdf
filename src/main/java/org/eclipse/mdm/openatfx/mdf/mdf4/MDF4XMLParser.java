@@ -72,35 +72,35 @@ public class MDF4XMLParser {
 			while (reader.hasNext()) {
 				reader.next();
 				// TX
-				if (reader.isStartElement() && reader.getLocalName().equals("TX")) {
+				if (reader.isStartElement() && "TX".equals(reader.getLocalName())) {
 					ins.setStringVal("desc", reader.getElementText());
 				}
 				// time_source
-				else if (reader.isStartElement() && reader.getLocalName().equals("time_source")) {
+				else if (reader.isStartElement() && "time_source".equals(reader.getLocalName())) {
 					ins.setStringVal("time_source", reader.getElementText());
 				}
 				// constants
-				else if (reader.isStartElement() && reader.getLocalName().equals("constants")) {
+				else if (reader.isStartElement() && "constants".equals(reader.getLocalName())) {
 					LOG.warn("Constants tag may not be fully supported");
-					LinkedList<String> vars = new LinkedList<String>();
-					while (!(reader.isEndElement() && reader.getLocalName().equals("constants"))) {
-						if (reader.isStartElement() && reader.getLocalName().equals("const")) {
+					LinkedList<String> vars = new LinkedList<>();
+					while (!(reader.isEndElement() && "constants".equals(reader.getLocalName()))) {
+						if (reader.isStartElement() && "const".equals(reader.getLocalName())) {
 							String name = reader.getAttributeValue(null, "name");
 							String value = reader.getElementText();
-							vars.add(name + "=" + value);
+							vars.add(new StringBuilder().append(name).append("=").append(value).toString());
 						}
 						reader.next();
 					}
 					vars.toArray(new String[0]);
 				}
 				// UNITSPEC
-				else if (reader.isStartElement() && reader.getLocalName().equals("UNITSPEC")) {
+				else if (reader.isStartElement() && "UNITSPEC".equals(reader.getLocalName())) {
 
 					LOG.warn("UNITSPEC in XML content 'HDcomment' is not yet supported!");
 					throw new RuntimeException();
 				}
 				// common_properties
-				else if (reader.isStartElement() && reader.getLocalName().equals("common_properties")) {
+				else if (reader.isStartElement() && "common_properties".equals(reader.getLocalName())) {
 					writeCommonProperties(ins, reader);
 				}
 			}
@@ -134,7 +134,7 @@ public class MDF4XMLParser {
 			while (reader.hasNext()) {
 				reader.next();
 				// TX
-				if (reader.isStartElement() && reader.getLocalName().equals("TX")) {
+				if (reader.isStartElement() && "TX".equals(reader.getLocalName())) {
 					return reader.getElementText();
 				}
 			}
@@ -172,11 +172,11 @@ public class MDF4XMLParser {
 			while (reader.hasNext()) {
 				reader.next();
 				// TX
-				if (reader.isStartElement() && reader.getLocalName().equals("TX")) {
+				if (reader.isStartElement() && "TX".equals(reader.getLocalName())) {
 					ins.setStringVal("desc_dg", reader.getElementText());
 				}
 				// common_properties
-				else if (reader.isStartElement() && reader.getLocalName().equals("common_properties")) {
+				else if (reader.isStartElement() && "common_properties".equals(reader.getLocalName())) {
 					writeCommonProperties(ins, reader, "_dg");
 				}
 			}
@@ -213,27 +213,27 @@ public class MDF4XMLParser {
 			while (reader.hasNext()) {
 				reader.next();
 				// TX
-				if (reader.isStartElement() && reader.getLocalName().equals("TX")) {
+				if (reader.isStartElement() && "TX".equals(reader.getLocalName())) {
 					ins.setNameValueUnit(ODSHelper.createStringNVU("desc", reader.getElementText()));
 				}
 				// tool_id
-				else if (reader.isStartElement() && reader.getLocalName().equals("tool_id")) {
+				else if (reader.isStartElement() && "tool_id".equals(reader.getLocalName())) {
 					ins.setNameValueUnit(ODSHelper.createStringNVU("tool_id", reader.getElementText()));
 				}
 				// tool_vendor
-				else if (reader.isStartElement() && reader.getLocalName().equals("tool_vendor")) {
+				else if (reader.isStartElement() && "tool_vendor".equals(reader.getLocalName())) {
 					ins.setNameValueUnit(ODSHelper.createStringNVU("tool_vendor", reader.getElementText()));
 				}
 				// tool_version
-				else if (reader.isStartElement() && reader.getLocalName().equals("tool_version")) {
+				else if (reader.isStartElement() && "tool_version".equals(reader.getLocalName())) {
 					ins.setNameValueUnit(ODSHelper.createStringNVU("tool_version", reader.getElementText()));
 				}
 				// user_name
-				else if (reader.isStartElement() && reader.getLocalName().equals("user_name")) {
+				else if (reader.isStartElement() && "user_name".equals(reader.getLocalName())) {
 					ins.setNameValueUnit(ODSHelper.createStringNVU("user_name", reader.getElementText()));
 				}
 				// common_properties
-				else if (reader.isStartElement() && reader.getLocalName().equals("common_properties")) {
+				else if (reader.isStartElement() && "common_properties".equals(reader.getLocalName())) {
 					writeCommonProperties(ins, reader);
 				}
 			}
@@ -270,11 +270,11 @@ public class MDF4XMLParser {
 			while (reader.hasNext()) {
 				reader.next();
 				// TX
-				if (reader.isStartElement() && reader.getLocalName().equals("TX")) {
+				if (reader.isStartElement() && "TX".equals(reader.getLocalName())) {
 					ins.setStringVal("desc", reader.getElementText());
 				}
 				// linker_name
-				else if (reader.isStartElement() && reader.getLocalName().equals("linker_name")) {
+				else if (reader.isStartElement() && "linker_name".equals(reader.getLocalName())) {
 					String bc = reader.getAttributeValue(null, "offset");
 					String value = reader.getElementText();
 					ins.setStringVal("linker_name", value);
@@ -283,7 +283,7 @@ public class MDF4XMLParser {
 					}
 				}
 				// linker_address
-				else if (reader.isStartElement() && reader.getLocalName().equals("linker_address")) {
+				else if (reader.isStartElement() && "linker_address".equals(reader.getLocalName())) {
 					String bc = reader.getAttributeValue(null, "byte_count");
 					String bitmask = reader.getAttributeValue(null, "bit_mask");
 					String bo = reader.getAttributeValue(null, "byte_order");
@@ -300,7 +300,7 @@ public class MDF4XMLParser {
 					}
 				}
 				// address
-				else if (reader.isStartElement() && reader.getLocalName().equals("address")) {
+				else if (reader.isStartElement() && "address".equals(reader.getLocalName())) {
 					String bc = reader.getAttributeValue(null, "byte_count");
 					String bitmask = reader.getAttributeValue(null, "bit_mask");
 					String bo = reader.getAttributeValue(null, "byte_order");
@@ -317,13 +317,13 @@ public class MDF4XMLParser {
 					}
 				}
 				// axis_monotony
-				else if (reader.isStartElement() && reader.getLocalName().equals("axis_monotony")) {
+				else if (reader.isStartElement() && "axis_monotony".equals(reader.getLocalName())) {
 					String value = reader.getElementText();
 					ins.setStringVal("axis_monotony", value);
 					// use enum?
 				}
 				// raster
-				else if (reader.isStartElement() && reader.getLocalName().equals("raster")) {
+				else if (reader.isStartElement() && "raster".equals(reader.getLocalName())) {
 
 					String min = reader.getAttributeValue(null, "min");
 					String max = reader.getAttributeValue(null, "max");
@@ -343,15 +343,15 @@ public class MDF4XMLParser {
 					}
 				}
 				// names
-				else if (reader.isStartElement() && reader.getLocalName().equals("names")) {
+				else if (reader.isStartElement() && "names".equals(reader.getLocalName())) {
 					writeNames(ins, reader, "");
 				}
 				// formula
-				else if (reader.isStartElement() && reader.getLocalName().equals("formula")) {
+				else if (reader.isStartElement() && "formula".equals(reader.getLocalName())) {
 					writeFormula(ins, reader);
 				}
 				// common_properties
-				else if (reader.isStartElement() && reader.getLocalName().equals("common_properties")) {
+				else if (reader.isStartElement() && "common_properties".equals(reader.getLocalName())) {
 					writeCommonProperties(ins, reader);
 				}
 
@@ -388,14 +388,14 @@ public class MDF4XMLParser {
 			reader = xmlInputFactory.createXMLStreamReader(new StringReader(mdCommentXML));
 			while (reader.hasNext()) {
 				reader.next();
-				if (reader.isStartElement() && reader.getLocalName().equals("ho_unit")) {
+				if (reader.isStartElement() && "ho_unit".equals(reader.getLocalName())) {
 					String ur = reader.getAttributeValue(null, "unit_ref");
 					if (ur != null) {
 						ins.setStringVal("ho_unit_ref", ur);
 					}
 				}
 				// common_properties
-				else if (reader.isStartElement() && reader.getLocalName().equals("common_properties")) {
+				else if (reader.isStartElement() && "common_properties".equals(reader.getLocalName())) {
 					writeCommonProperties(ins, reader);
 				}
 			}
@@ -434,15 +434,15 @@ public class MDF4XMLParser {
 			while (reader.hasNext()) {
 				reader.next();
 				// TX
-				if (reader.isStartElement() && reader.getLocalName().equals("TX")) {
+				if (reader.isStartElement() && "TX".equals(reader.getLocalName())) {
 					ins.setStringVal("desc", reader.getElementText());
 				}
 				// names
-				else if (reader.isStartElement() && reader.getLocalName().equals("names")) {
+				else if (reader.isStartElement() && "names".equals(reader.getLocalName())) {
 					LOG.warn("'names' in XML content 'CGcomment' is not yet supported!");
 				}
 				// common_properties
-				else if (reader.isStartElement() && reader.getLocalName().equals("common_properties")) {
+				else if (reader.isStartElement() && "common_properties".equals(reader.getLocalName())) {
 					writeCommonProperties(ins, reader);
 				}
 			}
@@ -479,33 +479,33 @@ public class MDF4XMLParser {
 			while (reader.hasNext()) {
 				reader.next();
 				// TX
-				if (reader.isStartElement() && reader.getLocalName().equals("TX")) {
+				if (reader.isStartElement() && "TX".equals(reader.getLocalName())) {
 					ins.setStringVal("desc", reader.getElementText());
 				}
 				// pre trigger
-				else if (reader.isStartElement() && reader.getLocalName().equals("pre_trigger_interval")) {
+				else if (reader.isStartElement() && "pre_trigger_interval".equals(reader.getLocalName())) {
 					ins.setDoubleVal("pre_trigger_interval", Double.valueOf(reader.getElementText()));
 				}
 				// post_trigger
-				else if (reader.isStartElement() && reader.getLocalName().equals("post_trigger_interval")) {
+				else if (reader.isStartElement() && "post_trigger_interval".equals(reader.getLocalName())) {
 					ins.setDoubleVal("post_trigger_interval", Double.valueOf(reader.getElementText()));
 				}
 				// formula
-				else if (reader.isStartElement() && reader.getLocalName().equals("formula")) {
+				else if (reader.isStartElement() && "formula".equals(reader.getLocalName())) {
 					// ins.setStringVal("formula", reader.getElementText());
 					writeFormula(ins, reader);
 				}
 				// timeout
-				else if (reader.isStartElement() && reader.getLocalName().equals("timeout")) {
+				else if (reader.isStartElement() && "timeout".equals(reader.getLocalName())) {
 
 					String triggered = reader.getAttributeValue(null, "triggered");
 					if (triggered != null) {
-						ins.setShortVal("timeout_triggered", triggered.equals("true") ? (short) 1 : (short) 0);
+						ins.setShortVal("timeout_triggered", "true".equals(triggered) ? (short) 1 : (short) 0);
 					}
 					ins.setDoubleVal("timeout", Double.valueOf(reader.getElementText()));
 				}
 				// common_properties
-				else if (reader.isStartElement() && reader.getLocalName().equals("common_properties")) {
+				else if (reader.isStartElement() && "common_properties".equals(reader.getLocalName())) {
 					writeCommonProperties(ins, reader);
 				}
 			}
@@ -542,27 +542,27 @@ public class MDF4XMLParser {
 			while (reader.hasNext()) {
 				reader.next();
 				// TX
-				if (reader.isStartElement() && reader.getLocalName().equals("TX")) {
+				if (reader.isStartElement() && "TX".equals(reader.getLocalName())) {
 					ins.setStringVal("src_cmt", reader.getElementText());
 				}
 				// names
-				else if (reader.isStartElement() && reader.getLocalName().equals("names")) {
+				else if (reader.isStartElement() && "names".equals(reader.getLocalName())) {
 					writeNames(ins, reader, "src_");
 				}
 				// path
-				else if (reader.isStartElement() && reader.getLocalName().equals("path")) {
+				else if (reader.isStartElement() && "path".equals(reader.getLocalName())) {
 					ins.setStringVal("src_path", reader.getElementText());
 				}
 				// bus
-				else if (reader.isStartElement() && reader.getLocalName().equals("bus")) {
+				else if (reader.isStartElement() && "bus".equals(reader.getLocalName())) {
 					ins.setStringVal("src_bus", reader.getElementText());
 				}
 				// protocol
-				else if (reader.isStartElement() && reader.getLocalName().equals("protocol")) {
+				else if (reader.isStartElement() && "protocol".equals(reader.getLocalName())) {
 					ins.setStringVal("src_protocol", reader.getElementText());
 				}
 				// common_properties
-				else if (reader.isStartElement() && reader.getLocalName().equals("common_properties")) {
+				else if (reader.isStartElement() && "common_properties".equals(reader.getLocalName())) {
 					writeCommonProperties(ins, reader, "src_");
 				}
 			}
@@ -595,17 +595,17 @@ public class MDF4XMLParser {
 	 * @throws NumberFormatException
 	 */
 	private void writeFormula(ODSInsertStatement ins, XMLStreamReader reader)
-			throws XMLStreamException, NumberFormatException, AoException {
+			throws XMLStreamException, AoException {
 		reader.nextTag();
-		while (!(reader.isEndElement() && reader.getLocalName().equals("formula"))) {
-			if (reader.isStartElement() && reader.getLocalName().equals("syntax")) {
+		while (!(reader.isEndElement() && "formula".equals(reader.getLocalName()))) {
+			if (reader.isStartElement() && "syntax".equals(reader.getLocalName())) {
 				String version = reader.getAttributeValue(null, "version");
 				String value = reader.getElementText();
 				ins.setStringVal("syntax", value);
 				if (version != null) {
 					ins.setStringVal("syntax_version", version);
 				}
-			} else if (reader.isStartElement() && reader.getLocalName().equals("custom_syntax")) {
+			} else if (reader.isStartElement() && "custom_syntax".equals(reader.getLocalName())) {
 				String source = reader.getAttributeValue(null, "source");
 				String version = reader.getAttributeValue(null, "version");
 				String value = reader.getElementText();
@@ -616,12 +616,12 @@ public class MDF4XMLParser {
 				if (version != null) {
 					ins.setStringVal("custom_syntax_version", version);
 				}
-			} else if (reader.isStartElement() && reader.getLocalName().equals("variables")) {
+			} else if (reader.isStartElement() && "variables".equals(reader.getLocalName())) {
 				// TODO full support
 				LOG.warn("Variables Tag not yet fully supported");
-				LinkedList<String> vars = new LinkedList<String>();
-				while (!(reader.isEndElement() && reader.getLocalName().equals("variables"))) {
-					if (reader.isStartElement() && reader.getLocalName().equals("var")) {
+				LinkedList<String> vars = new LinkedList<>();
+				while (!(reader.isEndElement() && "variables".equals(reader.getLocalName()))) {
+					if (reader.isStartElement() && "var".equals(reader.getLocalName())) {
 						String value = reader.getElementText();
 						vars.add(value);
 					}
@@ -648,27 +648,27 @@ public class MDF4XMLParser {
 	 * @throws NumberFormatException
 	 */
 	private void writeNames(ODSInsertStatement ins, XMLStreamReader reader, String nameExtension)
-			throws XMLStreamException, NumberFormatException, AoException {
+			throws XMLStreamException, AoException {
 
 		reader.nextTag();
-		LinkedList<String> names = new LinkedList<String>();
-		LinkedList<String> displays = new LinkedList<String>();
-		LinkedList<String> vendors = new LinkedList<String>();
-		LinkedList<String> descriptions = new LinkedList<String>();
-		while (!(reader.isEndElement() && reader.getLocalName().equals("names"))) {
-			if (reader.isStartElement() && reader.getLocalName().equals("name")) {
+		LinkedList<String> names = new LinkedList<>();
+		LinkedList<String> displays = new LinkedList<>();
+		LinkedList<String> vendors = new LinkedList<>();
+		LinkedList<String> descriptions = new LinkedList<>();
+		while (!(reader.isEndElement() && "names".equals(reader.getLocalName()))) {
+			if (reader.isStartElement() && "name".equals(reader.getLocalName())) {
 				names.add(reader.getElementText());
 			}
 			// display
-			else if (reader.isStartElement() && reader.getLocalName().equals("display")) {
+			else if (reader.isStartElement() && "display".equals(reader.getLocalName())) {
 				displays.add(reader.getElementText());
 			}
 			// vendors
-			else if (reader.isStartElement() && reader.getLocalName().equals("vendor")) {
+			else if (reader.isStartElement() && "vendor".equals(reader.getLocalName())) {
 				vendors.add(reader.getElementText());
 			}
 			// description
-			else if (reader.isStartElement() && reader.getLocalName().equals("description")) {
+			else if (reader.isStartElement() && "description".equals(reader.getLocalName())) {
 				descriptions.add(reader.getElementText());
 			}
 			reader.next();
@@ -680,10 +680,10 @@ public class MDF4XMLParser {
 			ins.setStringVal(nameExtension + "vendors", vendors.get(0));
 		}
 		if (descriptions.size() == 1) {
-			ins.setStringVal(nameExtension + "descriptions" + nameExtension, descriptions.get(0));
+			ins.setStringVal(new StringBuilder().append(nameExtension).append("descriptions").append(nameExtension).toString(), descriptions.get(0));
 		}
 		if (displays.size() == 1) {
-			ins.setStringVal(nameExtension + "displays" + nameExtension, displays.get(0));
+			ins.setStringVal(new StringBuilder().append(nameExtension).append("displays").append(nameExtension).toString(), displays.get(0));
 		}
 	}
 
@@ -701,7 +701,7 @@ public class MDF4XMLParser {
 	 * @throws NumberFormatException
 	 */
 	private void writeCommonProperties(ODSInsertStatement ins, XMLStreamReader reader)
-			throws XMLStreamException, NumberFormatException, AoException {
+			throws XMLStreamException, AoException {
 		writeCommonProperties(ins, reader, "");
 	}
 
@@ -722,30 +722,30 @@ public class MDF4XMLParser {
 	 * @throws NumberFormatException
 	 */
 	private void writeCommonProperties(ODSInsertStatement ins, XMLStreamReader reader, String nameExtension)
-			throws XMLStreamException, NumberFormatException, AoException {
+			throws XMLStreamException, AoException {
 		reader.nextTag();
-		while (!(reader.isEndElement() && reader.getLocalName().equals("common_properties"))) {
+		while (!(reader.isEndElement() && "common_properties".equals(reader.getLocalName()))) {
 			// e
-			if (reader.isStartElement() && reader.getLocalName().equals("e")) {
+			if (reader.isStartElement() && "e".equals(reader.getLocalName())) {
 
 				String name = nameExtension + reader.getAttributeValue(null, "name");
 				String type = reader.getAttributeValue(null, "type");
 				String value = reader.getElementText();
-				if (type == null || type.length() < 1 || type.equalsIgnoreCase("string")) {
+				if (type == null || type.length() < 1 || "string".equalsIgnoreCase(type)) {
 					if (value == null) {
 						value = "";
 					}
 					ins.setStringVal(name, value);
-				} else if (type.equalsIgnoreCase("decimal")) {
+				} else if ("decimal".equalsIgnoreCase(type)) {
 					ins.setNameValueUnit(ODSHelper.createDoubleNVU(name, Double.valueOf(value)));
-				} else if (type.equalsIgnoreCase("integer")) {
+				} else if ("integer".equalsIgnoreCase(type)) {
 					ins.setNameValueUnit(ODSHelper.createLongNVU(name, Integer.parseInt(value)));
-				} else if (type.equalsIgnoreCase("float")) {
+				} else if ("float".equalsIgnoreCase(type)) {
 					ins.setNameValueUnit(ODSHelper.createFloatNVU(name, Float.valueOf(value)));
-				} else if (type.equalsIgnoreCase("boolean")) {
+				} else if ("boolean".equalsIgnoreCase(type)) {
 					short s = Boolean.valueOf(value) ? (short) 1 : (short) 0;
 					ins.setNameValueUnit(ODSHelper.createShortNVU(name, s));
-				} else if (type.equalsIgnoreCase("datetime")) {
+				} else if ("datetime".equalsIgnoreCase(type)) {
 					try {
 						Date date = xmlDateTimeFormat.parse(value);
 						ins.setNameValueUnit(ODSHelper.createDateNVU(name, ODSHelper.asODSDate(date)));
@@ -759,15 +759,15 @@ public class MDF4XMLParser {
 
 			}
 			// tree
-			else if (reader.isStartElement() && reader.getLocalName().equals("tree")) {
+			else if (reader.isStartElement() && "tree".equals(reader.getLocalName())) {
 				LOG.warn("'tree' in XML content 'common_properties' is not yet supported!");
 			}
 			// list
-			else if (reader.isStartElement() && reader.getLocalName().equals("list")) {
+			else if (reader.isStartElement() && "list".equals(reader.getLocalName())) {
 				LOG.warn("'list' in XML content 'common_properties' is not yet supported!");
 			}
 			// elist
-			else if (reader.isStartElement() && reader.getLocalName().equals("elist")) {
+			else if (reader.isStartElement() && "elist".equals(reader.getLocalName())) {
 				writeEList(ins, reader, nameExtension);
 			}
 			reader.next();
@@ -782,7 +782,7 @@ public class MDF4XMLParser {
 	 * @return The value as long.
 	 */
 	public long parseHex(String val) {
-		if (val.length() > 2 && val.substring(0, 2).equals("0x")) {
+		if (val.length() > 2 && "0x".equals(val.substring(0, 2))) {
 			return Long.parseLong(val.substring(2), 16);
 		}
 		return 0;
@@ -792,26 +792,26 @@ public class MDF4XMLParser {
 			throws XMLStreamException {
 		String attrname = nameExtension + reader.getAttributeValue(null, "name");
 		String attrtype = reader.getAttributeValue(null, "type");
-		LinkedList<Object> valuelist = new LinkedList<Object>();
-		while (!(reader.isEndElement() && reader.getLocalName().equals("elist"))) {
+		LinkedList<Object> valuelist = new LinkedList<>();
+		while (!(reader.isEndElement() && "elist".equals(reader.getLocalName()))) {
 			// eli
-			if (reader.isStartElement() && reader.getLocalName().equals("eli")) {
+			if (reader.isStartElement() && "eli".equals(reader.getLocalName())) {
 				String value = reader.getElementText();
-				if (attrtype == null || attrtype.length() < 1 || attrtype.equalsIgnoreCase("string")) {
+				if (attrtype == null || attrtype.length() < 1 || "string".equalsIgnoreCase(attrtype)) {
 					if (value == null) {
 						value = "";
 					}
 					valuelist.add(value);
-				} else if (attrtype.equalsIgnoreCase("decimal")) {
+				} else if ("decimal".equalsIgnoreCase(attrtype)) {
 					valuelist.add(Double.valueOf(value));
-				} else if (attrtype.equalsIgnoreCase("integer")) {
+				} else if ("integer".equalsIgnoreCase(attrtype)) {
 					valuelist.add(Integer.parseInt(value));
-				} else if (attrtype.equalsIgnoreCase("float")) {
+				} else if ("float".equalsIgnoreCase(attrtype)) {
 					valuelist.add(Float.valueOf(value));
-				} else if (attrtype.equalsIgnoreCase("boolean")) {
+				} else if ("boolean".equalsIgnoreCase(attrtype)) {
 					short s = Boolean.valueOf(value) ? (short) 1 : (short) 0;
 					valuelist.add(s);
-				} else if (attrtype.equalsIgnoreCase("datetime")) {
+				} else if ("datetime".equalsIgnoreCase(attrtype)) {
 					try {
 						Date date = xmlDateTimeFormat.parse(value);
 						valuelist.add(date);
@@ -824,17 +824,17 @@ public class MDF4XMLParser {
 			}
 			reader.next();
 		}
-		if (attrtype == null || attrtype.length() < 1 || attrtype.equalsIgnoreCase("string")) {
+		if (attrtype == null || attrtype.length() < 1 || "string".equalsIgnoreCase(attrtype)) {
 			// ins.setStringSeq(attrname, valuelist.toArray(new String[0]));
-		} else if (attrtype.equalsIgnoreCase("decimal")) {
+		} else if ("decimal".equalsIgnoreCase(attrtype)) {
 			ins.setDoubleSeq(attrname, valuelist.toArray(new Double[0]));
-		} else if (attrtype.equalsIgnoreCase("integer")) {
+		} else if ("integer".equalsIgnoreCase(attrtype)) {
 			ins.setLongSeq(attrname, valuelist.toArray(new Integer[0]));
-		} else if (attrtype.equalsIgnoreCase("float")) {
+		} else if ("float".equalsIgnoreCase(attrtype)) {
 			ins.setFloatSeq(attrname, valuelist.toArray(new Float[0]));
-		} else if (attrtype.equalsIgnoreCase("boolean")) {
+		} else if ("boolean".equalsIgnoreCase(attrtype)) {
 			ins.setShortSeq(attrname, valuelist.toArray(new Short[0]));
-		} else if (attrtype.equalsIgnoreCase("datetime")) {
+		} else if ("datetime".equalsIgnoreCase(attrtype)) {
 			ins.setDateSeq(attrname, valuelist.toArray(new Date[0]));
 		} else {
 			// ins.setStringSeq(attrname, valuelist.toArray(new String[0]));

@@ -139,11 +139,11 @@ class DGBLOCK extends BLOCK {
 		if (lnkData > 0) {
 			String blockType = getBlockType(sbc, lnkData);
 			// link points to a DTBLOCK
-			if (blockType.equals("##DT")) {
+			if ("##DT".equals(blockType)) {
 				return DTBLOCK.read(sbc, lnkData);
 			}
 			// link points to a DZBLOCK
-			else if (blockType.equals("##DZ")) {
+			else if ("##DZ".equals(blockType)) {
 				// TODO: implement
 				return null;
 			}
@@ -152,7 +152,7 @@ class DGBLOCK extends BLOCK {
 				return DLBLOCK.read(sbc, lnkData);
 			}
 			// link points to a HLBLOCK
-			else if (blockType.equals("##HL")) {
+			else if ("##HL".equals(blockType)) {
 				// TODO: implement
 				return null;
 			}
@@ -188,8 +188,8 @@ class DGBLOCK extends BLOCK {
 	 */
 	@Override
 	public String toString() {
-		return "DGBLOCK [lnkDgNext=" + lnkDgNext + ", lnkCgFirst=" + lnkCgFirst + ", lnkData=" + lnkData
-				+ ", lnkMdComment=" + lnkMdComment + ", recIdSize=" + recIdSize + "]";
+		return new StringBuilder().append("DGBLOCK [lnkDgNext=").append(lnkDgNext).append(", lnkCgFirst=").append(lnkCgFirst).append(", lnkData=").append(lnkData).append(", lnkMdComment=")
+				.append(lnkMdComment).append(", recIdSize=").append(recIdSize).append("]").toString();
 	}
 
 	/**
@@ -216,7 +216,7 @@ class DGBLOCK extends BLOCK {
 		// CHAR 4: Block type identifier
 		block.setId(MDF4Util.readCharsISO8859(bb, 4));
 		if (!block.getId().equals(BLOCK_ID)) {
-			throw new IOException("Wrong block type - expected '" + BLOCK_ID + "', found '" + block.getId() + "'");
+			throw new IOException(new StringBuilder().append("Wrong block type - expected '").append(BLOCK_ID).append("', found '").append(block.getId()).append("'").toString());
 		}
 
 		// BYTE 4: Reserved used for 8-Byte alignment

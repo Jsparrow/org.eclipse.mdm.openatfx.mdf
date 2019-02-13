@@ -36,7 +36,7 @@ public abstract class FileUtil {
 	public static String getResultName(String fileName, String resultSuffix) {
 		String meaResultName = fileName.trim();
 		if (resultSuffix != null && resultSuffix.length() > 0) {
-			StringBuffer sb = new StringBuffer();
+			StringBuilder sb = new StringBuilder();
 			sb.append(getFileNameWithoutExtension(fileName));
 			sb.append(resultSuffix);
 			sb.append(".");

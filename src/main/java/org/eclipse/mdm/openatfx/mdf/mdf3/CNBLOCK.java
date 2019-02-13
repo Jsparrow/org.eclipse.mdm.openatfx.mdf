@@ -271,14 +271,12 @@ class CNBLOCK extends BLOCK {
 	 */
 	@Override
 	public String toString() {
-		return "CNBLOCK [lnkNextCnBlock=" + lnkNextCnBlock + ", lnkCcBlock=" + lnkCcBlock + ", lnkCeBlock=" + lnkCeBlock
-				+ ", lnkCdBlock=" + lnkCdBlock + ", lnkChannelComment=" + lnkChannelComment + ", channelType="
-				+ channelType + ", signalName=" + signalName + ", signalDescription=" + signalDescription
-				+ ", numberOfFirstBits=" + numberOfFirstBits + ", numberOfBits=" + numberOfBits + ", signalDataType="
-				+ signalDataType + ", knownImplValue=" + knownImplValue + ", minImplValue=" + minImplValue
-				+ ", maxImplValue=" + maxImplValue + ", sampleRate=" + sampleRate + ", lnkMcdUniqueName="
-				+ lnkMcdUniqueName + ", lnkSignalDisplayIdentifier=" + lnkSignalDisplayIdentifier + ", byteOffset="
-				+ byteOffset + "]";
+		return new StringBuilder().append("CNBLOCK [lnkNextCnBlock=").append(lnkNextCnBlock).append(", lnkCcBlock=").append(lnkCcBlock).append(", lnkCeBlock=").append(lnkCeBlock).append(", lnkCdBlock=")
+				.append(lnkCdBlock).append(", lnkChannelComment=").append(lnkChannelComment).append(", channelType=").append(channelType).append(", signalName=").append(signalName)
+				.append(", signalDescription=").append(signalDescription).append(", numberOfFirstBits=").append(numberOfFirstBits).append(", numberOfBits=").append(numberOfBits).append(", signalDataType=")
+				.append(signalDataType).append(", knownImplValue=").append(knownImplValue).append(", minImplValue=").append(minImplValue).append(", maxImplValue=").append(maxImplValue)
+				.append(", sampleRate=").append(sampleRate).append(", lnkMcdUniqueName=").append(lnkMcdUniqueName).append(", lnkSignalDisplayIdentifier=").append(lnkSignalDisplayIdentifier).append(", byteOffset=")
+				.append(byteOffset).append("]").toString();
 	}
 
 	public CNBLOCK getNextCnBlock() throws IOException {
@@ -347,7 +345,7 @@ class CNBLOCK extends BLOCK {
 		// CHAR 2 Block type identifier
 		block.setId(Mdf3Util.readChars(bb, 2));
 		if (!block.getId().equals(BLOCK_ID)) {
-			throw new IOException("Wrong block type - expected '" + BLOCK_ID + "', found '" + block.getId() + "'");
+			throw new IOException(new StringBuilder().append("Wrong block type - expected '").append(BLOCK_ID).append("', found '").append(block.getId()).append("'").toString());
 		}
 
 		// UINT16 1 Block size of this block in bytes

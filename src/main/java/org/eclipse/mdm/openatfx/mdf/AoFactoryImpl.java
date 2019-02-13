@@ -101,7 +101,7 @@ class AoFactoryImpl extends AoFactoryPOA {
 	@Override
 	public AoSession newSession(String auth) throws AoException {
 		try {
-			List<NameValue> list = new ArrayList<NameValue>();
+			List<NameValue> list = new ArrayList<>();
 			for (String str : auth.split(",")) {
 				String[] parts = str.split("=");
 				if (parts.length == 2) {
@@ -131,7 +131,7 @@ class AoFactoryImpl extends AoFactoryPOA {
 		try {
 			File mdfFile = null;
 			for (NameValue nv : auth) {
-				if (nv.valName.equalsIgnoreCase("FILENAME")) {
+				if ("FILENAME".equalsIgnoreCase(nv.valName)) {
 					mdfFile = new File(nv.value.u.stringVal());
 				}
 			}

@@ -119,10 +119,10 @@ public class ODSModelCache {
 		if (aoSession == null) {
 			throw new IllegalArgumentException("Parameter aoSession must not be null");
 		}
-		applicationElemCache = new HashMap<String, ApplicationElement>();
-		applicationAttrCache = new HashMap<String, ApplicationAttribute[]>();
-		applicationRelCache = new HashMap<ApplicationRelKey, ApplicationRelation>();
-		enumDefCache = new HashMap<String, EnumerationDefinition>();
+		applicationElemCache = new HashMap<>();
+		applicationAttrCache = new HashMap<>();
+		applicationRelCache = new HashMap<>();
+		enumDefCache = new HashMap<>();
 		this.aoSession = aoSession;
 	}
 
@@ -277,7 +277,7 @@ public class ODSModelCache {
 			ApplicationStructure as = getApplicationStructure();
 			ae = as.getElementByName(aeName);
 			applicationElemCache.put(aeName, ae);
-			LOG.debug("ApplicationElement [name=" + aeName + "] loaded");
+			LOG.debug(new StringBuilder().append("ApplicationElement [name=").append(aeName).append("] loaded").toString());
 		}
 		return ae;
 	}
@@ -297,7 +297,7 @@ public class ODSModelCache {
 		if (attrs == null) {
 			attrs = getApplicationElement(aeName).getAttributes("*");
 			applicationAttrCache.put(aeName, attrs);
-			LOG.debug("ApplicationAttributes [aeName=" + aeName + "] loaded");
+			LOG.debug(new StringBuilder().append("ApplicationAttributes [aeName=").append(aeName).append("] loaded").toString());
 		}
 		return attrs;
 	}
@@ -320,7 +320,7 @@ public class ODSModelCache {
 			}
 		}
 		throw new AoException(ErrorCode.AO_NOT_FOUND, SeverityFlag.ERROR, 0,
-				"ApplicationAttribute [aeName=" + aeName + ",aaName=" + aaName + "] not found");
+				new StringBuilder().append("ApplicationAttribute [aeName=").append(aeName).append(",aaName=").append(aaName).append("] not found").toString());
 	}
 
 	/**
@@ -351,7 +351,7 @@ public class ODSModelCache {
 		// check if relation exist
 		if (ars.length < 1) {
 			throw new AoException(ErrorCode.AO_INVALID_RELATION, SeverityFlag.ERROR, 1,
-					"ApplicationRelation between [ae1Name=" + ae1Name + ",ae2Name=" + ae2Name + "] not found");
+					new StringBuilder().append("ApplicationRelation between [ae1Name=").append(ae1Name).append(",ae2Name=").append(ae2Name).append("] not found").toString());
 		}
 
 		// check if multiple relations between two elements exist
@@ -362,7 +362,7 @@ public class ODSModelCache {
 		// put to cache
 		applicationRelCache.put(appRelKey, ars[0]);
 
-		LOG.debug("ApplicationRelation between [ae1Name=" + ae1Name + ",ae2Name=" + ae2Name + "] loaded");
+		LOG.debug(new StringBuilder().append("ApplicationRelation between [ae1Name=").append(ae1Name).append(",ae2Name=").append(ae2Name).append("] loaded").toString());
 		return ars[0];
 	}
 
@@ -381,7 +381,7 @@ public class ODSModelCache {
 	private void isSelfRelation(String ae1Name, String ae2Name, ApplicationRelation[] ars) throws AoException {
 		if (ars.length != 2 && !ars[0].getRelationName().equals(ars[1].getInverseRelationName())) {
 			throw new AoException(ErrorCode.AO_INVALID_RELATION, SeverityFlag.ERROR, 1,
-					"More than one relation between [ae1Name=" + ae1Name + ",ae2Name=" + ae2Name + "] found");
+					new StringBuilder().append("More than one relation between [ae1Name=").append(ae1Name).append(",ae2Name=").append(ae2Name).append("] found").toString());
 
 		}
 	}
@@ -418,15 +418,15 @@ public class ODSModelCache {
 		// get relation with right name
 		for (ApplicationRelation ar : ars) {
 			if (ar.getRelationName().equals(relName)) {
-				LOG.debug("ApplicationRelation between [ae1Name=" + ae1Name + ",ae2Name=" + ae2Name + ",relName="
-						+ relName + "] loaded");
+				LOG.debug(new StringBuilder().append("ApplicationRelation between [ae1Name=").append(ae1Name).append(",ae2Name=").append(ae2Name).append(",relName=").append(relName)
+						.append("] loaded").toString());
 				applicationRelCache.put(appRelKey, ar);
 				return ar;
 			}
 		}
 
-		throw new AoException(ErrorCode.AO_INVALID_RELATION, SeverityFlag.ERROR, 1, "ApplicationRelation  [ae1Name="
-				+ ae1Name + ",ae2Name=" + ae2Name + ",relName=" + relName + "] not found");
+		throw new AoException(ErrorCode.AO_INVALID_RELATION, SeverityFlag.ERROR, 1, new StringBuilder().append("ApplicationRelation  [ae1Name=").append(ae1Name).append(",ae2Name=").append(ae2Name).append(",relName=").append(relName).append("] not found")
+				.toString());
 	}
 
 	/**
@@ -447,11 +447,11 @@ public class ODSModelCache {
 				enumDef = as.getEnumerationDefinition(enumName);
 				enumDefCache.put(enumName, enumDef);
 			} catch (AoException aoe) {
-				LOG.debug("EnumerationDefinition [name=" + enumName + "] not found!");
+				LOG.debug(new StringBuilder().append("EnumerationDefinition [name=").append(enumName).append("] not found!").toString());
 				return null;
 			}
 
-			LOG.debug("EnumerationDefinition [name=" + enumName + "] loaded");
+			LOG.debug(new StringBuilder().append("EnumerationDefinition [name=").append(enumName).append("] loaded").toString());
 		}
 		return enumDef;
 	}
@@ -499,7 +499,7 @@ public class ODSModelCache {
 	 */
 	private Map<String, ApplElem> getAeName2applElemMap() throws AoException {
 		if (aeName2applElemMap == null) {
-			aeName2applElemMap = new HashMap<String, ApplElem>();
+			aeName2applElemMap = new HashMap<>();
 			for (ApplElem applElem : getApplElems()) {
 				aeName2applElemMap.put(applElem.aeName, applElem);
 			}
@@ -517,7 +517,7 @@ public class ODSModelCache {
 	 */
 	private Map<Long, ApplElem> getAid2applElemMap() throws AoException {
 		if (aid2applElemMap == null) {
-			aid2applElemMap = new HashMap<Long, ApplElem>();
+			aid2applElemMap = new HashMap<>();
 			for (ApplElem applElem : getApplElems()) {
 				aid2applElemMap.put(asJLong(applElem.aid), applElem);
 			}
@@ -535,7 +535,7 @@ public class ODSModelCache {
 	 *             if something went wrong
 	 */
 	public final ApplElem[] getApplElemsByBaseName(String beName) throws AoException {
-		List<ApplElem> list = new LinkedList<ApplElem>();
+		List<ApplElem> list = new LinkedList<>();
 		for (ApplElem applElem : getApplElems()) {
 			if (applElem.beName.equals(beName)) {
 				list.add(applElem);
@@ -554,7 +554,7 @@ public class ODSModelCache {
 	 *             if something went wrong
 	 */
 	public final String[] getAeNamesByBaseName(String beName) throws AoException {
-		List<String> list = new LinkedList<String>();
+		List<String> list = new LinkedList<>();
 		for (ApplElem applElem : getApplElemsByBaseName(beName)) {
 			list.add(applElem.aeName);
 		}
@@ -576,10 +576,10 @@ public class ODSModelCache {
 		ApplElem[] elems = getApplElemsByBaseName(beName);
 		if (elems.length < 1) {
 			throw new AoException(ErrorCode.AO_NOT_FOUND, SeverityFlag.ERROR, 0,
-					"AE for base name [beName=" + beName + "] not found");
+					new StringBuilder().append("AE for base name [beName=").append(beName).append("] not found").toString());
 		} else if (elems.length > 1) {
 			throw new AoException(ErrorCode.AO_NOT_UNIQUE, SeverityFlag.ERROR, 01,
-					"Multiple AEs for base name [beName=" + beName + " found");
+					new StringBuilder().append("Multiple AEs for base name [beName=").append(beName).append(" found").toString());
 		}
 		return elems[0];
 	}
@@ -598,7 +598,7 @@ public class ODSModelCache {
 		if (applElem != null) {
 			return applElem;
 		}
-		throw new AoException(ErrorCode.AO_INVALID_ELEMENT, SeverityFlag.ERROR, 0, "AE [aid=" + aid + "] not found");
+		throw new AoException(ErrorCode.AO_INVALID_ELEMENT, SeverityFlag.ERROR, 0, new StringBuilder().append("AE [aid=").append(aid).append("] not found").toString());
 	}
 
 	/**
@@ -629,7 +629,7 @@ public class ODSModelCache {
 		if (applElem != null) {
 			return applElem;
 		}
-		throw new AoException(ErrorCode.AO_NOT_FOUND, SeverityFlag.ERROR, 0, "AE [aeName=" + aeName + "] not found!");
+		throw new AoException(ErrorCode.AO_NOT_FOUND, SeverityFlag.ERROR, 0, new StringBuilder().append("AE [aeName=").append(aeName).append("] not found!").toString());
 	}
 
 	/**
@@ -682,7 +682,7 @@ public class ODSModelCache {
 			}
 		}
 		throw new AoException(ErrorCode.AO_NOT_FOUND, SeverityFlag.ERROR, 0,
-				"ApplicationAttribute [aeName=" + aeName + ",aaName=" + aaName + "] not found!");
+				new StringBuilder().append("ApplicationAttribute [aeName=").append(aeName).append(",aaName=").append(aaName).append("] not found!").toString());
 	}
 
 	/**
@@ -729,7 +729,7 @@ public class ODSModelCache {
 			}
 		}
 		throw new AoException(ErrorCode.AO_NOT_FOUND, SeverityFlag.ERROR, 0,
-				"ApplAttr [beName=" + beName + ",baName=" + baName + "] not found!");
+				new StringBuilder().append("ApplAttr [beName=").append(beName).append(",baName=").append(baName).append("] not found!").toString());
 	}
 
 	/**
@@ -781,7 +781,7 @@ public class ODSModelCache {
 	 *             if something went wrong
 	 */
 	public final ApplRel[] getApplRelsForAe(String aeName) throws AoException {
-		List<ApplRel> list = new LinkedList<ApplRel>();
+		List<ApplRel> list = new LinkedList<>();
 		long aid = asJLong(getApplElem(aeName).aid);
 		for (ApplRel applRel : getApplRels()) {
 			long aidelem1 = asJLong(applRel.elem1);
@@ -807,7 +807,7 @@ public class ODSModelCache {
 		ApplElem applElem = getApplElemByBaseName(beName);
 		long aid = asJLong(applElem.aid);
 
-		List<ApplRel> list = new LinkedList<ApplRel>();
+		List<ApplRel> list = new LinkedList<>();
 		for (ApplRel applRel : getApplRels()) {
 			long elem1Aid = asJLong(applRel.elem1);
 			if (elem1Aid == aid) {
@@ -838,7 +838,7 @@ public class ODSModelCache {
 			}
 		}
 		throw new AoException(ErrorCode.AO_NOT_FOUND, SeverityFlag.ERROR, 0,
-				"ApplRel [beName=" + beName + ",brName=" + brName + "] not found!");
+				new StringBuilder().append("ApplRel [beName=").append(beName).append(",brName=").append(brName).append("] not found!").toString());
 	}
 
 	/*******************************************************************************************************************
@@ -889,11 +889,11 @@ public class ODSModelCache {
 		long aid = asJLong(getApplElem(aeName).aid);
 		// fill cache
 		if (enumerationAttributeMap == null) {
-			enumerationAttributeMap = new HashMap<Long, Map<String, String>>();
+			enumerationAttributeMap = new HashMap<>();
 			for (EnumerationAttributeStructure eas : getEnumerationAttributes()) {
 				Map<String, String> attrMap = enumerationAttributeMap.get(aid);
 				if (attrMap == null) {
-					attrMap = new HashMap<String, String>();
+					attrMap = new HashMap<>();
 					enumerationAttributeMap.put(aid, attrMap);
 				}
 				attrMap.put(eas.aaName, eas.enumName);
@@ -908,7 +908,7 @@ public class ODSModelCache {
 			}
 		}
 		throw new AoException(ErrorCode.AO_NOT_FOUND, SeverityFlag.ERROR, 0,
-				"No enumeration definition found for [aeName=" + aeName + ",aaName=" + aaName + "]");
+				new StringBuilder().append("No enumeration definition found for [aeName=").append(aeName).append(",aaName=").append(aaName).append("]").toString());
 	}
 
 	/**
@@ -925,9 +925,9 @@ public class ODSModelCache {
 	public final int getEnumItem(String enumName, String enumValue) throws AoException {
 		// fill cache
 		if (enumValueToIndexMap == null) {
-			enumValueToIndexMap = new HashMap<String, Map<String, Integer>>();
+			enumValueToIndexMap = new HashMap<>();
 			for (EnumerationStructure es : getEnumerationStructure()) {
-				Map<String, Integer> map = new HashMap<String, Integer>();
+				Map<String, Integer> map = new HashMap<>();
 				for (EnumerationItemStructure item : es.items) {
 					map.put(item.itemName, item.index);
 				}
@@ -945,7 +945,7 @@ public class ODSModelCache {
 		}
 
 		throw new AoException(ErrorCode.AO_NOT_FOUND, SeverityFlag.ERROR, 0,
-				"Enumeration item not found for [enumName=" + enumName + ",enumValue=" + enumValue + "]");
+				new StringBuilder().append("Enumeration item not found for [enumName=").append(enumName).append(",enumValue=").append(enumValue).append("]").toString());
 	}
 
 	/**
@@ -962,9 +962,9 @@ public class ODSModelCache {
 	public final String getEnumValue(String enumName, int enumItem) throws AoException {
 		// fill cache
 		if (enumIndexToValueMap == null) {
-			enumIndexToValueMap = new HashMap<String, Map<Integer, String>>();
+			enumIndexToValueMap = new HashMap<>();
 			for (EnumerationStructure es : getEnumerationStructure()) {
-				Map<Integer, String> map = new HashMap<Integer, String>();
+				Map<Integer, String> map = new HashMap<>();
 				for (EnumerationItemStructure item : es.items) {
 					map.put(item.index, item.itemName);
 				}
@@ -982,7 +982,7 @@ public class ODSModelCache {
 		}
 
 		throw new AoException(ErrorCode.AO_NOT_FOUND, SeverityFlag.ERROR, 0,
-				"Enumeration value not found for [enumName=" + enumName + ",enumItem=" + enumItem + "]");
+				new StringBuilder().append("Enumeration value not found for [enumName=").append(enumName).append(",enumItem=").append(enumItem).append("]").toString());
 	}
 
 	/**

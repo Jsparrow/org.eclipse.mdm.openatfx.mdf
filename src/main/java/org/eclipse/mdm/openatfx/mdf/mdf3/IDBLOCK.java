@@ -175,10 +175,9 @@ public class IDBLOCK extends BLOCK {
 	 */
 	@Override
 	public String toString() {
-		return "IDBLOCK [mdfFilePath=" + mdfFilePath + ", idFile=" + idFile + ", idVers=" + idVers + ", idProg="
-				+ idProg + ", idByteOrder=" + idByteOrder + ", idFloatingPointFormat=" + idFloatingPointFormat
-				+ ", idVer=" + idVer + ", idCodePageNumber=" + idCodePageNumber + ", idUnfinFlags=" + idUnfinFlags
-				+ ", idCustomUnfinFlags=" + idCustomUnfinFlags + "]";
+		return new StringBuilder().append("IDBLOCK [mdfFilePath=").append(mdfFilePath).append(", idFile=").append(idFile).append(", idVers=").append(idVers).append(", idProg=")
+				.append(idProg).append(", idByteOrder=").append(idByteOrder).append(", idFloatingPointFormat=").append(idFloatingPointFormat).append(", idVer=").append(idVer)
+				.append(", idCodePageNumber=").append(idCodePageNumber).append(", idUnfinFlags=").append(idUnfinFlags).append(", idCustomUnfinFlags=").append(idCustomUnfinFlags).append("]").toString();
 	}
 
 	/**
@@ -205,7 +204,7 @@ public class IDBLOCK extends BLOCK {
 		// CHAR 8 File identifier, always contains "MDF ". ("MDF" followed by
 		// five spaces)
 		idBlock.setIdFile(Mdf3Util.readChars(bb, 8));
-		if (!idBlock.getIdFile().equals("MDF     ")) {
+		if (!"MDF     ".equals(idBlock.getIdFile())) {
 			throw new IOException("Invalid or corrupt MDF3 file: " + idBlock.getIdFile());
 		}
 
@@ -224,15 +223,14 @@ public class IDBLOCK extends BLOCK {
 		idBlock.setIdByteOrder(Mdf3Util.readUInt16(bb));
 		if (idBlock.getIdByteOrder() != 0) {
 			throw new IOException(
-					"Only byte order 'Little endian' is currently supported, found '" + idBlock.getIdByteOrder() + "'");
+					new StringBuilder().append("Only byte order 'Little endian' is currently supported, found '").append(idBlock.getIdByteOrder()).append("'").toString());
 		}
 
 		// UINT16 1 Floating-point format used 0 = Floating-point format
 		// compliant with IEEE 754 standard
 		idBlock.setIdFloatingPointFormat(Mdf3Util.readUInt16(bb));
 		if (idBlock.getIdFloatingPointFormat() != 0) {
-			throw new IOException("Only floating-point format 'IEEE 754' is currently supported, found '"
-					+ idBlock.getIdFloatingPointFormat() + "'");
+			throw new IOException(new StringBuilder().append("Only floating-point format 'IEEE 754' is currently supported, found '").append(idBlock.getIdFloatingPointFormat()).append("'").toString());
 		}
 
 		// UINT16 1 Version number of the MDF , i.e. 300 for this version
@@ -248,15 +246,13 @@ public class IDBLOCK extends BLOCK {
 		// UINT16 1 Standard Flags for unfinalized MDF
 		idBlock.setIdUnfinFlags(Mdf3Util.readUInt16(bb));
 		if (idBlock.getIdUnfinFlags() != 0) {
-			throw new IOException("Only finalized MDF3 file can be read, found unfinalized standard flag '"
-					+ idBlock.getIdUnfinFlags() + "'");
+			throw new IOException(new StringBuilder().append("Only finalized MDF3 file can be read, found unfinalized standard flag '").append(idBlock.getIdUnfinFlags()).append("'").toString());
 		}
 
 		// UINT16 1 Custom Flags for unfinalized MDF
 		idBlock.setIdCustomUnfinFlags(Mdf3Util.readUInt16(bb));
 		if (idBlock.getIdCustomUnfinFlags() != 0) {
-			throw new IOException("Only finalized MDF3 file can be read, found unfinalized custom flag '"
-					+ idBlock.getIdCustomUnfinFlags() + "'");
+			throw new IOException(new StringBuilder().append("Only finalized MDF3 file can be read, found unfinalized custom flag '").append(idBlock.getIdCustomUnfinFlags()).append("'").toString());
 		}
 
 		return idBlock;

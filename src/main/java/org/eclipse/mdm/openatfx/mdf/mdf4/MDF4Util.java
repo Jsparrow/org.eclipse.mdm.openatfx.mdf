@@ -220,7 +220,7 @@ public abstract class MDF4Util {
 	 */
 	public static long readValue(int bitOffset, int bitSize, ByteBuffer bb) {
 		if (bitSize % 8 != 0) {
-			throw new IllegalArgumentException("Cannot read value with " + bitSize + "bits");
+			throw new IllegalArgumentException(new StringBuilder().append("Cannot read value with ").append(bitSize).append("bits").toString());
 		}
 		// first bit.
 		byte curr = bb.get();

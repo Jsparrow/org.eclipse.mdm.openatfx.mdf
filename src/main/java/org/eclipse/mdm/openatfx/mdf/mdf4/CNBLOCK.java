@@ -556,15 +556,14 @@ class CNBLOCK extends BLOCK {
 
 	@Override
 	public String toString() {
-		return "CNBLOCK [lnkCnNext=" + lnkCnNext + ", lnkComposition=" + lnkComposition + ", lnkTxName=" + lnkTxName
-				+ ", lnkSiSource=" + lnkSiSource + ", lnkCcConversion=" + lnkCcConversion + ", lnkData=" + lnkData
-				+ ", lnkMdUnit=" + lnkMdUnit + ", lnkMdComment=" + lnkMdComment + ", lnkAtReference="
-				+ Arrays.toString(lnkAtReference) + ", lnkDefaultX=" + Arrays.toString(lnkDefaultX) + ", channelType="
-				+ channelType + ", syncType=" + syncType + ", dataType=" + dataType + ", bitOffset=" + bitOffset
-				+ ", byteOffset=" + byteOffset + ", bitCount=" + bitCount + ", flags=" + flags + ", invalBitPos="
-				+ invalBitPos + ", precision=" + precision + ", attachmentCount=" + attachmentCount + ", valRangeMin="
-				+ valRangeMin + ", valRangeMax=" + valRangeMax + ", limitMin=" + limitMin + ", limitMax=" + limitMax
-				+ ", limitExtMin=" + limitExtMin + ", limitExtMax=" + limitExtMax + "]";
+		return new StringBuilder().append("CNBLOCK [lnkCnNext=").append(lnkCnNext).append(", lnkComposition=").append(lnkComposition).append(", lnkTxName=").append(lnkTxName).append(", lnkSiSource=")
+				.append(lnkSiSource).append(", lnkCcConversion=").append(lnkCcConversion).append(", lnkData=").append(lnkData).append(", lnkMdUnit=").append(lnkMdUnit)
+				.append(", lnkMdComment=").append(lnkMdComment).append(", lnkAtReference=").append(Arrays.toString(lnkAtReference)).append(", lnkDefaultX=").append(Arrays.toString(lnkDefaultX)).append(", channelType=")
+				.append(channelType).append(", syncType=").append(syncType).append(", dataType=").append(dataType).append(", bitOffset=").append(bitOffset)
+				.append(", byteOffset=").append(byteOffset).append(", bitCount=").append(bitCount).append(", flags=").append(flags).append(", invalBitPos=")
+				.append(invalBitPos).append(", precision=").append(precision).append(", attachmentCount=").append(attachmentCount).append(", valRangeMin=").append(valRangeMin)
+				.append(", valRangeMax=").append(valRangeMax).append(", limitMin=").append(limitMin).append(", limitMax=").append(limitMax).append(", limitExtMin=")
+				.append(limitExtMin).append(", limitExtMax=").append(limitExtMax).append("]").toString();
 	}
 
 	/**
@@ -591,7 +590,7 @@ class CNBLOCK extends BLOCK {
 		// CHAR 4: Block type identifier
 		block.setId(MDF4Util.readCharsISO8859(bb, 4));
 		if (!block.getId().equals(BLOCK_ID)) {
-			throw new IOException("Wrong block type - expected '" + BLOCK_ID + "', found '" + block.getId() + "'");
+			throw new IOException(new StringBuilder().append("Wrong block type - expected '").append(BLOCK_ID).append("', found '").append(block.getId()).append("'").toString());
 		}
 
 		// BYTE 4: Reserved used for 8-Byte alignment

@@ -51,13 +51,7 @@ public class AoFactoryMain {
 
 			LOG.info("MDF Server started");
 			orb.run();
-		} catch (InvalidName e) {
-			System.err.println(e.getMessage());
-		} catch (NotFound e) {
-			System.err.println(e.getMessage());
-		} catch (CannotProceed e) {
-			System.err.println(e.getMessage());
-		} catch (org.omg.CosNaming.NamingContextPackage.InvalidName e) {
+		} catch (org.omg.CosNaming.NamingContextPackage.InvalidName | CannotProceed | NotFound | InvalidName e) {
 			System.err.println(e.getMessage());
 		} catch (AoException e) {
 			System.err.println(e.reason);

@@ -36,10 +36,8 @@ import de.rechner.openatfx.util.ODSHelper;
 
 public class XMLParserTest {
 	public void testXMLParseElist() throws ConvertException, URISyntaxException, AoException, IOException {
-		String test = "<common_properties>" + "<elist ci=\"1\" name=\"Outlaws\">" + "<eli ci=\"1\">Robin Hood</eli> "
-				+ "<eli ci=\"1\">John Little</eli>" + "<eli ci=\"2\">Friar Tuck</eli>" + "</elist>"
-				+ "<elist name=\"score\" unit=\"points\" type=\"integer\">" + "<eli>1</eli>" + "<eli ci=\"1\">1</eli>"
-				+ "<eli>2</eli>" + "<eli>4</eli>" + "</elist>" + "</common_properties>";
+		String test = new StringBuilder().append("<common_properties>").append("<elist ci=\"1\" name=\"Outlaws\">").append("<eli ci=\"1\">Robin Hood</eli> ").append("<eli ci=\"1\">John Little</eli>").append("<eli ci=\"2\">Friar Tuck</eli>").append("</elist>").append("<elist name=\"score\" unit=\"points\" type=\"integer\">").append("<eli>1</eli>")
+				.append("<eli ci=\"1\">1</eli>").append("<eli>2</eli>").append("<eli>4</eli>").append("</elist>").append("</common_properties>").toString();
 
 		String mdfFile = "org/eclipse/mdm/openatfx/mdf/mdf4/arrays/simple/Vector_ArrayWithFixedAxes.MF4";
 		MDF4XMLParser pars = new MDF4XMLParser();

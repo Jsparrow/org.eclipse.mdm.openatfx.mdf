@@ -39,7 +39,7 @@ public abstract class ODSHelper {
 
 	// prepare dateformats to avoid instantiation a single object every time
 	// parsing a date.
-	private static Map<Integer, DateFormat> ODS_DATEFORMATS = new HashMap<Integer, DateFormat>();
+	private static Map<Integer, DateFormat> ODS_DATEFORMATS = new HashMap<>();
 	static {
 		ODS_DATEFORMATS.put(4, new SimpleDateFormat("yyyy"));
 		ODS_DATEFORMATS.put(6, new SimpleDateFormat("yyyyMM"));

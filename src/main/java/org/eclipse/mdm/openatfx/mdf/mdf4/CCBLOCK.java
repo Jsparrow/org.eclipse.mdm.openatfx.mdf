@@ -302,31 +302,31 @@ class CCBLOCK extends BLOCK {
 	 * @throws IOException
 	 */
 	public TXBLOCK[] getCcRefBlocks() throws IOException {
-		if (lnkCcRef.length > 0) {
-			TXBLOCK[] ccRef = new TXBLOCK[lnkCcRef.length];
-			for (int i = 0; i < ccRef.length; i++) {
-				if (lnkCcRef[i] > 0) {
-					// There might be a CC Block, but this is not supported.
-
-					String blockType = getBlockType(sbc, lnkCcRef[i]);
-					// link points to a TXBLOCK
-					if (blockType.equals(TXBLOCK.BLOCK_ID)) {
-						ccRef[i] = TXBLOCK.read(sbc, lnkCcRef[i]);
-					}
-					// links points to CCBLOCK
-					else if (blockType.equals(CCBLOCK.BLOCK_ID)) {
-						throw new IOException("Scale conversions with CCBlocks are not supported.");
-					}
-					// unknown
-					else {
-						throw new IOException("Unsupported block type for Conversion Reference: " + blockType);
-					}
-
-				}
-			}
-			return ccRef;
+		if (lnkCcRef.length <= 0) {
+			return null;
 		}
-		return null;
+		TXBLOCK[] ccRef = new TXBLOCK[lnkCcRef.length];
+		for (int i = 0; i < ccRef.length; i++) {
+			if (lnkCcRef[i] > 0) {
+				// There might be a CC Block, but this is not supported.
+
+				String blockType = getBlockType(sbc, lnkCcRef[i]);
+				// link points to a TXBLOCK
+				if (blockType.equals(TXBLOCK.BLOCK_ID)) {
+					ccRef[i] = TXBLOCK.read(sbc, lnkCcRef[i]);
+				}
+				// links points to CCBLOCK
+				else if (blockType.equals(CCBLOCK.BLOCK_ID)) {
+					throw new IOException("Scale conversions with CCBlocks are not supported.");
+				}
+				// unknown
+				else {
+					throw new IOException("Unsupported block type for Conversion Reference: " + blockType);
+				}
+
+			}
+		}
+		return ccRef;
 	}
 
 	/**
@@ -341,9 +341,9 @@ class CCBLOCK extends BLOCK {
 			return false;
 		}
 
-		for (int i = 0; i < lnkCcRef.length; i++) {
-			if (lnkCcRef[i] > 0) {
-				String blockType = getBlockType(sbc, lnkCcRef[i]);
+		for (long aLnkCcRef : lnkCcRef) {
+			if (aLnkCcRef > 0) {
+				String blockType = getBlockType(sbc, aLnkCcRef);
 				if (blockType.equals(CCBLOCK.BLOCK_ID)) {
 					return true;
 				}
@@ -358,11 +358,10 @@ class CCBLOCK extends BLOCK {
 	 */
 	@Override
 	public String toString() {
-		return "CCBLOCK [lnkTxName=" + lnkTxName + ", lnkMdUnit=" + lnkMdUnit + ", lnkMdComment=" + lnkMdComment
-				+ ", lnkCcInverse=" + lnkCcInverse + ", lnkCcRef=" + Arrays.toString(lnkCcRef) + ", type=" + type
-				+ ", precision=" + precision + ", flags=" + flags + ", refCount=" + refCount + ", valCount=" + valCount
-				+ ", phyRangeMin=" + phyRangeMin + ", phyRangeMax=" + phyRangeMax + ", val=" + Arrays.toString(val)
-				+ "]";
+		return new StringBuilder().append("CCBLOCK [lnkTxName=").append(lnkTxName).append(", lnkMdUnit=").append(lnkMdUnit).append(", lnkMdComment=").append(lnkMdComment).append(", lnkCcInverse=")
+				.append(lnkCcInverse).append(", lnkCcRef=").append(Arrays.toString(lnkCcRef)).append(", type=").append(type).append(", precision=").append(precision)
+				.append(", flags=").append(flags).append(", refCount=").append(refCount).append(", valCount=").append(valCount).append(", phyRangeMin=")
+				.append(phyRangeMin).append(", phyRangeMax=").append(phyRangeMax).append(", val=").append(Arrays.toString(val)).append("]").toString();
 	}
 
 	/**
@@ -389,7 +388,7 @@ class CCBLOCK extends BLOCK {
 		// CHAR 4: Block type identifier
 		block.setId(MDF4Util.readCharsISO8859(bb, 4));
 		if (!block.getId().equals(BLOCK_ID)) {
-			throw new IOException("Wrong block type - expected '" + BLOCK_ID + "', found '" + block.getId() + "'");
+			throw new IOException(new StringBuilder().append("Wrong block type - expected '").append(BLOCK_ID).append("', found '").append(block.getId()).append("'").toString());
 		}
 
 		// BYTE 4: Reserved used for 8-Byte alignment
@@ -465,17 +464,16 @@ class CCBLOCK extends BLOCK {
 	 * @throws IOException
 	 */
 	public String[] getValuesForTextTable() throws IOException {
-		if (type == 7 || type == 8) {
-			TXBLOCK[] txblks = getCcRefBlocks();
-			String[] ret = new String[getRefCount() - 1]; // without default
-															// value
-			for (int i = 0; i < ret.length; i++) {
-				ret[i] = txblks[i].getTxData();
-			}
-			return ret;
-		} else {
+		if (!(type == 7 || type == 8)) {
 			return new String[0];
 		}
+		TXBLOCK[] txblks = getCcRefBlocks();
+		String[] ret = new String[getRefCount() - 1]; // without default
+		// value
+		for (int i = 0; i < ret.length; i++) {
+			ret[i] = txblks[i].getTxData();
+		}
+		return ret;
 	}
 
 	/**
@@ -485,16 +483,15 @@ class CCBLOCK extends BLOCK {
 	 * @throws IOException
 	 */
 	public String[] getRefValues() throws IOException {
-		if (type == 7 || type == 8) {
-			TXBLOCK[] txblks = getCcRefBlocks();
-			String[] ret = new String[getRefCount()]; // all values
-			for (int i = 0; i < ret.length; i++) {
-				ret[i] = txblks[i].getTxData();
-			}
-			return ret;
-		} else {
+		if (!(type == 7 || type == 8)) {
 			return new String[0];
 		}
+		TXBLOCK[] txblks = getCcRefBlocks();
+		String[] ret = new String[getRefCount()]; // all values
+		for (int i = 0; i < ret.length; i++) {
+			ret[i] = txblks[i].getTxData();
+		}
+		return ret;
 	}
 
 	/**
@@ -505,13 +502,12 @@ class CCBLOCK extends BLOCK {
 	 * @throws IOException
 	 */
 	public double[] getValuesForTextToValueTable() throws IOException {
-		if (type == 9) {
-			double[] ret = new double[val.length - 1];
-			System.arraycopy(val, 0, ret, 0, ret.length);
-			return ret;
-		} else {
+		if (type != 9) {
 			return new double[0];
 		}
+		double[] ret = new double[val.length - 1];
+		System.arraycopy(val, 0, ret, 0, ret.length);
+		return ret;
 	}
 
 	/**
@@ -551,39 +547,36 @@ class CCBLOCK extends BLOCK {
 	}
 
 	public double[] getSecondValues(boolean even) {
-		if (type == 4 || type == 5 || type == 8) {
-			double[] ret = new double[val.length / 2];
-			for (int i = even ? 0 : 1; i < val.length; i += 2) {
-				ret[i / 2] = val[i];
-			}
-			return ret;
-		} else {
+		if (!(type == 4 || type == 5 || type == 8)) {
 			return new double[0];
 		}
+		double[] ret = new double[val.length / 2];
+		for (int i = even ? 0 : 1; i < val.length; i += 2) {
+			ret[i / 2] = val[i];
+		}
+		return ret;
 	}
 
 	public double[] getThirdValues(int start) {
-		if (type == 6) {
-			double[] ret = new double[val.length / 3];
-			for (int i = start; i < val.length - val.length % 3; i += 3) {
-				ret[i / 3] = val[i];
-			}
-			return ret;
-		} else {
+		if (type != 6) {
 			return new double[0];
 		}
+		double[] ret = new double[val.length / 3];
+		for (int i = start; i < val.length - val.length % 3; i += 3) {
+			ret[i / 3] = val[i];
+		}
+		return ret;
 	}
 
 	public String[] getSecondTexts(boolean even) throws IOException {
-		if (type == 10) {
-			String[] texts = getValuesForTextTable();
-			String[] ret = new String[texts.length / 2];
-			for (int i = even ? 0 : 1; i < texts.length; i += 2) {
-				ret[i / 2] = texts[i];
-			}
-			return ret;
-		} else {
+		if (type != 10) {
 			return new String[0];
 		}
+		String[] texts = getValuesForTextTable();
+		String[] ret = new String[texts.length / 2];
+		for (int i = even ? 0 : 1; i < texts.length; i += 2) {
+			ret[i / 2] = texts[i];
+		}
+		return ret;
 	}
 }

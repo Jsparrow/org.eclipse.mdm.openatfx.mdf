@@ -66,7 +66,8 @@ public class BitInputStream {
 		int index = mPos >>> 3;
 		int offset = 16 - (mPos & 0x07) - bits; // &7==%8
 		if (bits < 0 || bits > 8 || mPos + bits > mEnd) {
-			throw new IOException("illegal read " + "(pos " + mPos + ", end " + mEnd + ", bits " + bits + ")");
+			throw new IOException(new StringBuilder().append("illegal read ").append("(pos ").append(mPos).append(", end ").append(mEnd).append(", bits ")
+					.append(bits).append(")").toString());
 		}
 		int data = (mBuf[index] & 0xFF) << 8;
 		if (offset < 8) {
@@ -107,7 +108,8 @@ public class BitInputStream {
 	 */
 	public void skip(int bits) throws IOException {
 		if (mPos + bits > mEnd) {
-			throw new IOException("illegal skip " + "(pos " + mPos + ", end " + mEnd + ", bits " + bits + ")");
+			throw new IOException(new StringBuilder().append("illegal skip ").append("(pos ").append(mPos).append(", end ").append(mEnd).append(", bits ")
+					.append(bits).append(")").toString());
 		}
 		mPos += bits;
 	}

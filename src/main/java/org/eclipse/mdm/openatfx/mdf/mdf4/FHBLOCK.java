@@ -181,8 +181,8 @@ class FHBLOCK extends BLOCK {
 
 	@Override
 	public String toString() {
-		return "FHBLOCK [lnkFhNext=" + lnkFhNext + ", lnkMdComment=" + lnkMdComment + ", startTimeNs=" + startTimeNs
-				+ ", tzOffsetMin=" + tzOffsetMin + ", dstOffsetMin=" + dstOffsetMin + ", timeFlags=" + timeFlags + "]";
+		return new StringBuilder().append("FHBLOCK [lnkFhNext=").append(lnkFhNext).append(", lnkMdComment=").append(lnkMdComment).append(", startTimeNs=").append(startTimeNs).append(", tzOffsetMin=")
+				.append(tzOffsetMin).append(", dstOffsetMin=").append(dstOffsetMin).append(", timeFlags=").append(timeFlags).append("]").toString();
 	}
 
 	/**
@@ -209,7 +209,7 @@ class FHBLOCK extends BLOCK {
 		// CHAR 4: Block type identifier
 		block.setId(MDF4Util.readCharsISO8859(bb, 4));
 		if (!block.getId().equals(BLOCK_ID)) {
-			throw new IOException("Wrong block type - expected '" + BLOCK_ID + "', found '" + block.getId() + "'");
+			throw new IOException(new StringBuilder().append("Wrong block type - expected '").append(BLOCK_ID).append("', found '").append(block.getId()).append("'").toString());
 		}
 
 		// BYTE 4: Reserved used for 8-Byte alignment

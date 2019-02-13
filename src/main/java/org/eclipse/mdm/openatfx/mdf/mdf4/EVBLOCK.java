@@ -290,12 +290,11 @@ class EVBLOCK extends BLOCK {
 	 */
 	@Override
 	public String toString() {
-		return "EVBLOCK [lnkEvNext=" + lnkEvNext + ", lnkEvParent=" + lnkEvParent + ", lnkEvRange=" + lnkEvRange
-				+ ", lnkTxName=" + lnkTxName + ", lnkMdComment=" + lnkMdComment + ", lnkScope="
-				+ Arrays.toString(lnkScope) + ", lnkAtReference=" + Arrays.toString(lnkAtReference) + ", type=" + type
-				+ ", syncType=" + syncType + ", rangeType=" + rangeType + ", cause=" + cause + ", flags=" + flags
-				+ ", scopeCount=" + scopeCount + ", attachmentCount=" + attachmentCount + ", creatorIndex="
-				+ creatorIndex + ", syncBaseBValue=" + syncBaseValue + ", syncFactor=" + syncFactor + "]";
+		return new StringBuilder().append("EVBLOCK [lnkEvNext=").append(lnkEvNext).append(", lnkEvParent=").append(lnkEvParent).append(", lnkEvRange=").append(lnkEvRange).append(", lnkTxName=")
+				.append(lnkTxName).append(", lnkMdComment=").append(lnkMdComment).append(", lnkScope=").append(Arrays.toString(lnkScope)).append(", lnkAtReference=").append(Arrays.toString(lnkAtReference))
+				.append(", type=").append(type).append(", syncType=").append(syncType).append(", rangeType=").append(rangeType).append(", cause=")
+				.append(cause).append(", flags=").append(flags).append(", scopeCount=").append(scopeCount).append(", attachmentCount=").append(attachmentCount)
+				.append(", creatorIndex=").append(creatorIndex).append(", syncBaseBValue=").append(syncBaseValue).append(", syncFactor=").append(syncFactor).append("]").toString();
 	}
 
 	public EVBLOCK getEvNextBlock() throws IOException {
@@ -355,7 +354,7 @@ class EVBLOCK extends BLOCK {
 		// CHAR 4: Block type identifier
 		block.setId(MDF4Util.readCharsISO8859(bb, 4));
 		if (!block.getId().equals(BLOCK_ID)) {
-			throw new IOException("Wrong block type - expected '" + BLOCK_ID + "', found '" + block.getId() + "'");
+			throw new IOException(new StringBuilder().append("Wrong block type - expected '").append(BLOCK_ID).append("', found '").append(block.getId()).append("'").toString());
 		}
 
 		// BYTE 4: Reserved used for 8-Byte alignment

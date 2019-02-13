@@ -85,8 +85,8 @@ class CEBLOCK_VectorCAN extends BLOCK {
 
 	@Override
 	public String toString() {
-		return "CEBLOCK_VectorCAN [messageId=" + messageId + ", canIndex=" + canIndex + ", messageName=" + messageName
-				+ ", senderName=" + senderName + "]";
+		return new StringBuilder().append("CEBLOCK_VectorCAN [messageId=").append(messageId).append(", canIndex=").append(canIndex).append(", messageName=").append(messageName).append(", senderName=")
+				.append(senderName).append("]").toString();
 	}
 
 	/**

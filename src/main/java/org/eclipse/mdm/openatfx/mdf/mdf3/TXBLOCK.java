@@ -65,7 +65,7 @@ class TXBLOCK extends BLOCK {
 	 */
 	@Override
 	public String toString() {
-		return "TXBLOCK [text=" + text + "]";
+		return new StringBuilder().append("TXBLOCK [text=").append(text).append("]").toString();
 	}
 
 	/**
@@ -92,7 +92,7 @@ class TXBLOCK extends BLOCK {
 		// CHAR 2 Block type identifier
 		block.setId(Mdf3Util.readChars(bb, 2));
 		if (!block.getId().equals(BLOCK_ID)) {
-			throw new IOException("Wrong block type - expected '" + BLOCK_ID + "', found '" + block.getId() + "'");
+			throw new IOException(new StringBuilder().append("Wrong block type - expected '").append(BLOCK_ID).append("', found '").append(block.getId()).append("'").toString());
 		}
 
 		// UINT16 1 Block size of this block in bytes

@@ -329,11 +329,11 @@ class HDBLOCK extends BLOCK {
 
 	@Override
 	public String toString() {
-		return "HDBLOCK [lnkDgFirst=" + lnkDgFirst + ", lnkFhFirst=" + lnkFhFirst + ", lnkChFirst=" + lnkChFirst
-				+ ", lnkAtFirst=" + lnkAtFirst + ", lnkEvFirst=" + lnkEvFirst + ", lnkMdComment=" + lnkMdComment
-				+ ", startTimeNs=" + startTimeNs + ", tzOffsetMin=" + tzOffsetMin + ", dstOffsetMin=" + dstOffsetMin
-				+ ", timeFlags=" + timeFlags + ", timeClass=" + timeClass + ", flags=" + flags + ", startAngleRad="
-				+ startAngleRad + ", startDistanceM=" + startDistanceM + "]";
+		return new StringBuilder().append("HDBLOCK [lnkDgFirst=").append(lnkDgFirst).append(", lnkFhFirst=").append(lnkFhFirst).append(", lnkChFirst=").append(lnkChFirst).append(", lnkAtFirst=")
+				.append(lnkAtFirst).append(", lnkEvFirst=").append(lnkEvFirst).append(", lnkMdComment=").append(lnkMdComment).append(", startTimeNs=").append(startTimeNs)
+				.append(", tzOffsetMin=").append(tzOffsetMin).append(", dstOffsetMin=").append(dstOffsetMin).append(", timeFlags=").append(timeFlags).append(", timeClass=")
+				.append(timeClass).append(", flags=").append(flags).append(", startAngleRad=").append(startAngleRad).append(", startDistanceM=").append(startDistanceM)
+				.append("]").toString();
 	}
 
 	/**
@@ -358,7 +358,7 @@ class HDBLOCK extends BLOCK {
 		// CHAR 4: Block type identifier
 		block.setId(MDF4Util.readCharsISO8859(bb, 4));
 		if (!block.getId().equals(BLOCK_ID)) {
-			throw new IOException("Wrong block type - expected '" + BLOCK_ID + "', found '" + block.getId() + "'");
+			throw new IOException(new StringBuilder().append("Wrong block type - expected '").append(BLOCK_ID).append("', found '").append(block.getId()).append("'").toString());
 		}
 
 		// BYTE 4: Reserved used for 8-Byte alignment

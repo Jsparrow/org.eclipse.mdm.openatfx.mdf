@@ -139,8 +139,9 @@ class DLBLOCK extends BLOCK {
 	 */
 	@Override
 	public String toString() {
-		return "DLBLOCK [lnkDlNext=" + lnkDlNext + ", lnkDlData=" + Arrays.toString(lnkDlData) + ", flags=" + flags
-				+ ", count=" + count + ", equalLength=" + equalLength + ", offset=" + Arrays.toString(offset) + "]";
+		return new StringBuilder().append("DLBLOCK [lnkDlNext=").append(lnkDlNext).append(", lnkDlData=").append(Arrays.toString(lnkDlData)).append(", flags=").append(flags)
+				.append(", count=").append(count).append(", equalLength=").append(equalLength).append(", offset=").append(Arrays.toString(offset)).append("]")
+				.toString();
 	}
 
 	public DLBLOCK getDlNextBlock() throws IOException {
@@ -197,7 +198,7 @@ class DLBLOCK extends BLOCK {
 		// CHAR 4: Block type identifier
 		block.setId(MDF4Util.readCharsISO8859(bb, 4));
 		if (!block.getId().equals(BLOCK_ID)) {
-			throw new IOException("Wrong block type - expected '" + BLOCK_ID + "', found '" + block.getId() + "'");
+			throw new IOException(new StringBuilder().append("Wrong block type - expected '").append(BLOCK_ID).append("', found '").append(block.getId()).append("'").toString());
 		}
 
 		// BYTE 4: Reserved used for 8-Byte alignment

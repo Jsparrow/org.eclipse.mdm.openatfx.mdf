@@ -264,7 +264,7 @@ public class AoSessionWriter {
 		Date date = null;
 		if (hdBlock.getDateStarted().length() > 0 && hdBlock.getTimeStarted().length() > 0) {
 			try {
-				date = mdfDateFormat.parse(hdBlock.getDateStarted() + " " + hdBlock.getTimeStarted());
+				date = mdfDateFormat.parse(new StringBuilder().append(hdBlock.getDateStarted()).append(" ").append(hdBlock.getTimeStarted()).toString());
 			} catch (ParseException e) {
 				LOG.warn(e.getMessage(), e);
 			}
@@ -286,7 +286,7 @@ public class AoSessionWriter {
 		if (!readOnlyHeader) {
 			// remember channel names to avoid duplicates
 			// (key=channelName,value=number of)
-			Map<String, Integer> meqNames = new HashMap<String, Integer>();
+			Map<String, Integer> meqNames = new HashMap<>();
 
 			// write 'AoSubMatrix' instances
 			writeSm(modelCache, meaIid, idBlock, hdBlock, meqNames);
@@ -314,14 +314,13 @@ public class AoSessionWriter {
 		// iterate over data group blocks
 		int grpNo = 1;
 		DGBLOCK dgBlock = hdBlock.getFirstFileGroup();
-		Map<String, Long> meqInstances = new HashMap<String, Long>();
+		Map<String, Long> meqInstances = new HashMap<>();
 
 		while (dgBlock != null) {
 			// ONLY SORTED MDF files can be converted - check this!
 			if (dgBlock.getNoChannelGroups() > 1) {
 				throw new IOException(
-						"Currently only 'sorted' MDF3 files are supported, found 'unsorted' data! [DGBLOCK=" + dgBlock
-								+ "]");
+						new StringBuilder().append("Currently only 'sorted' MDF3 files are supported, found 'unsorted' data! [DGBLOCK=").append(dgBlock).append("]").toString());
 			}
 
 			// if sorted, only one channel group block is available
@@ -413,26 +412,25 @@ public class AoSessionWriter {
 				noChannels++;
 				meqNames.put(meqName, noChannels);
 				if (noChannels > 1) {
-					meqName = meqName + "_" + noChannels;
+					meqName = new StringBuilder().append(meqName).append("_").append(noChannels).toString();
 				}
 			}
 
 			// sequence representation
 			CCBLOCK ccBlock = cnBlock.getCcBlock();
 			if (ccBlock != null && ccBlock.getFormulaIdent() == 10 && skipUnsupportedFormula) {
-				LOG.info("Channel '" + meqName + "' with unsupported formula (10 MCD2 Text Formular) skipped: "
-						+ ccBlock);
+				LOG.info(new StringBuilder().append("Channel '").append(meqName).append("' with unsupported formula (10 MCD2 Text Formular) skipped: ").append(ccBlock).toString());
 				// jump to next channel
 				cnBlock = cnBlock.getNextCnBlock();
 				continue;
 			} else if (skipByteStreamChannels && 8 == cnBlock.getSignalDataType()) {
 				// remove this block once it is save to import channels with
 				// byte stream data
-				LOG.info("Channel '" + meqName + "' with byte stream data skipped: " + ccBlock);
+				LOG.info(new StringBuilder().append("Channel '").append(meqName).append("' with byte stream data skipped: ").append(ccBlock).toString());
 				cnBlock = cnBlock.getNextCnBlock();
 				continue;
 			} else if (8 == cnBlock.getSignalDataType() && cnBlock.getLnkCdBlock() != 0) {
-				LOG.info("Channel '" + meqName + "' with composed byte stream data skipped: " + ccBlock);
+				LOG.info(new StringBuilder().append("Channel '").append(meqName).append("' with composed byte stream data skipped: ").append(ccBlock).toString());
 				cnBlock = cnBlock.getNextCnBlock();
 				continue;
 			} else if (64 == cnBlock.getNumberOfBits() && (0 /* LEO */ == cnBlock.getSignalDataType()
@@ -444,7 +442,7 @@ public class AoSessionWriter {
 					// this is a data channel with 64 bit unsigned data; it is not possible to represent such data
 					// => either throw an error or skip channel
 					if (skipUINT64Channels) {
-						LOG.info("Channel '" + meqName + "' with unsigned 64 bit data skipped: " + cnBlock);
+						LOG.info(new StringBuilder().append("Channel '").append(meqName).append("' with unsigned 64 bit data skipped: ").append(cnBlock).toString());
 						cnBlock = cnBlock.getNextCnBlock();
 						continue;
 					} else {
@@ -506,7 +504,7 @@ public class AoSessionWriter {
 				String[] stringDataValues = readStringDataValues(dgBlock, cgBlock, cnBlock);
 				ins.setEnumVal("srp", 0);
 				ins.setNameValueUnit(ODSHelper.createStringSeqNVU("val", stringDataValues));
-				LOG.info("Unable to reference into MDF3, extracting string values. [Channel=" + meqName + "]");
+				LOG.info(new StringBuilder().append("Unable to reference into MDF3, extracting string values. [Channel=").append(meqName).append("]").toString());
 			} else {
 				ins.setEnumVal("srp", seqRep);
 			}
@@ -621,19 +619,20 @@ public class AoSessionWriter {
 		if (ccBlock != null) {
 			unitName = ccBlock.getPhysUnit().trim();
 		}
-		if (ieMeq != null && unitName.length() > 0) {
-			InstanceElementIterator iter = aeUnt.getInstances(unitName);
-			InstanceElement ieUnit = null;
-			if (iter.getCount() > 0) {
-				ieUnit = iter.nextOne();
-			} else {
-				ieUnit = aeUnt.createInstance(unitName);
-				ieUnit.setValue(ODSHelper.createDoubleNVU("factor", 1d));
-				ieUnit.setValue(ODSHelper.createDoubleNVU("offset", 0d));
-			}
-			iter.destroy();
-			ieMeq.createRelation(relMeqUnt, ieUnit);
+		if (!(ieMeq != null && unitName.length() > 0)) {
+			return;
 		}
+		InstanceElementIterator iter = aeUnt.getInstances(unitName);
+		InstanceElement ieUnit = null;
+		if (iter.getCount() > 0) {
+			ieUnit = iter.nextOne();
+		} else {
+			ieUnit = aeUnt.createInstance(unitName);
+			ieUnit.setValue(ODSHelper.createDoubleNVU("factor", 1d));
+			ieUnit.setValue(ODSHelper.createDoubleNVU("offset", 0d));
+		}
+		iter.destroy();
+		ieMeq.createRelation(relMeqUnt, ieUnit);
 	}
 
 	/**
@@ -1010,7 +1009,7 @@ public class AoSessionWriter {
 			}
 		}
 
-		throw new IOException("Unsupported MDF3 datatype: " + cnBlock + "\n " + ccBlock);
+		throw new IOException(new StringBuilder().append("Unsupported MDF3 datatype: ").append(cnBlock).append("\n ").append(ccBlock).toString());
 	}
 
 	/**
@@ -1102,7 +1101,7 @@ public class AoSessionWriter {
 			return 7;
 		}
 		throw new IOException(
-				"Unsupported MDF Conversion formula identifier for channel '" + meqName + "': " + formula);
+				new StringBuilder().append("Unsupported MDF Conversion formula identifier for channel '").append(meqName).append("': ").append(formula).toString());
 	}
 
 	/**
@@ -1199,10 +1198,10 @@ public class AoSessionWriter {
 	 */
 	private static void handleCLExportDate(ODSInsertStatement ins, HDBLOCK hdBlock, TXBLOCK fileComment)
 			throws AoException {
-		if (hdBlock.getDateStarted() != null && !hdBlock.getDateStarted().equals("01:01:1980")) {
+		if (hdBlock.getDateStarted() != null && !"01:01:1980".equals(hdBlock.getDateStarted())) {
 			return;
 		}
-		if (hdBlock.getTimeStarted() != null && !hdBlock.getTimeStarted().equals("00:00:00")) {
+		if (hdBlock.getTimeStarted() != null && !"00:00:00".equals(hdBlock.getTimeStarted())) {
 			return;
 		}
 		if (fileComment == null || fileComment.getText() == null || fileComment.getText().length() < 1) {
@@ -1228,7 +1227,7 @@ public class AoSessionWriter {
 	}
 
 	private static String[] readStringDataValues(DGBLOCK dgBlock, CGBLOCK cgBlock, CNBLOCK cnBlock) throws IOException {
-		List<String> list = new ArrayList<String>();
+		List<String> list = new ArrayList<>();
 
 		SeekableByteChannel sbc = dgBlock.sbc;
 		int recordIdOffset = dgBlock.getNoRecordIds() > 0 ? 1 : 0;
@@ -1381,8 +1380,7 @@ public class AoSessionWriter {
 		short bo = (short) (cnBlock.getNumberOfFirstBits() % 8);
 		short bc = bo != 0 && cnBlock.getNumberOfBits() % 8 != 0 ? (short) cnBlock.getNumberOfBits() : 0;
 		if (bo != 0 || bc != 0 || cnBlock.getNumberOfBits() % 8 != 0) {
-			throw new AoException(ErrorCode.AO_BAD_PARAMETER, SeverityFlag.ERROR, 0, "bit count '" + bc
-				+ "' and bit offset '" + bo + "' is not supported for custom ration conversion");
+			throw new AoException(ErrorCode.AO_BAD_PARAMETER, SeverityFlag.ERROR, 0, new StringBuilder().append("bit count '").append(bc).append("' and bit offset '").append(bo).append("' is not supported for custom ration conversion").toString());
 		}
 
 		try (SeekableByteChannel channel = Files.newByteChannel(customRatConfPath, StandardOpenOption.APPEND)) {
@@ -1444,8 +1442,8 @@ public class AoSessionWriter {
 					} else {
 						String unsigned = isUnsigned ? "unsigned" : "signed";
 						throw new AoException(ErrorCode.AO_BAD_PARAMETER, SeverityFlag.ERROR, 0,
-								"customized reading of '" + bits + "' bit '" + unsigned
-										+ "' intergers is not implemented");
+								new StringBuilder().append("customized reading of '").append(bits).append("' bit '").append(unsigned).append("' intergers is not implemented")
+										.toString());
 					}
 				} else if (isReal) {
 					if (bits == 32) {
@@ -1457,8 +1455,8 @@ public class AoSessionWriter {
 					} else {
 						String unsigned = isUnsigned ? "unsigned" : "signed";
 						throw new AoException(ErrorCode.AO_BAD_PARAMETER, SeverityFlag.ERROR, 0,
-								"customized reading of '" + bits + "' bit '" + unsigned
-										+ "' real is not implemented");
+								new StringBuilder().append("customized reading of '").append(bits).append("' bit '").append(unsigned).append("' real is not implemented")
+										.toString());
 					}
 				} else {
 					throw new AoException(ErrorCode.AO_BAD_PARAMETER, SeverityFlag.ERROR, 0,

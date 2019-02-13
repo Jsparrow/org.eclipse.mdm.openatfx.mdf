@@ -237,12 +237,11 @@ class HDBLOCK extends BLOCK {
 
 	@Override
 	public String toString() {
-		return "HDBLOCK [lnkFirstFileGroup=" + lnkFirstFileGroup + ", lnkFileCommentTxt=" + lnkFileCommentTxt
-				+ ", lnkProgramBlock=" + lnkProgramBlock + ", numberOfDataGroups=" + numberOfDataGroups
-				+ ", dateStarted=" + dateStarted + ", timeStarted=" + timeStarted + ", author=" + author
-				+ ", department=" + department + ", projectName=" + projectName + ", meaObject=" + meaObject
-				+ ", timestamp=" + timestamp + ", utcTimeOffsetHours=" + utcTimeOffsetHours + ", timeQualityClass="
-				+ timeQualityClass + ", timerIdent=" + timerIdent + "]";
+		return new StringBuilder().append("HDBLOCK [lnkFirstFileGroup=").append(lnkFirstFileGroup).append(", lnkFileCommentTxt=").append(lnkFileCommentTxt).append(", lnkProgramBlock=").append(lnkProgramBlock).append(", numberOfDataGroups=")
+				.append(numberOfDataGroups).append(", dateStarted=").append(dateStarted).append(", timeStarted=").append(timeStarted).append(", author=").append(author)
+				.append(", department=").append(department).append(", projectName=").append(projectName).append(", meaObject=").append(meaObject).append(", timestamp=")
+				.append(timestamp).append(", utcTimeOffsetHours=").append(utcTimeOffsetHours).append(", timeQualityClass=").append(timeQualityClass).append(", timerIdent=").append(timerIdent)
+				.append("]").toString();
 	}
 
 	/**
@@ -267,7 +266,7 @@ class HDBLOCK extends BLOCK {
 		// CHAR 2 Block type identifier
 		block.setId(Mdf3Util.readChars(bb, 2));
 		if (!block.getId().equals(BLOCK_ID)) {
-			throw new IOException("Wrong block type - expected '" + BLOCK_ID + "', found '" + block.getId() + "'");
+			throw new IOException(new StringBuilder().append("Wrong block type - expected '").append(BLOCK_ID).append("', found '").append(block.getId()).append("'").toString());
 		}
 
 		// UINT16 1 Block size of this block in bytes

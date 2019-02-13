@@ -88,8 +88,8 @@ class CEBLOCK_DIM extends BLOCK {
 	 */
 	@Override
 	public String toString() {
-		return "CEBLOCK_DIM [numberOfModule=" + numberOfModule + ", address=" + address + ", description=" + description
-				+ ", ecuIdent=" + ecuIdent + "]";
+		return new StringBuilder().append("CEBLOCK_DIM [numberOfModule=").append(numberOfModule).append(", address=").append(address).append(", description=").append(description).append(", ecuIdent=")
+				.append(ecuIdent).append("]").toString();
 	}
 
 	/**

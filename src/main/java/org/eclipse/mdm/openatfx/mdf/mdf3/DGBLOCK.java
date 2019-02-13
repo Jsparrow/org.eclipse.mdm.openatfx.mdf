@@ -120,9 +120,8 @@ class DGBLOCK extends BLOCK {
 	 */
 	@Override
 	public String toString() {
-		return "DGBLOCK [lnkNextDgBlock=" + lnkNextDgBlock + ", lnkNextCgBlock=" + lnkNextCgBlock + ", lnkTrBlock="
-				+ lnkTrBlock + ", lnkDataRecords=" + lnkDataRecords + ", noChannelGroups=" + noChannelGroups
-				+ ", noRecordIds=" + noRecordIds + "]";
+		return new StringBuilder().append("DGBLOCK [lnkNextDgBlock=").append(lnkNextDgBlock).append(", lnkNextCgBlock=").append(lnkNextCgBlock).append(", lnkTrBlock=").append(lnkTrBlock).append(", lnkDataRecords=")
+				.append(lnkDataRecords).append(", noChannelGroups=").append(noChannelGroups).append(", noRecordIds=").append(noRecordIds).append("]").toString();
 	}
 
 	public DGBLOCK getNextDgBlock() throws IOException {
@@ -163,7 +162,7 @@ class DGBLOCK extends BLOCK {
 		// CHAR 2 Block type identifier
 		block.setId(Mdf3Util.readChars(bb, 2));
 		if (!block.getId().equals(BLOCK_ID)) {
-			throw new IOException("Wrong block type - expected '" + BLOCK_ID + "', found '" + block.getId() + "'");
+			throw new IOException(new StringBuilder().append("Wrong block type - expected '").append(BLOCK_ID).append("', found '").append(block.getId()).append("'").toString());
 		}
 
 		// UINT16 1 Block size of this block in bytes

@@ -107,13 +107,13 @@ public class Test_dSPACE_Value2TextConversion {
 			for (int i = 0; i < 2; i++) {
 				InstanceElement ieLc = iter.nextOne();
 				String mimeType = ODSHelper.getStringVal(ieLc.getValue("mt"));
-				assertTrue(mimeType.equals("application/x-asam.aolocalcolumn.lookup.key")
-						|| mimeType.equals("application/x-asam.aolocalcolumn.lookup.value"));
+				assertTrue("application/x-asam.aolocalcolumn.lookup.key".equals(mimeType)
+						|| "application/x-asam.aolocalcolumn.lookup.value".equals(mimeType));
 
 				InstanceElement ieMeq = ieLc.getRelatedInstances(relLcMeq, "*").nextOne();
 				mimeType = ODSHelper.getStringVal(ieMeq.getValue("mt"));
-				assertTrue(mimeType.equals("application/x-asam.aomeasurementquantity.lookup.key")
-						|| mimeType.equals("application/x-asam.aomeasurementquantity.lookup.value"));
+				assertTrue("application/x-asam.aomeasurementquantity.lookup.key".equals(mimeType)
+						|| "application/x-asam.aomeasurementquantity.lookup.value".equals(mimeType));
 				assertTrue(ODSHelper.getEnumVal(ieMeq.getValue("dt")) == 1
 						|| ODSHelper.getEnumVal(ieMeq.getValue("dt")) == 7);
 

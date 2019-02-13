@@ -94,7 +94,8 @@ abstract class BLOCK {
 	 */
 	@Override
 	public String toString() {
-		return "BLOCK [pos=" + pos + ", id=" + id + ", length=" + length + ", linkCount=" + linkCount + "]";
+		return new StringBuilder().append("BLOCK [pos=").append(pos).append(", id=").append(id).append(", length=").append(length).append(", linkCount=")
+				.append(linkCount).append("]").toString();
 	}
 
 	/**

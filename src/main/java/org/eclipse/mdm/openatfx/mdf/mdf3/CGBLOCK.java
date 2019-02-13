@@ -140,10 +140,9 @@ class CGBLOCK extends BLOCK {
 	 */
 	@Override
 	public String toString() {
-		return "CGBLOCK [lnkNextCgBlock=" + lnkNextCgBlock + ", lnkFirstCnBlock=" + lnkFirstCnBlock
-				+ ", lnkChannelGroupComment=" + lnkChannelGroupComment + ", recordId=" + recordId + ", noOfChannels="
-				+ noOfChannels + ", dataRecordSize=" + dataRecordSize + ", noOfRecords=" + noOfRecords
-				+ ", lnkFirstSrBlock=" + lnkFirstSrBlock + "]";
+		return new StringBuilder().append("CGBLOCK [lnkNextCgBlock=").append(lnkNextCgBlock).append(", lnkFirstCnBlock=").append(lnkFirstCnBlock).append(", lnkChannelGroupComment=").append(lnkChannelGroupComment).append(", recordId=")
+				.append(recordId).append(", noOfChannels=").append(noOfChannels).append(", dataRecordSize=").append(dataRecordSize).append(", noOfRecords=").append(noOfRecords)
+				.append(", lnkFirstSrBlock=").append(lnkFirstSrBlock).append("]").toString();
 	}
 
 	public CGBLOCK getNextCgBlock() throws IOException {
@@ -191,7 +190,7 @@ class CGBLOCK extends BLOCK {
 		// CHAR 2 Block type identifier
 		block.setId(Mdf3Util.readChars(bb, 2));
 		if (!block.getId().equals(BLOCK_ID)) {
-			throw new IOException("Wrong block type - expected '" + BLOCK_ID + "', found '" + block.getId() + "'");
+			throw new IOException(new StringBuilder().append("Wrong block type - expected '").append(BLOCK_ID).append("', found '").append(block.getId()).append("'").toString());
 		}
 
 		// UINT16 1 Block size of this block in bytes

@@ -82,8 +82,8 @@ class CEBLOCK extends BLOCK {
 	 */
 	@Override
 	public String toString() {
-		return "CEBLOCK [extensionTypeIdent=" + extensionTypeIdent + ", ceBlockDim=" + ceBlockDim
-				+ ", ceBlockVectorCAN=" + ceBlockVectorCAN + "]";
+		return new StringBuilder().append("CEBLOCK [extensionTypeIdent=").append(extensionTypeIdent).append(", ceBlockDim=").append(ceBlockDim).append(", ceBlockVectorCAN=").append(ceBlockVectorCAN).append("]")
+				.toString();
 	}
 
 	/**
@@ -110,7 +110,7 @@ class CEBLOCK extends BLOCK {
 		// CHAR 2 Block type identifier
 		block.setId(Mdf3Util.readChars(bb, 2));
 		if (!block.getId().equals(BLOCK_ID)) {
-			throw new IOException("Wrong block type - expected '" + BLOCK_ID + "', found '" + block.getId() + "'");
+			throw new IOException(new StringBuilder().append("Wrong block type - expected '").append(BLOCK_ID).append("', found '").append(block.getId()).append("'").toString());
 		}
 
 		// UINT16 1 Block size of this block in bytes

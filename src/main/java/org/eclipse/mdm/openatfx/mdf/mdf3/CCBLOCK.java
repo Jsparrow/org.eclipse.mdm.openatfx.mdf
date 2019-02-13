@@ -204,15 +204,10 @@ class CCBLOCK extends BLOCK {
 	 */
 	@Override
 	public String toString() {
-		return "CCBLOCK [knownPhysValue=" + knownPhysValue + ", minPhysValue=" + minPhysValue + ", maxPhysValue="
-				+ maxPhysValue + ", physUnit=" + physUnit + ", formulaIdent=" + formulaIdent
-				+ ", noOfValuePairsForFormula=" + noOfValuePairsForFormula + ", valuePairsForFormula="
-				+ Arrays.toString(valuePairsForFormula) + ", keysForTextTable=" + Arrays.toString(keysForTextTable)
-				+ ", valuesForTextTable=" + Arrays.toString(valuesForTextTable) + ", defaultTextForTextRangeTable="
-				+ defaultTextForTextRangeTable + ", lowerRangeKeysForTextRangeTable="
-				+ Arrays.toString(lowerRangeKeysForTextRangeTable) + ", upperRangeKeysForTextRangeTable="
-				+ Arrays.toString(upperRangeKeysForTextRangeTable) + ", valuesForTextRangeTable="
-				+ Arrays.toString(valuesForTextRangeTable) + "]";
+		return new StringBuilder().append("CCBLOCK [knownPhysValue=").append(knownPhysValue).append(", minPhysValue=").append(minPhysValue).append(", maxPhysValue=").append(maxPhysValue).append(", physUnit=")
+				.append(physUnit).append(", formulaIdent=").append(formulaIdent).append(", noOfValuePairsForFormula=").append(noOfValuePairsForFormula).append(", valuePairsForFormula=").append(Arrays.toString(valuePairsForFormula))
+				.append(", keysForTextTable=").append(Arrays.toString(keysForTextTable)).append(", valuesForTextTable=").append(Arrays.toString(valuesForTextTable)).append(", defaultTextForTextRangeTable=").append(defaultTextForTextRangeTable).append(", lowerRangeKeysForTextRangeTable=")
+				.append(Arrays.toString(lowerRangeKeysForTextRangeTable)).append(", upperRangeKeysForTextRangeTable=").append(Arrays.toString(upperRangeKeysForTextRangeTable)).append(", valuesForTextRangeTable=").append(Arrays.toString(valuesForTextRangeTable)).append("]").toString();
 	}
 
 	/**
@@ -239,7 +234,7 @@ class CCBLOCK extends BLOCK {
 		// CHAR 2 Block type identifier
 		block.setId(Mdf3Util.readChars(bb, 2));
 		if (!block.getId().equals(BLOCK_ID)) {
-			throw new IOException("Wrong block type - expected '" + BLOCK_ID + "', found '" + block.getId() + "'");
+			throw new IOException(new StringBuilder().append("Wrong block type - expected '").append(BLOCK_ID).append("', found '").append(block.getId()).append("'").toString());
 		}
 
 		// UINT16 1 Block size of this block in bytes

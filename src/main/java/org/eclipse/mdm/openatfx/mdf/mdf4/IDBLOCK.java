@@ -162,9 +162,9 @@ public class IDBLOCK extends BLOCK {
 	 */
 	@Override
 	public String toString() {
-		return "IDBLOCK [mdfFilePath=" + mdfFilePath + ", idFile=" + idFile + ", idVers=" + idVers + ", idProg="
-				+ idProg + ", idVer=" + idVer + ", idUnfinFlags=" + idUnfinFlags + ", idCustomUnfinFlags="
-				+ idCustomUnfinFlags + "]";
+		return new StringBuilder().append("IDBLOCK [mdfFilePath=").append(mdfFilePath).append(", idFile=").append(idFile).append(", idVers=").append(idVers).append(", idProg=")
+				.append(idProg).append(", idVer=").append(idVer).append(", idUnfinFlags=").append(idUnfinFlags).append(", idCustomUnfinFlags=").append(idCustomUnfinFlags)
+				.append("]").toString();
 	}
 
 	/**
@@ -190,7 +190,7 @@ public class IDBLOCK extends BLOCK {
 
 		// CHAR 8: File identifier
 		block.setIdFile(MDF4Util.readCharsISO8859(bb, 8));
-		if (!block.getIdFile().equals("MDF     ")) {
+		if (!"MDF     ".equals(block.getIdFile())) {
 			throw new IOException("Invalid or corrupt MDF4 file: " + block.getIdFile());
 		}
 
@@ -215,15 +215,13 @@ public class IDBLOCK extends BLOCK {
 		// UINT16: Standard flags for unfinalized MDF.
 		block.setIdUnfinFlags(MDF4Util.readUInt16(bb));
 		if (block.getIdCustomUnfinFlags() != 0) {
-			throw new IOException("Only finalized MDF file can be read, found unfinalized standard flag '"
-					+ block.getIdUnfinFlags() + "'");
+			throw new IOException(new StringBuilder().append("Only finalized MDF file can be read, found unfinalized standard flag '").append(block.getIdUnfinFlags()).append("'").toString());
 		}
 
 		// UINT16: Custom Flags for unfinalized MDF
 		block.setIdCustomUnfinFlags(MDF4Util.readUInt16(bb));
 		if (block.getIdCustomUnfinFlags() != 0) {
-			throw new IOException("Only finalized MDF file can be read, found unfinalized custom flag '"
-					+ block.getIdCustomUnfinFlags() + "'");
+			throw new IOException(new StringBuilder().append("Only finalized MDF file can be read, found unfinalized custom flag '").append(block.getIdCustomUnfinFlags()).append("'").toString());
 		}
 
 		return block;

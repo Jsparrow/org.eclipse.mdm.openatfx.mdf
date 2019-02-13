@@ -135,8 +135,8 @@ class SRBLOCK extends BLOCK {
 
 	@Override
 	public String toString() {
-		return "SRBLOCK [lnkSrNext=" + lnkSrNext + ", lnkRdData=" + lnkRdData + ", cycleCount=" + cycleCount
-				+ ", interval=" + interval + ", syncType=" + syncType + ", flags=" + flags + "]";
+		return new StringBuilder().append("SRBLOCK [lnkSrNext=").append(lnkSrNext).append(", lnkRdData=").append(lnkRdData).append(", cycleCount=").append(cycleCount).append(", interval=")
+				.append(interval).append(", syncType=").append(syncType).append(", flags=").append(flags).append("]").toString();
 	}
 
 	/**
@@ -163,7 +163,7 @@ class SRBLOCK extends BLOCK {
 		// CHAR 4: Block type identifier
 		block.setId(MDF4Util.readCharsISO8859(bb, 4));
 		if (!block.getId().equals(BLOCK_ID)) {
-			throw new IOException("Wrong block type - expected '" + BLOCK_ID + "', found '" + block.getId() + "'");
+			throw new IOException(new StringBuilder().append("Wrong block type - expected '").append(BLOCK_ID).append("', found '").append(block.getId()).append("'").toString());
 		}
 
 		// BYTE 4: Reserved used for 8-Byte alignment

@@ -39,32 +39,32 @@ public class LookupTableHelper {
 	private synchronized void createMeasurmentIfNeeded(ODSModelCache modelCache, InstanceElement ieMea)
 			throws AoException {
 		// create 'AoMeasurement' instance (if not yet existing)
-		if (lookupMeaIid == -1L) {
-			// lookup parent 'AoTest' instance
-			InstanceElementIterator iter = ieMea.getRelatedInstancesByRelationship(Relationship.FATHER, "*");
-			InstanceElement ieTst = iter.nextOne();
-			iter.destroy();
-			long iidTst = ODSHelper.asJLong(ieTst.getId());
-			/*
-			 * String meaName = ieMea.getName() + "_lookup"; this.lookupMeaIe =
-			 * aeMea.createInstance(meaName);
-			 * this.lookupMeaIe.setValue(ODSHelper.createStringNVU("mt",
-			 * "application/x-asam.aomeasurement.lookup"));
-			 * this.lookupMeaIe.setValue(ieMea.getValue("date_created"));
-			 * this.lookupMeaIe.setValue(ieMea.getValue("mea_begin"));
-			 * this.lookupMeaIe.setValue(ieMea.getValue("mea_end"));
-			 * this.lookupMeaIe.createRelation(relMeaTst, ieTst);
-			 */
-
-			ODSInsertStatement ins = new ODSInsertStatement(modelCache, "mea");
-			ins.setStringVal("iname", ieMea.getName() + "_lookup");
-			ins.setStringVal("mt", "application/x-asam.aomeasurement.lookup");
-			ins.setNameValueUnit(ieMea.getValue("date_created"));
-			ins.setNameValueUnit(ieMea.getValue("mea_begin"));
-			ins.setNameValueUnit(ieMea.getValue("mea_end"));
-			ins.setLongLongVal("tst", iidTst);
-			lookupMeaIid = ins.execute();
+		if (!(lookupMeaIid == -1L)) {
+			return;
 		}
+		// lookup parent 'AoTest' instance
+		InstanceElementIterator iter = ieMea.getRelatedInstancesByRelationship(Relationship.FATHER, "*");
+		InstanceElement ieTst = iter.nextOne();
+		iter.destroy();
+		long iidTst = ODSHelper.asJLong(ieTst.getId());
+		/*
+		 * String meaName = ieMea.getName() + "_lookup"; this.lookupMeaIe =
+		 * aeMea.createInstance(meaName);
+		 * this.lookupMeaIe.setValue(ODSHelper.createStringNVU("mt",
+		 * "application/x-asam.aomeasurement.lookup"));
+		 * this.lookupMeaIe.setValue(ieMea.getValue("date_created"));
+		 * this.lookupMeaIe.setValue(ieMea.getValue("mea_begin"));
+		 * this.lookupMeaIe.setValue(ieMea.getValue("mea_end"));
+		 * this.lookupMeaIe.createRelation(relMeaTst, ieTst);
+		 */
+		ODSInsertStatement ins = new ODSInsertStatement(modelCache, "mea");
+		ins.setStringVal("iname", ieMea.getName() + "_lookup");
+		ins.setStringVal("mt", "application/x-asam.aomeasurement.lookup");
+		ins.setNameValueUnit(ieMea.getValue("date_created"));
+		ins.setNameValueUnit(ieMea.getValue("mea_begin"));
+		ins.setNameValueUnit(ieMea.getValue("mea_end"));
+		ins.setLongLongVal("tst", iidTst);
+		lookupMeaIid = ins.execute();
 	}
 
 	public synchronized long createValueToValueTable(ODSModelCache modelCache, InstanceElement ieMea,
@@ -144,7 +144,7 @@ public class LookupTableHelper {
 		}
 
 		nameCount.put(lcName, count);
-		lcName = count.intValue() > 0 ? lcName + "_" + count : lcName;
+		lcName = count.intValue() > 0 ? new StringBuilder().append(lcName).append("_").append(count).toString() : lcName;
 
 		createMeasurmentIfNeeded(modelCache, ieMea);
 
@@ -191,7 +191,7 @@ public class LookupTableHelper {
 
 		// create 'AoMeasurementQuantity' instance for key (or key min)
 		ins = new ODSInsertStatement(modelCache, "meq");
-		ins.setStringVal("iname", lcName + "_key" + nameExtension);
+		ins.setStringVal("iname", new StringBuilder().append(lcName).append("_key").append(nameExtension).toString());
 		ins.setStringVal("mt", "application/x-asam.aomeasurementquantity.lookup.key" + nameExtension);
 		ins.setEnumVal("dt", keysType);
 		ins.setLongLongVal("mea", lookupMeaIid);
@@ -200,7 +200,7 @@ public class LookupTableHelper {
 		// create 'AoLocalColumn' instance for key (or key min)
 
 		ins = new ODSInsertStatement(modelCache, "lc");
-		ins.setStringVal("iname", lcName + "_key" + nameExtension);
+		ins.setStringVal("iname", new StringBuilder().append(lcName).append("_key").append(nameExtension).toString());
 		ins.setStringVal("mt", "application/x-asam.aolocalcolumn.lookup.key" + nameExtension);
 		ins.setEnumVal("srp", ODSHelper.getEnumVal(ieLc.getValue("srp")));
 		ins.setDoubleSeq("par", ODSHelper.getDoubleSeq(ieLc.getValue("par")));

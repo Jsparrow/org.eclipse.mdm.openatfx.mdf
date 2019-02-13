@@ -84,16 +84,7 @@ public class MDFConverter {
 			AoFactory aoFactory = AoFactoryHelper.narrow(ref);
 
 			return aoFactory;
-		} catch (InvalidName e) {
-			LOG.error(e.getMessage(), e);
-			throw new AoException(ErrorCode.AO_UNKNOWN_ERROR, SeverityFlag.ERROR, 0, e.getMessage());
-		} catch (AdapterInactive e) {
-			LOG.error(e.getMessage(), e);
-			throw new AoException(ErrorCode.AO_UNKNOWN_ERROR, SeverityFlag.ERROR, 0, e.getMessage());
-		} catch (ServantNotActive e) {
-			LOG.error(e.getMessage(), e);
-			throw new AoException(ErrorCode.AO_UNKNOWN_ERROR, SeverityFlag.ERROR, 0, e.getMessage());
-		} catch (WrongPolicy e) {
+		} catch (WrongPolicy | ServantNotActive | AdapterInactive | InvalidName e) {
 			LOG.error(e.getMessage(), e);
 			throw new AoException(ErrorCode.AO_UNKNOWN_ERROR, SeverityFlag.ERROR, 0, e.getMessage());
 		}
@@ -159,7 +150,7 @@ public class MDFConverter {
 
 			aoSession.commitTransaction();
 
-			LOG.info("Wrote ATFX header '" + targetAtfxFile + "' in " + (System.currentTimeMillis() - start) + "ms");
+			LOG.info(new StringBuilder().append("Wrote ATFX header '").append(targetAtfxFile).append("' in ").append(System.currentTimeMillis() - start).append("ms").toString());
 		} catch (IOException e) {
 			LOG.error(e.getMessage(), e);
 			throw new ConvertException(e.getMessage(), e);
@@ -253,7 +244,7 @@ public class MDFConverter {
 				writer.writeTst(modelCache, idBlock, properties);
 			}
 
-			LOG.info("Read MDF header in " + (System.currentTimeMillis() - start) + "ms");
+			LOG.info(new StringBuilder().append("Read MDF header in ").append(System.currentTimeMillis() - start).append("ms").toString());
 			return aoSession;
 		} catch (IOException e) {
 			LOG.error(e.getMessage(), e);
@@ -310,7 +301,7 @@ public class MDFConverter {
 		byte[] b = new byte[8];
 		bb.get(b);
 		String fileIdent = new String(b, "ISO-8859-1");
-		if (!fileIdent.equals("MDF     ")) {
+		if (!"MDF     ".equals(fileIdent)) {
 			throw new IOException("Invalid or corrupt MDF file: " + fileIdent);
 		}
 

@@ -85,8 +85,8 @@ public class ODSInsertStatement {
 		}
 		this.cache = cache;
 		this.aeName = aeName;
-		attrs = new LinkedHashSet<String>();
-		rows = new ArrayList<Map<String, TS_Value>>();
+		attrs = new LinkedHashSet<>();
+		rows = new ArrayList<>();
 	}
 
 	/**
@@ -95,7 +95,7 @@ public class ODSInsertStatement {
 	 * @return The current position.
 	 */
 	public int next() {
-		Map<String, TS_Value> map = new LinkedHashMap<String, TS_Value>();
+		Map<String, TS_Value> map = new LinkedHashMap<>();
 		rows.add(map);
 		pos++;
 		return pos;
@@ -588,7 +588,7 @@ public class ODSInsertStatement {
 		}
 
 		// copy values to the CORBA structure needed by the ODS interface
-		List<AIDNameValueSeqUnitId> list = new ArrayList<AIDNameValueSeqUnitId>();
+		List<AIDNameValueSeqUnitId> list = new ArrayList<>();
 		ApplElem applElem = cache.getApplElem(aeName);
 
 		for (String attr : attrs) {
@@ -598,7 +598,7 @@ public class ODSInsertStatement {
 			}
 
 			// do not insert if attribute is "id"
-			if (cache.applAttrExists(aeName, attr) && cache.getApplAttr(aeName, attr).baName.equals("id")) {
+			if (cache.applAttrExists(aeName, attr) && "id".equals(cache.getApplAttr(aeName, attr).baName)) {
 				continue;
 			}
 
@@ -928,7 +928,8 @@ public class ODSInsertStatement {
 		}
 		long duration = System.currentTimeMillis() - start;
 
-		LOG.debug("InsertStatement executed [aeName=" + aeName + ",number=" + size() + ",time=" + duration + "ms]");
+		LOG.debug(new StringBuilder().append("InsertStatement executed [aeName=").append(aeName).append(",number=").append(size()).append(",time=").append(duration)
+				.append("ms]").toString());
 		return ids;
 	}
 

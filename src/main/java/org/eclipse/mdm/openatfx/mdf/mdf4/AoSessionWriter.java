@@ -232,7 +232,7 @@ public class AoSessionWriter {
 				try {
 					Files.delete(customRatConfPath);
 				} catch (IOException e2) {
-					LOG.warn("failed to delete file with manually calculated values: '" + customRatConfPath + "'", e2);
+					LOG.warn(new StringBuilder().append("failed to delete file with manually calculated values: '").append(customRatConfPath).append("'").toString(), e2);
 				}
 			}
 
@@ -240,7 +240,7 @@ public class AoSessionWriter {
 				try {
 					Files.delete(flagFile);
 				} catch (IOException e2) {
-					LOG.warn("failed to delete file with exported flags: '" + flagFile + "'", e2);
+					LOG.warn(new StringBuilder().append("failed to delete file with exported flags: '").append(flagFile).append("'").toString(), e2);
 				}
 			}
 
@@ -337,13 +337,13 @@ public class AoSessionWriter {
 			LOG.warn("Found ATBLOCK, currently not yet supported!");
 		}
 
-		if (!readOnlyHeader) {
-			writeEv(modelCache, iidTst, iidFh, hdBlock);
-
-			// write submatrices
-			Map<String, Integer> meqNames = new HashMap<String, Integer>();
-			writeSm(modelCache, iidMea, idBlock, hdBlock, meqNames);
+		if (readOnlyHeader) {
+			return;
 		}
+		writeEv(modelCache, iidTst, iidFh, hdBlock);
+		// write submatrices
+		Map<String, Integer> meqNames = new HashMap<>();
+		writeSm(modelCache, iidMea, idBlock, hdBlock, meqNames);
 	}
 
 	/**
@@ -363,7 +363,7 @@ public class AoSessionWriter {
 	private Long[] writeFh(ODSModelCache modelCache, long iidTst, HDBLOCK hdBlock) throws AoException, IOException {
 		int no = 1;
 		FHBLOCK fhBlock = hdBlock.getFhFirstBlock();
-		List<Long> iids = new LinkedList<Long>();
+		List<Long> iids = new LinkedList<>();
 		while (fhBlock != null) {
 
 			ODSInsertStatement ins = new ODSInsertStatement(modelCache, "fh");
@@ -487,8 +487,8 @@ public class AoSessionWriter {
 	 */
 	public void writeSm(ODSModelCache modelCache, long iidMea, IDBLOCK idBlock, HDBLOCK hdBlock,
 			Map<String, Integer> meqNames) throws AoException, IOException {
-		Map<String, Long> meqInstances = new HashMap<String, Long>();
-		Map<String, Long> untInstances = new HashMap<String, Long>();
+		Map<String, Long> meqInstances = new HashMap<>();
+		Map<String, Long> untInstances = new HashMap<>();
 		// iterate over data group blocks
 		int grpNo = 1;
 		DGBLOCK dgBlock = hdBlock.getDgFirstBlock();
@@ -499,7 +499,7 @@ public class AoSessionWriter {
 
 			if (cgBlock != null && cgBlock.getLnkCgNext() > 0) {
 				throw new IOException(
-						"Only 'sorted' MDF4 files are supported, found 'unsorted' data! [DGBLOCK=" + dgBlock + "]");
+						new StringBuilder().append("Only 'sorted' MDF4 files are supported, found 'unsorted' data! [DGBLOCK=").append(dgBlock).append("]").toString());
 			}
 
 			// skip channel groups having no channels (or optionally no values)
@@ -508,7 +508,7 @@ public class AoSessionWriter {
 
 				// check flags (not yet supported)
 				if (cgBlock.isBusEventChannel()) {
-					throw new IOException("Bus event data currently not supported! [DGBLOCK=" + dgBlock + "]");
+					throw new IOException(new StringBuilder().append("Bus event data currently not supported! [DGBLOCK=").append(dgBlock).append("]").toString());
 				}
 
 				// create SubMatrix instance
@@ -554,7 +554,7 @@ public class AoSessionWriter {
 
 				// write instances of
 				// AoMeasurementQuantity,AoLocalColumn,AoExternalReference
-				Map<String, Integer> mapMeq = new HashMap<String, Integer>();
+				Map<String, Integer> mapMeq = new HashMap<>();
 
 				SRBLOCK srBlock = cgBlock.getSrFirstBlock();
 
@@ -606,16 +606,15 @@ public class AoSessionWriter {
 			if ((cnBlock.getFlags() & 0x02) != 0 && cnBlock.getInvalBitPos() > 0) {
 				if (writeFlagsFile) {
 					// NOTE: flags are exported within writeEc()!
-					LOG.debug("channel with invalid values found, "
-							+ "export flags into separate file [CNBLOCK=" + cnBlock + "]");
+					LOG.debug(new StringBuilder().append("channel with invalid values found, ").append("export flags into separate file [CNBLOCK=").append(cnBlock).append("]").toString());
 				} else {
-					LOG.debug("skipping channel with invalid values [CNBLOCK=" + cnBlock + "]");
+					LOG.debug(new StringBuilder().append("skipping channel with invalid values [CNBLOCK=").append(cnBlock).append("]").toString());
 					continue;
 				}
 			}
 			// check invalidation bits (not yet supported)
 			if (cnBlock.getLnkComposition() != 0) {
-				LOG.warn("Composition of channels not supported! [CNBLOCK=" + cnBlock + "]");
+				LOG.warn(new StringBuilder().append("Composition of channels not supported! [CNBLOCK=").append(cnBlock).append("]").toString());
 				// throw new IOException("Composition of channels not supported!
 				// [CNBLOCK=" + cnBlock + "]");
 			}
@@ -644,7 +643,7 @@ public class AoSessionWriter {
 				noChannels++;
 				meqNames.put(meqName, noChannels);
 				if (noChannels > 1) {
-					meqName = meqName + "_" + noChannels;
+					meqName = new StringBuilder().append(meqName).append("_").append(noChannels).toString();
 				}
 			}
 
@@ -652,17 +651,17 @@ public class AoSessionWriter {
 
 			// check whether channel has to be or shall be skipped
 			if (skipScaleConversionChannels && ccBlock != null && ccBlock.hasCCRefs()) {
-				LOG.info("Channel '" + meqName + "' with scale conversion rules in CCBlocks skipped: " + ccBlock);
+				LOG.info(new StringBuilder().append("Channel '").append(meqName).append("' with scale conversion rules in CCBlocks skipped: ").append(ccBlock).toString());
 				cnBlock = cnBlock.getCnNextBlock();
 				continue;
 			} else if (skipByteStreamChannels && 10 == cnBlock.getDataType()) {
 				// remove this block once it is save to import channels with
 				// byte stream data
-				LOG.info("Channel '" + meqName + "' with byte stream data skipped: " + ccBlock);
+				LOG.info(new StringBuilder().append("Channel '").append(meqName).append("' with byte stream data skipped: ").append(ccBlock).toString());
 				cnBlock = cnBlock.getCnNextBlock();
 				continue;
 			} else if (10 == cnBlock.getDataType() && cnBlock.getLnkComposition() != 0) {
-				LOG.info("Channel '" + meqName + "' with composed byte stream data skipped: " + ccBlock);
+				LOG.info(new StringBuilder().append("Channel '").append(meqName).append("' with composed byte stream data skipped: ").append(ccBlock).toString());
 				cnBlock = cnBlock.getCnNextBlock();
 				continue;
 			} else if (64 == cnBlock.getBitCount() && (0 /* LEO */ == cnBlock.getDataType()
@@ -674,7 +673,7 @@ public class AoSessionWriter {
 					// this is a data channel with 64 bit unsigned data; it is not possible to represent such data
 					// => either throw an error or skip channel
 					if (skipUINT64Channels) {
-						LOG.info("Channel '" + meqName + "' with unsigned 64 bit data skipped: " + cnBlock);
+						LOG.info(new StringBuilder().append("Channel '").append(meqName).append("' with unsigned 64 bit data skipped: ").append(cnBlock).toString());
 						cnBlock = cnBlock.getCnNextBlock();
 						continue;
 					} else {
@@ -866,11 +865,11 @@ public class AoSessionWriter {
 			String[] stringDataValues = readStringDataValues(dgBlock, cgBlock, cnBlock);
 			ins.setEnumVal("srp", 0);
 			ins.setNameValueUnit(ODSHelper.createStringSeqNVU("val", stringDataValues));
-			LOG.info("Unable to reference into MDF4, extracting string values. [Channel=" + lcName + "]");
+			LOG.info(new StringBuilder().append("Unable to reference into MDF4, extracting string values. [Channel=").append(lcName).append("]").toString());
 		} else if (cnBlock.getChannelType() == 1) {
 			// Read VLSDChannel values.
 			ins.setEnumVal("srp", 0);
-			LOG.info("Variable Length Channel! [Channel=" + lcName + "]");
+			LOG.info(new StringBuilder().append("Variable Length Channel! [Channel=").append(lcName).append("]").toString());
 			insertVLSDValues(ins, dgBlock, cgBlock, cnBlock);
 		} else {
 			ins.setEnumVal("srp", seqRep);
@@ -959,7 +958,7 @@ public class AoSessionWriter {
 		sbc.read(signals);
 		signals.rewind();
 
-		LinkedList<String> list = new LinkedList<String>();
+		LinkedList<String> list = new LinkedList<>();
 		for (int i = 0; i < cgBlock.getCycleCount(); i++) {
 			signals.position((int) offsets[i]);
 			int size = (int) MDF4Util.readUInt32(signals.order(ByteOrder.LITTLE_ENDIAN));
@@ -1066,7 +1065,7 @@ public class AoSessionWriter {
 	 *             If an input error occurs.
 	 */
 	private static String[] readStringDataValues(DGBLOCK dgBlock, CGBLOCK cgBlock, CNBLOCK cnBlock) throws IOException {
-		List<String> list = new ArrayList<String>();
+		List<String> list = new ArrayList<>();
 
 		SeekableByteChannel sbc = dgBlock.sbc;
 		int recordIdOffset = dgBlock.getRecIdSize();
@@ -1309,24 +1308,23 @@ public class AoSessionWriter {
 			}
 		}
 
-		if (unitName.length() > 0) {
-			Long iid = existingUnts.get(unitName);
-			if (iid == null) {
-				// create unit instance
-				ODSInsertStatement ins = new ODSInsertStatement(modelCache, "unt");
-				ins.setStringVal("iname", unitName);
-				ins.setDoubleVal("factor", 1d);
-				ins.setDoubleVal("offset", 0d);
-				if (unitMetadata != null) {
-					xmlParser.writeCNCommentToUnit(ins, unitMetadata.getMdData());
-				}
-				iid = ins.execute();
-				existingUnts.put(unitName, iid);
-			}
-			return iid;
-
+		if (unitName.length() <= 0) {
+			return -1;
 		}
-		return -1;
+		Long iid = existingUnts.get(unitName);
+		if (iid == null) {
+			// create unit instance
+			ODSInsertStatement ins = new ODSInsertStatement(modelCache, "unt");
+			ins.setStringVal("iname", unitName);
+			ins.setDoubleVal("factor", 1d);
+			ins.setDoubleVal("offset", 0d);
+			if (unitMetadata != null) {
+				xmlParser.writeCNCommentToUnit(ins, unitMetadata.getMdData());
+			}
+			iid = ins.execute();
+			existingUnts.put(unitName, iid);
+		}
+		return iid;
 	}
 
 	/**************************************************************************************
@@ -1611,7 +1609,7 @@ public class AoSessionWriter {
 			return 13;
 		} else {
 			// TODO
-			LOG.warn("Data type " + dt + " is not yet supported.");
+			LOG.warn(new StringBuilder().append("Data type ").append(dt).append(" is not yet supported.").toString());
 			return 13;
 		}
 	}
@@ -1839,7 +1837,7 @@ public class AoSessionWriter {
 			return getRawDataTypeForValueType(getValueType(cnBlock), cnBlock);
 		}
 
-		throw new IOException("Unsupported MDF4 datatype: " + cnBlock + "\n " + ccBlock);
+		throw new IOException(new StringBuilder().append("Unsupported MDF4 datatype: ").append(cnBlock).append("\n ").append(ccBlock).toString());
 	}
 
 	/**
@@ -2028,8 +2026,7 @@ public class AoSessionWriter {
 				double[] p = ccBlock.getVal();
 
 				if (bo != 0 || bc != 0 || cnBlock.getBitCount() % 8 != 0) {
-					throw new AoException(ErrorCode.AO_BAD_PARAMETER, SeverityFlag.ERROR, 0, "bit count '" + bc
-							+ "' and bit offset '" + bo + "' is not supported for custom ration conversion");
+					throw new AoException(ErrorCode.AO_BAD_PARAMETER, SeverityFlag.ERROR, 0, new StringBuilder().append("bit count '").append(bc).append("' and bit offset '").append(bo).append("' is not supported for custom ration conversion").toString());
 				}
 
 				int bits = (int) cnBlock.getBitCount();
@@ -2067,8 +2064,8 @@ public class AoSessionWriter {
 						} else {
 							String unsigned = isUnsigned ? "unsigned" : "signed";
 							throw new AoException(ErrorCode.AO_BAD_PARAMETER, SeverityFlag.ERROR, 0,
-									"customized reading of '" + bits + "' bit '" + unsigned
-											+ "' intergers is not implemented");
+									new StringBuilder().append("customized reading of '").append(bits).append("' bit '").append(unsigned).append("' intergers is not implemented")
+											.toString());
 						}
 					} else if (isReal) {
 						if (bits == 32) {
@@ -2080,8 +2077,8 @@ public class AoSessionWriter {
 						} else {
 							String unsigned = isUnsigned ? "unsigned" : "signed";
 							throw new AoException(ErrorCode.AO_BAD_PARAMETER, SeverityFlag.ERROR, 0,
-									"customized reading of '" + bits + "' bit '" + unsigned
-											+ "' real is not implemented");
+									new StringBuilder().append("customized reading of '").append(bits).append("' bit '").append(unsigned).append("' real is not implemented")
+											.toString());
 						}
 					} else {
 						throw new AoException(ErrorCode.AO_BAD_PARAMETER, SeverityFlag.ERROR, 0,
@@ -2235,7 +2232,7 @@ public class AoSessionWriter {
 		if (flagFile == null) {
 			flagFile = idBlock.getMdfFilePath().resolveSibling("flags.bin");
 			while (Files.exists(flagFile)) {
-				flagFile = flagFile.resolveSibling("flags_" + UUID.randomUUID().toString().split("-")[0] + ".bin");
+				flagFile = flagFile.resolveSibling(new StringBuilder().append("flags_").append(UUID.randomUUID().toString().split("-")[0]).append(".bin").toString());
 			}
 
 			Files.createFile(flagFile);

@@ -62,7 +62,7 @@ class PRBLOCK extends BLOCK {
 	 */
 	@Override
 	public String toString() {
-		return "PRBLOCK [text=" + text + "]";
+		return new StringBuilder().append("PRBLOCK [text=").append(text).append("]").toString();
 	}
 
 	/**
@@ -92,7 +92,7 @@ class PRBLOCK extends BLOCK {
 		// UINT16 1 Block size of this block in bytes
 		block.setLength(Mdf3Util.readUInt16(bb));
 		if (!block.getId().equals(BLOCK_ID)) {
-			throw new IOException("Wrong block type - expected '" + BLOCK_ID + "', found '" + block.getId() + "'");
+			throw new IOException(new StringBuilder().append("Wrong block type - expected '").append(BLOCK_ID).append("', found '").append(block.getId()).append("'").toString());
 		}
 
 		// CHAR variable Program-specific data

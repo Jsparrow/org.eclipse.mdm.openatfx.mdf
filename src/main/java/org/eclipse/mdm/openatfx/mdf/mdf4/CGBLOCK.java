@@ -290,10 +290,10 @@ class CGBLOCK extends BLOCK {
 
 	@Override
 	public String toString() {
-		return "CGBLOCK [lnkCgNext=" + lnkCgNext + ", lnkCnFirst=" + lnkCnFirst + ", lnkTxAcqName=" + lnkTxAcqName
-				+ ", lnkSiAcqSource=" + lnkSiAcqSource + ", lnkSrFirst=" + lnkSrFirst + ", lnkMdComment=" + lnkMdComment
-				+ ", recordId=" + recordId + ", cycleCount=" + cycleCount + ", flags=" + flags + ", pathSeparator="
-				+ pathSeparator + ", dataBytes=" + dataBytes + ", invalBytes=" + invalBytes + "]";
+		return new StringBuilder().append("CGBLOCK [lnkCgNext=").append(lnkCgNext).append(", lnkCnFirst=").append(lnkCnFirst).append(", lnkTxAcqName=").append(lnkTxAcqName).append(", lnkSiAcqSource=")
+				.append(lnkSiAcqSource).append(", lnkSrFirst=").append(lnkSrFirst).append(", lnkMdComment=").append(lnkMdComment).append(", recordId=").append(recordId)
+				.append(", cycleCount=").append(cycleCount).append(", flags=").append(flags).append(", pathSeparator=").append(pathSeparator).append(", dataBytes=")
+				.append(dataBytes).append(", invalBytes=").append(invalBytes).append("]").toString();
 	}
 
 	/**
@@ -320,7 +320,7 @@ class CGBLOCK extends BLOCK {
 		// CHAR 4: Block type identifier
 		block.setId(MDF4Util.readCharsISO8859(bb, 4));
 		if (!block.getId().equals(BLOCK_ID)) {
-			throw new IOException("Wrong block type - expected '" + BLOCK_ID + "', found '" + block.getId() + "'");
+			throw new IOException(new StringBuilder().append("Wrong block type - expected '").append(BLOCK_ID).append("', found '").append(block.getId()).append("'").toString());
 		}
 
 		// BYTE 4: Reserved used for 8-Byte alignment
